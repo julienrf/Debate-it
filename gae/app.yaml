@@ -1,0 +1,25 @@
+application: DebateIt
+version: 1
+runtime: python
+api_version: 1
+
+handlers:
+- url: /favicon.ico
+  static_files: static/img/favicon.ico
+  upload: static/img/favicon.ico
+
+- url: /css
+  static_dir: static/css
+  
+- url: /img
+  static_dir: static/img
+  
+- url: /js
+  static_dir: static/js
+  
+- url: /admin.*
+  script: index.py
+  login: admin
+
+- url: .*
+  script: index.py
