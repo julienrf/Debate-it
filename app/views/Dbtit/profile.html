@@ -1,0 +1,57 @@
+#{extends 'main.html' /}
+#{set title: "Debate it!" /}
+#{set 'moreStyles'}
+	<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/form.sass'}" /> 
+#{/set}
+
+<h2>&{'profile'}</h2>
+
+<div class="form">
+	#{ifErrors}
+		<p class="form-error">&{'formError'}</p>
+	#{/ifErrors}
+	
+	#{form @Dbtit.postProfile()}
+	
+	#{field 'userUpdate.name'}
+	<div>
+		<label for="${field.id}">&{field.name}</label>
+		<input type="text" id="${field.id}" name="${field.name}" value="${field.value}" />
+	    <br />
+	    <span class="form-error">${field.error}</span>
+	</div>
+	#{/field}
+	
+	#{field 'userUpdate.tzId'}
+	<div>
+		<label for="${field.id}">&{field.name}</label>
+		%{ tzIds = java.util.TimeZone.getAvailableIDs(); }%
+		<select name="${field.name}">
+			#{list items:tzIds, as:'tzId'}
+			#{if tzId == field.value}
+				<option value="${tzId}" selected="selected">${tzId}</option>
+			#{/if}
+			#{else}
+				<option value="${tzId}">${tzId}</option>
+			#{/else}
+			#{/list}
+		</select>
+	    <br />
+	    <span class="form-error">${field.error}</span>
+	</div>
+	#{/field}
+	
+	#{field 'userUpdate.rememberMe'}
+	<div>
+		<label for="${field.id}"></label>
+		<input type="checkbox" id="${field.id}" name="${field.name}" value="true" ${field.value == true ? 'checked="checked""' : ' '} />&{field.name}
+		<br />
+		<span class="form-error">${field.error}</span>
+	</div>
+	#{/field}
+	
+	<label for="foo"></label>
+	<input type="submit" value="&{'update'}" />
+	
+	#{/form}
+</div> <!-- form -->

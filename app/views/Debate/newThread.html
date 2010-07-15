@@ -1,0 +1,41 @@
+#{extends 'main.html' /}
+#{set title:'Debate it!' /}
+#{set 'moreStyles'}
+	#{stylesheet 'form.sass' /}
+	#{stylesheet 'tree.sass' /}
+#{/set}
+
+
+<h2>&{'createThread'}</h2>
+
+#{if preview}
+	<h3>&{'threadPreview'}</h3>
+	<h3>${threadTitle}</h3>
+	#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
+#{/if}
+
+#{include 'syntaxhint.html' /}
+
+#{form @Debate.createThread()}
+#{ifErrors}
+	<p class="form-error">&{'formError'}</p>
+#{/ifErrors}
+
+	<div>
+        <label for="thread-title">&{'threadTitle'}</label>
+        <input type="text" id="thread-title" name="threadTitle" size="55" value="${threadTitle}" />
+        <br />
+        <span class="form-error">${errors.forKey('threadTitle')}</span>
+	</div>
+
+	<div>
+        <label for="thread-content">&{'threadContent'}</label>
+        <textarea id="thread-content" name="content" cols="55" rows="15">${content}</textarea>
+        <br />
+        <span class="form-error">${errors.forKey('content')}</span>
+	</div>
+
+        <label for="foo"></label>
+        <input type="submit" value="&{'preview'}" name="preview" />
+        <input type="submit" value="&{'create'}" name="create" />
+#{/form}
