@@ -1,0 +1,52 @@
+#{extends 'main.html' /}
+#{set title: thread.title + " — Debate it!" /}
+#{set 'moreStyles'}
+	#{stylesheet 'tree.sass' /}
+	#{stylesheet 'form.sass' /}
+#{/set}
+
+<h3 class="thread title">#{a @Debate.thread(thread.hash)}${thread.title}#{/a} » &{'replyToPost'}</h3>
+
+<div class="post box">
+	#{posttitle post:paragraph.post, tz:user?.tz /}
+	
+	<div class="container">
+	#{paragraphcontent paragraph:paragraph /}
+	</div>
+</div>
+
+#{if paragraph.footNotes.size() > 0}
+	<ol id="footnotes">
+		#{list items:paragraph.footNotes, as:'footNote'}
+			<li>${ footNote.getContent().raw() }</li>
+		#{/list}
+	</ol>
+#{/if}
+
+#{if preview}
+	<h3>&{'postPreview'}</h3>
+	#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
+#{/if}
+
+#{include 'syntaxhint.html' /}
+
+<div class="form">
+	#{ifErrors}
+		<p class="form-error">&{'formError'}</p>
+	#{/ifErrors}
+	
+	#{form @Debate.postReply(thread.hash, paragraph.id)}
+	
+	<div>
+		<label for="answer-content"> &{'content'} </label>
+	    <textarea id="answer-content" class="answer-content" name="content" cols="55" rows="15">${content}</textarea>
+	    <br />
+	    <span class="form-error">${errors.forKey('content')}</span>
+	</div>
+	
+	<label for="foo"></label>
+	<input type="submit" value="&{'preview'}" name="preview" />
+	<input type="submit" value="&{'send'}" name="send" />
+	
+	#{/form}
+</div> <!-- form -->

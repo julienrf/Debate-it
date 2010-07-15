@@ -1,0 +1,18 @@
+*{ Display the preview of a post }*
+*{ @param paragraphs List of paragraphs }*
+*{ @param footNotes List of footnotes }*
+<div class="post box">
+	#{list items:_paragraphs, as:'p'}
+		<div class="container">
+			<div class="content">${ p.raw() }</div>
+		</div>
+	#{/list}
+</div>
+
+#{if _footNotes.size() > 0}
+	<ol>
+	#{list items:_footNotes, as:'f'}
+		<li>${f.getContent().raw()}</li>
+	#{/list}
+	</ol>
+#{/if}

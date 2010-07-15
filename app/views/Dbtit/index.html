@@ -1,0 +1,18 @@
+#{extends 'main.html' /}
+#{set title:'Debate it!' /}
+#{set 'moreStyles'}
+	<link rel="stylesheet" type="text/css" media="screen" href="@{'/public/stylesheets/index.sass'}" /> 
+#{/set}
+
+<div id="side-action">
+#{if user != null}
+	#{a @Debate.newThread()} &{'createThread'} #{/a}
+#{/if}
+#{else}
+	#{a @Dbtit.login(request.url)} &{'login'} #{/a}
+#{/else}
+</div>
+
+<div id="description" class="box">
+&{'intro'}
+</div>

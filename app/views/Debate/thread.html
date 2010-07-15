@@ -1,0 +1,27 @@
+#{extends 'main.html' /}
+#{set title: thread.title + " — Debate it!" /}
+#{set 'moreStyles'}
+	#{stylesheet 'tree.sass' /}
+#{/set}
+
+<script type="text/javascript">
+	var getAnswers = #{jsAction @Debate.answers(thread.hash, ':paragraphId') /}
+</script>
+
+#{if user == null}
+	<div id="login">#{a @Dbtit.login(request.url)} &{'login'} #{/a} &{'toParticipate'}</div>
+#{/if}
+
+<h2 class="thread title">${thread.title}</h2>
+
+<p>&{'shareThread'} #{a @Debate.thread(thread.hash)}@@{Debate.thread(thread.hash)}#{/a}</p>
+
+#{tree post:post, lastReading:lastReading, paragraphsToShow:paragraphsToShow, user:user, thread:thread, parsit:parsit /}
+
+#{if footNotes.size() > 0}
+	<ol id="footnotes">
+	#{list items:footNotes, as:'footNote'}
+		<li>${ footNote.getContent().raw() }</li>
+	#{/list}
+	</ol>
+#{/if}
