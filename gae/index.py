@@ -10,7 +10,7 @@ from app.controllers.home    import Home
 from app.controllers.stream  import Stream
 
 application = webapp.WSGIApplication(
-									 [('/', Main),
+									 [('/', Home),
 									  (r'/(.*)', Stream)],
 									 debug = True)
 
