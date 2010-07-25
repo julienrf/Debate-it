@@ -10,6 +10,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from app.controllers.home    import Home
 from app.controllers.stream  import Stream
 
+webapp.template.register_template_library('app.helpers')
+
 application = webapp.WSGIApplication(
 									 [('/', Home),
 									  (r'/(.*)', Stream)],
