@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="main">
+        <div class="box">
+            <a href="{{ logouturl }}" class="large awesome red rfloat">{{ lang.signout }}</a>
+            <h3>Hi there, {{ username }}!</h3>
+        </div>
+    </div>
+{% endblock %}

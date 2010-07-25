@@ -1,14 +1,9 @@
 {% extends "base.html" %}
 {% block main %}
-<div id="header">
-    <h1><a href="/">Debate it!</a></h1>
-</div>
-<div id="content">
-    <div id="side-action">
-        <a href="/login?url=%2F" class="big khaki button">{{ lang.signin }}</a>
+    <div class="main">
+        <div class="box">
+            <a href="{{ loginurl }}" class="large awesome green rfloat">{{ lang.signin }}</a>
+            {{ lang.intro|md }}
+        </div>
     </div>
-    <div id="description" class="box">
-        {{ lang.intro|md }}
-    </div>
-</div>
 {% endblock %}

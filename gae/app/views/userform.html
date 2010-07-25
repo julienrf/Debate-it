@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block main %}
+    <div class="main">
+        <div class="box">
+            <a href="{{ logouturl }}" class="large awesome red rfloat">{{ lang.signout }}</a>
+            <h3>Howdy, newcomer!</h3>
+            <form action="/" method="post">
+                <!--<label for="username">Username</label>-->
+                {% if error %}
+                <p>Sorry, looks like {{ username }} isn't available.</p>
+                {% else %}
+                <p>So what name do you go by?</p>
+                {% endif %}
+                <input type="text" name="username" placeholder="Username" />
+                <input type="submit" class="large awesome green" value="Done!" />
+            </form>
+        </div>
+    </div>
+{% endblock %}
