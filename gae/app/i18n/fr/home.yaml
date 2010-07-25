@@ -1,11 +1,12 @@
 ---
 signin: Connexion
+signout: Deconnexion
 intro: |-
-  **Debate it!** est une plate-forme de **débats en ligne**.
+  Débat en-ligne facile
+  -------------
+  **Debate it!** est une plateforme de débat en-ligne, qui facilite l'expression de vos idées grâce à des outils modernes et un style épuré.
 
-  Exprimez clairement vos idées avec une syntaxe de mise en forme **simple**.
-
-  Saisissez l’essence du débat grâce à un **affichage ergonomique**.
-
-  **Debate it!** est gratuit, il suffit d’avoir un compte **Google** pour l’utiliser.
+  Débat gratuit
+  -------------
+  **Debate it!** est un outil gratuit. Vous n'avez besoin que d'un compte Google!
 ...

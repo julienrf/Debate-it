@@ -1,11 +1,12 @@
 ---
 signin: Sign In
+signout: Sign Out
 intro: |-
-  **Debate it!** is an **online debate** platform.
+  Easy online debating
+  -------------
+  **Debate it!** is an **online debate** platform, which helps you express your ideas clearly thanks to modern tools and a clean design.
 
-  Express your ideas clearly thanks to a **simple** markup syntax.
-
-  Inscribe the debate essentials thanks to an **ergonomic display**.
-
-  **Debate it!** is free to use, all you need is a **Google** account.
+  Free debating
+  -------------
+  **Debate it!** is free to use. all you need is a **Google** account!
 ...
