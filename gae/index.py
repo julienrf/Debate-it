@@ -8,13 +8,13 @@ from google.appengine.ext             import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 
 from app.controllers.home    import Home
-from app.controllers.stream  import Stream
+from app.controllers.debate  import Debate
 
 webapp.template.register_template_library('app.helpers')
 
 application = webapp.WSGIApplication(
 									 [('/', Home),
-									  (r'/(.*)', Stream)],
+									  ('/debate', Debate)],
 									 debug = True)
 
 # Duh, it's the main!

@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block main %}
-    <div class="main">
-        <div class="box">
-            <a href="{{ logouturl }}" class="large awesome red rfloat">{{ lang.signout }}</a>
-            <h3>Hi there, {{ username }}!</h3>
-        </div>
+    <div class="box padded centered">
+        <a href="{{ logouturl }}" class="large awesome red rfloat">{{ lang.signout }}</a>
+        <h3>Hi there, {{ username }}!</h3>
+        <p>Looks like you're not discussing anything.</p>
+        <p>You can though: <a href="/debate" class="large awesome green">Open a debate</a></p>
     </div>
 {% endblock %}

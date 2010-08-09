@@ -5,23 +5,19 @@
 	
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	
-	<link rel="shortcut icon" type="image/png" href="/img/favicon.png">
 	<link rel="stylesheet" type="text/css" href="/css/libraries.css" >
-	<link rel="stylesheet" type="text/css" href="/css/grid.css" >
-	<link rel="stylesheet" type="text/css" href="/css/template.css" >
+	<!--<link rel="stylesheet" type="text/css" href="/css/template.css" >-->
 	<link rel="stylesheet" type="text/css" href="/css/content.css" >
 	<link rel="stylesheet" type="text/css" href="/css/debate.css" >
+	
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/mootools/1.2.4/mootools-yui-compressed.js"></script>
+	<script type="text/javascript" src="/js/main.js"></script>
 </head>
 <body>
-<div class="page oldSchool">
-	<div class="head">
-		<h1><a href="/">Debate it!</a></h1>
-	</div>
-	<div class="body">
-		{% block main %}
-		{% endblock %}
-	</div>
-	<div class="foot"></div>	
+<div class="page">
+	{% block main %}
+	{% endblock %}
+</div>
 </div>
 </body>
 </html>

@@ -1,19 +1,10 @@
 {% extends "base.html" %}
 {% block main %}
-    <div class="main">
-        <div class="box">
-            <div class="header">
-                <img src="http://www.gravatar.com/avatar/a935927999cdcc0947d6c4d479f6a39d.png" class="avatar" />
-            </div>
-            <h2 contenteditable="true">How do you make toast?</h2>
-            <div  contenteditable="true">
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut a dolor sem. Suspendisse est odio, pharetra nec dictum quis, ullamcorper fermentum lacus. Suspendisse a enim justo, et lobortis lorem. Maecenas id est commodo lorem congue dictum eu convallis enim.</p>
-                <p>Etiam ipsum arcu, aliquam vel convallis quis, commodo et magna. Integer pulvinar feugiat justo, sit amet scelerisque felis venenatis in. Suspendisse mattis nulla ac diam feugiat malesuada. Nulla gravida augue mauris.</p><p>Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec ullamcorper tincidunt tellus, vitae laoreet arcu ultricies id. Proin nec tortor vel dolor aliquet tempor nec quis arcu. Nulla eget tellus eros, quis pulvinar dolor.</p>
-                <p>Nullam euismod eros egestas metus sagittis accumsan. Donec ac mauris sed urna ultrices aliquet eu sit amet neque. Nulla ut magna mauris, quis sodales libero. Phasellus arcu risus, porttitor eget tristique eget, fermentum in sem. Nunc quis purus sem. Nam sodales bibendum nunc at pharetra. Morbi mi sem, sagittis et feugiat eu, aliquet id ante.</p>
-                <p>Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Nam molestie, tellus id varius mollis, arcu est scelerisque felis, at consectetur erat mauris ut dui.</p>
-                <p>Fusce imperdiet congue tortor, sed rutrum enim volutpat non. Praesent et felis vehicula lorem tincidunt accumsan ac vitae lorem. Vestibulum molestie varius eros sit amet accumsan. In sed est urna, eget varius nibh. Maecenas sed eros dolor.</p>
-                <p>Suspendisse vel arcu tellus, venenatis bibendum lorem. Nam a dui odio, ac dictum justo. Etiam velit lorem, faucibus tempus tempor nec, rhoncus vitae urna. Phasellus sit amet varius arcu. Aliquam et mauris ut libero fermentum convallis nec vulputate mi.</p>
-            </div>
-        </div>
-    </div>
+    <div class="box centered minpadded">
+		<img class="avatar" src="http://www.gravatar.com/avatar/a935927999cdcc0947d6c4d479f6a39d.png" />
+		<h5 class="title editable" contenteditable="true">So what needs discussing?</h5>
+		<div class="editor hidden" contenteditable="true">
+			<p><em>Type your message here.</em></p>
+		</div>
+	</div>
 {% endblock %}
