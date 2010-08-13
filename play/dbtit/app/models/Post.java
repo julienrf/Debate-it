@@ -155,9 +155,9 @@ public class Post extends Model
 	 * @param paragraphs
 	 */
 	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		for (Paragraph p : this.paragraphs) {
+		for (Paragraph p : this.paragraphs)
 			footNotesList.addAll(p.footNotes);
-		}
+
 		if (lastReading.compareTo(date) >= 0) {
 			for (Paragraph paragraph : this.paragraphs) {
 				paragraph.getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);

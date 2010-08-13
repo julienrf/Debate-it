@@ -106,7 +106,7 @@ public class Debate extends Controller {
     		reading = null;
     		lastReading = Helper.getMinDate();
     	}
-    	thread.getAnsweredParagraphsBefore(lastReading, reading, paragraphsToShow, footNotes);
+    	paragraph.getParagraphAndAnswersBefore(lastReading, reading, paragraphsToShow, footNotes);
     	
     	render(thread, paragraph, lastReading, paragraphsToShow, footNotes);
     }

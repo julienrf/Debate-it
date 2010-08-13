@@ -19,7 +19,7 @@
 		#{if unreadPostCount > 0}
 			#{a @Debate.thread(thread.hash), class:'unread-post-count', title:messages.get('readNewPosts')} ${unreadPostCount} ${unreadPostCount.pluralize(messages.get('unreadPost'), messages.get('unreadPosts'))} #{/a}
 		#{/if}
-		<span class="tools">#{a @Debate.doNotFollowThread(thread.hash, request.url), title:messages.get('doNotFollowThread')} &{'doNotFollowThread'} #{/a}</span>
+		<span class="tools">#{a @Debate.doNotFollowThread(thread.hash, request.url), title:messages.get('doNotFollowThread')} &{'doNotFollow'} #{/a}</span>
 	</div>
 #{/list}
 
