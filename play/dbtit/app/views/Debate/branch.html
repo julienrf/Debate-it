@@ -2,6 +2,8 @@
 #{set title: thread.title + " — Debate it!" /}
 #{set 'moreStyles'}
 	#{stylesheet 'box.sass' /}
+	#{stylesheet 'bubble.sass' /}
+	#{stylesheet 'hover.sass' /}
 	#{stylesheet 'tree.sass' /}
 #{/set}
 
@@ -13,9 +15,12 @@
 	<nav>#{a @Dbtit.login(request.url), class:'normal gray button'} &{'login'} #{/a} &{'toParticipate'}</nav>
 #{/if}
 
-<h1 class="thread title">#{a @Debate.thread(thread.hash)}${thread.title}#{/a} » &{'branch'}</h1>
+<div class="hoverable">
+	<h1 class="thread title">#{a @Debate.thread(thread.hash)}${thread.title}#{/a} » &{'branch'}</h1>
+	#{followthread thread:thread, user:user /}
+</div>
 
-<p>&{'shareThread'} #{a @Debate.thread(thread.hash)}@@{Debate.thread(thread.hash)}#{/a}</p>
+*{<p>&{'shareThread'} #{a @Debate.thread(thread.hash)}@@{Debate.thread(thread.hash)}#{/a}</p>}*
 
 #{treefromparagraph paragraph:paragraph, lastReading:lastReading, paragraphsToShow:paragraphsToShow, user:user, thread:thread /}
 
