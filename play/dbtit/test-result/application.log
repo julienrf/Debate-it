@@ -1,0 +1,41 @@
+23 juil. 2010 11:26:34,083 INFO  ~ Starting /home/julien/public_html/dbtit
+23 juil. 2010 11:26:34,089 INFO  ~ Module secure is available (/home/julien/Install/play-1.0.3.1/modules/secure)
+23 juil. 2010 11:26:34,090 INFO  ~ Module stax is available (/home/julien/Install/play-1.0.3.1/modules/stax-1.0.1)
+23 juil. 2010 11:26:34,090 INFO  ~ Module crud is available (/home/julien/Install/play-1.0.3.1/modules/crud)
+23 juil. 2010 11:26:34,091 INFO  ~ Module sass is available (/home/julien/Install/play-1.0.3.1/modules/sass-head)
+23 juil. 2010 11:26:35,237 INFO  ~ 
+23 juil. 2010 11:26:35,238 INFO  ~ Go to http://localhost:9000/@tests to run the tests
+23 juil. 2010 11:26:35,238 INFO  ~ 
+23 juil. 2010 11:26:37,492 WARN  ~ You're running Play! in DEV mode
+23 juil. 2010 11:26:37,730 INFO  ~ Listening for HTTP on port 9000 (Waiting a first request to start) ...
+23 juil. 2010 11:26:57,057 INFO  ~ Connected to jdbc:hsqldb:mem:playembed
+23 juil. 2010 11:26:58,490 INFO  ~ Application 'Dbtit' is now started !
+23 juil. 2010 11:28:18,130 INFO  ~ New user julien.rf@gmail.com (7) created
+23 juil. 2010 11:28:41,772 INFO  ~ Thread (3) created by user julien.rf@gmail.com (7)
+23 juil. 2010 11:30:17,791 INFO  ~ Thread (3) stopped following by user julien.rf@gmail.com (7)
+23 juil. 2010 11:30:51,717 INFO  ~ Thread (3) followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:30:55,706 INFO  ~ Thread (3) stopped following by user julien.rf@gmail.com (7)
+23 juil. 2010 11:30:57,042 INFO  ~ Thread (3) followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:32:20,452 INFO  ~ Thread (3) stopped being followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:32:23,464 INFO  ~ Thread (3) followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:32:25,765 INFO  ~ Thread (3) stopped being followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:32:27,044 INFO  ~ Thread (3) followed by user julien.rf@gmail.com (7)
+23 juil. 2010 11:37:08,758 INFO  ~ New user julien.rf@gmail.com (1) created
+23 juil. 2010 11:37:19,567 INFO  ~ Thread (1) created by user julien.rf@gmail.com (1)
+23 juil. 2010 11:37:37,220 ERROR ~ 
+
+@63937j7ad
+Internal Server Error (500) for request POST /5Vk1BX0uduHo5fZz2S0JVo/follow?url=%2F5Vk1BX0uduHo5fZz2S0JVo&x-http-method-override=PUT
+
+Java exception (In /app/models/User.java around line 98)
+NullPointerException occured : null
+
+play.exceptions.JavaExecutionException
+	at play.mvc.ActionInvoker.invoke(ActionInvoker.java:230)
+	at Invocation.HTTP Request(Play!)
+Caused by: java.lang.NullPointerException
+	at models.User.follow(User.java:98)
+	at controllers.Debate.followThread(Debate.java:312)
+	at play.utils.Java.invokeStatic(Java.java:129)
+	at play.mvc.ActionInvoker.invoke(ActionInvoker.java:139)
+	... 1 more

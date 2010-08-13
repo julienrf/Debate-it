@@ -1,0 +1,76 @@
+/* Thread display */
+
+.thread.title
+	font-family: serif
+	margin-left: 1em
+
+.answer
+	margin-left: 2em
+
+.post
+	padding: 0.3em
+	margin: 0.5em
+	/*max-width: 50em*/
+	width: 50em
+	&.unread
+		border: medium solid SlateGray
+
+	.title
+		padding-left: .6em
+		height: 1em
+
+		.roll, .roll-branch
+			float: left
+			padding-right: 0.8em
+			text-decoration: none
+			color: #777
+
+		.author
+			float: left
+			font-size: small
+		
+		.preview
+			color: #555
+			font-size: small
+			font-family: serif
+			display: inline
+			padding-left: 1em
+
+		.date
+			float: right
+			margin-right: 0.5em
+			font-size: x-small
+			color: #555
+			font-weight: bold
+
+	.container
+		clear: both
+
+		.content
+			color: #222
+			font-family: serif
+			text-align: justify
+			padding: 0.3em 1em 0.7em 1em
+			margin: 0 0
+			ul
+				margin: 0 0 0 2em
+				padding: 0
+
+		.subcontainer
+			position: relative
+
+			.tools
+				font-size: small
+				margin-left: 0.5em
+				position: absolute
+				top: -1em
+				left: 2em
+				
+				a
+					color: #88F
+					text-decoration: none
+				a:hover
+					color: #00F
+
+.footnotes
+	font-size: small

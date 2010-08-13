@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>#{get 'title' /}</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        #{stylesheet 'main.sass' /}
+        #{stylesheet 'button.sass' /}
+        #{get 'moreStyles' /}
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon3.png'}" />
+    </head>
+    <body>
+    	<header>
+        	<h1><a href="@{Dbtit.index()}">Debate it!</a></h1>
+    	</header>
+    
+        #{if flash.success}
+        <div class="flash success">
+        	${flash.success}
+        </div>
+        #{/if}
+        
+        #{if flash.error}
+        <div class="flash error">
+        	${flash.error}
+        </div>
+        #{/if}
+        
+		#{if user != null}
+			<nav>
+				*{#{a @Debate.newThread(), class:'button gray normal'}&{'createThread'}#{/a}}*
+				#{a @Debate.followThreads(), class:'button gray normal'}&{'followedThreads'}#{/a}
+				#{a @Dbtit.profile(request.url), class:'button gray normal'}&{'profile'}#{/a}
+				#{a @Dbtit.logout(), class:'button gray normal'} &{'logout'} (${user.name}) #{/a}
+			</nav>
+		#{/if}
+
+        <article>
+        	#{doLayout /}
+        </article>
+        
+        <footer>
+        	<p>© 2010 — <a href="mailto:julien.rf@no-log.org">Julien Richard-Foy</a></p>
+        </footer>
+        
+        #{script 'jquery-1.4.min.js' /}
+        #{script 'thread.js' /}
+        #{get 'moreScripts' /}
+    	#{i18n /}
+    </body>
+</html>

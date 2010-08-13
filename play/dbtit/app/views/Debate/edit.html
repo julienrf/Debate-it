@@ -1,0 +1,42 @@
+#{extends 'main.html' /}
+#{set title: thread.title + " — Debate it!" /}
+#{set 'moreStyles'}
+	#{stylesheet 'form.sass' /}
+	#{stylesheet 'bubble.sass' /}
+	#{stylesheet 'box.sass' /}
+	#{stylesheet 'tree.sass' /}
+#{/set}
+
+#{if postReplied != null && postReplied == true}
+	<div class="fError">&{'postReplied'}</div>
+#{/if}
+
+<h1 class="thread title">#{a @Debate.thread(thread.hash)}${thread.title}#{/a} » &{'editPost'}</h1>
+
+#{if preview}
+	<h2>&{'postPreview'}</h2>
+	#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
+#{/if}
+
+#{include 'syntaxhint.html' /}
+
+<div class="form">
+	#{ifErrors}
+		<p class="form-error">&{'formError'}</p>
+	#{/ifErrors}
+
+	#{form @Debate.postEdit(thread.hash, post.id)}
+
+		<div>
+			<label for="answer-content">&{'content'}</label>
+		    <textarea id="answer-content" class="answer-content" name="content" cols="55" rows="15">${content}</textarea>
+		    <br />
+		    <span class="form-error">${errors.forKey('content')}</span>
+		</div>
+
+		<label for="foo"></label>
+		<input type="submit" value="&{'preview'}" name="preview" />	
+		<input type="submit" value="&{'edit'}" name="edit" />
+	
+	#{/form}
+</div> <!-- form -->

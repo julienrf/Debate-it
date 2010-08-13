@@ -1,0 +1,21 @@
+*{}*
+*{ @param pagination The pagination object }*
+*{ @param route The route to use }*
+
+#{if _pagination.getPageCount() > 1}
+	 <div class="pagination">
+	 	#{if _pagination.getCurrentPage() > 1}
+ 			#{a _route.add(_pagination.getPageVar(), _pagination.getCurrentPage() - 1), class:'prev'} &{'pagination.previous'} #{/a}
+	 	#{/if}
+	 	#{else}
+	 		<span class="inactive">&{'pagination.previous'}</span>
+	 	#{/else}
+	 	
+	 	#{if _pagination.getCurrentPage() < _pagination.getPageCount()}
+ 			#{a _route.add(_pagination.getPageVar(), _pagination.getCurrentPage() + 1), class:'next'} &{'pagination.next'} #{/a}
+	 	#{/if}
+	 	#{else}
+	 		<span class="inactive">&{'pagination.next'}</span>
+	 	#{/else}
+ 	</div>
+#{/if}

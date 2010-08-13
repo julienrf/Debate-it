@@ -1,0 +1,25 @@
+*{ Display a post tree }*
+*{ @param Paragraph paragraph }*
+*{ @param Date lastReading }*
+*{ @param Collection<Post> paragraphsToShow }*
+*{ @param User user }*
+*{ @param Long threadId }*
+
+<div class="box post ${_lastReading.compareTo(_paragraph.post.date) >= 0 ? "read" : "unread" }" id="post_${_paragraph.post.id}">
+    #{posttitle post:_paragraph.post, tz:_user?.tz /}
+
+    <div class="container" id="paragraph_${_paragraph.id}">
+		#{paragraphcontent paragraph:_paragraph /}
+
+		#{paragraphtools paragraph:_paragraph, thread:_thread, user:_user, post:_paragraph.post, paragraphsToShow:_paragraphsToShow /}
+	</div> <!-- container -->
+</div> <!-- post -->
+
+#{if _paragraph.answers.size() != 0 && _paragraphsToShow.contains(_paragraph)}
+	*{ Affichage des réponses }*
+	<div class="answer">
+	#{list items:_paragraph.answers, as:'reply'}
+			#{tree post:reply, lastReading:_lastReading, paragraphsToShow:_paragraphsToShow, user:_user, thread:_thread /}
+	#{/list}
+	</div>
+#{/if} *{ paragraph.answers.size() != 0 }*

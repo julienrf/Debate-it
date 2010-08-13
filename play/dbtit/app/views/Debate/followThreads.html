@@ -1,0 +1,29 @@
+#{extends 'main.html' /}
+#{set 'title'}&{'followedThreads'} — Debate it!#{/set}
+#{set 'moreStyles'}
+	#{stylesheet 'pagination.sass' /}
+	#{stylesheet 'box.sass' /}
+	#{stylesheet 'hover.sass' /}
+	#{stylesheet 'follow.sass' /}
+#{/set}
+
+<h1>&{'followedThreads'}</h1>
+
+#{if followedThreads.size() > 0}
+<div class="list box">
+
+#{list items:followedThreads, as:'thread'}
+	<div class="item ${thread_parity}">
+		#{a @Debate.thread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
+		%{ unreadPostCount = user.getUnreadPostCount(thread) }%
+		#{if unreadPostCount > 0}
+			#{a @Debate.thread(thread.hash), class:'unread-post-count', title:messages.get('readNewPosts')} ${unreadPostCount} ${unreadPostCount.pluralize(messages.get('unreadPost'), messages.get('unreadPosts'))} #{/a}
+		#{/if}
+		<span class="tools">#{a @Debate.doNotFollowThread(thread.hash, request.url), title:messages.get('doNotFollowThread')} &{'doNotFollowThread'} #{/a}</span>
+	</div>
+#{/list}
+
+</div>
+#{/if}
+
+#{pagination.list pagination:pagination, route:@Debate.followThreads() /}

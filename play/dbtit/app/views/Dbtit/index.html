@@ -1,0 +1,19 @@
+#{extends 'main.html' /}
+#{set title:'Debate it!' /}
+#{set 'moreStyles'}
+	#{stylesheet 'box.sass' /}
+	#{stylesheet 'index.sass' /}
+#{/set}
+
+<div class="side-action">
+#{if user != null}
+	#{a @Debate.newThread(), class:'button khaki big'} &{'createThread'} #{/a}
+#{/if}
+#{else}
+	#{a @Dbtit.login(request.url), class:'button khaki big'} &{'login'} #{/a}
+#{/else}
+</div>
+
+<div class="main-description box">
+&{'intro'}
+</div>
