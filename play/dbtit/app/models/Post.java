@@ -1,16 +1,8 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 
 import org.parsit.IFootNote;
 import org.parsit.Parsit;
@@ -18,37 +10,47 @@ import org.parsit.SimpleFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import play.db.jpa.Model;
+import siena.Filter;
+import siena.Generator;
+import siena.Id;
+import siena.Max;
+import siena.Model;
+import siena.NotNull;
+import siena.Query;
+import siena.SimpleDate;
+import siena.Text;
 
-@Entity
 public class Post extends Model
 {
+	@Id(Generator.AUTO_INCREMENT)
+	public Long id;
+	
 	/** Author of the post */
 	@Required
-	@ManyToOne
+	@NotNull
 	public User author;
 	
 	/** Date when the message was posted */
 	@Required
+	@SimpleDate @NotNull
 	public Date date;
 	
 	/** The paragraph that this post answers */
-	@ManyToOne
 	public Paragraph parent;
 	
 	/** Raw content of the whole post (in Parsit syntax) */
-	@MaxSize(10000)
-	@Lob
+	@Required @MaxSize(10000)
+	@Text @Max(10000) @NotNull
 	public String content;
 	
 	/** The paragraphs of this post */
-	@OneToMany(mappedBy="post", cascade=CascadeType.REMOVE)
-	@OrderBy("number ASC")
-	public List<Paragraph> paragraphs;
+	@Filter("post")
+	/*@OrderBy("number ASC")*/
+	public Query<Paragraph> paragraphs;
 	
 	/** The thread that this post belongs to */
 	@Required
-	@ManyToOne
+	@NotNull
 	public Thread thread;
 
 	/**
@@ -57,13 +59,13 @@ public class Post extends Model
 	 * @param content
 	 * @param parent
 	 */
-	public Post(User author, Paragraph parent, Thread thread, Date date) // FIXME Add a content parameter?
+	protected Post(User author, Paragraph parent, Thread thread, Date date) // FIXME Add a content parameter?
 	{
 		this.thread = thread;
 		this.author = author;
 		this.parent = parent;
 		this.date = date;
-		this.paragraphs = new ArrayList<Paragraph>();
+		//this.paragraphs = new ArrayList<Paragraph>();
 	}
 	
 	/**
@@ -75,14 +77,23 @@ public class Post extends Model
 	 */
 	public static Post create(User author, String content, Paragraph parent, Thread thread)
 	{
-		Post post = new Post(author, parent, thread, new Date()).save(); // The save is needed because the paragraphs about to be created will reference this post
+		Post post = new Post(author, parent, thread, new Date());
+		post.insert(); // The insert is needed because the paragraphs about to be created will reference this post
 		post.setParagraphs(content);
 		return post;
 	}
 	
+	public static Query<Post> all() {
+		return Model.all(Post.class);
+	}
+	
+	public static Post findById(Long id) {
+		return Post.all().filter("id", id).get();
+	}
+	
 	@Override
 	public String toString() {
-		String content = paragraphs.get(0).content; // A post must have at least one paragraph
+		String content = paragraphs.get().content; // A post must have at least one paragraph
 		return content.substring(0, Math.min(content.length(), 40));
 	}
 	
@@ -115,10 +126,9 @@ public class Post extends Model
 		this.content = content;
 		
 		// Remove current paragraphs and footnotes
-		for (Paragraph paragraph : paragraphs) {
+		for (Paragraph paragraph : paragraphs.fetch()) {
 			paragraph.delete();
 		}
-		paragraphs.clear();
 		
 		// Parse content
 		Parsit parsit = new Parsit(new FootNote.Factory());
@@ -127,13 +137,13 @@ public class Post extends Model
 		// Set new paragraphs
 		int number = 0;
 		for (String p : parsedParagraphs) {
-			Paragraph paragraph = new Paragraph(this, p, number++).save();
+			Paragraph paragraph = new Paragraph(this, p, number++);
+			paragraph.insert();
 			for (IFootNote footNote : parsit.getFootNotes()) {
 				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above
 			}
-			paragraphs.add(paragraph);
 		}
-		this.save();
+		this.update();
 	}
 	
 	/**
@@ -142,8 +152,8 @@ public class Post extends Model
 	 */
 	public boolean hasAnswers()
 	{
-    	for (Paragraph paragraph : paragraphs) {
-    		if (paragraph.answers.size() != 0)
+    	for (Paragraph paragraph : paragraphs.fetch()) {
+    		if (paragraph.answers.count() != 0)
     			return true;
     	}
 		return false;
@@ -155,11 +165,11 @@ public class Post extends Model
 	 * @param paragraphs
 	 */
 	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		for (Paragraph p : this.paragraphs)
-			footNotesList.addAll(p.footNotes);
+		for (Paragraph p : this.paragraphs.fetch())
+			footNotesList.addAll(p.footNotes.fetch());
 
 		if (lastReading.compareTo(date) >= 0) {
-			for (Paragraph paragraph : this.paragraphs) {
+			for (Paragraph paragraph : this.paragraphs.fetch()) {
 				paragraph.getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
 			}
 		}

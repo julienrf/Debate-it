@@ -1,49 +1,62 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Lob;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-
 import play.data.validation.MaxSize;
-import play.db.jpa.Model;
+import play.data.validation.Required;
+import siena.Filter;
+import siena.Generator;
+import siena.Id;
+import siena.Model;
+import siena.NotNull;
+import siena.Query;
+import siena.Text;
 
-@Entity
 public class Paragraph extends Model {
+	
+	@Id(Generator.AUTO_INCREMENT)
+	public Long id;
 
 	/** HTML content of the paragraph */
+	@Required
 	@MaxSize(1000)
-	@Lob
+	@Text
+	@NotNull
 	public String content;
 	
 	/** Answers of the paragraph */
-	@OneToMany(mappedBy="parent", cascade=CascadeType.REMOVE)
-	public List<Post> answers;
+	@Filter("parent")
+	public Query<Post> answers;
 	
 	/** Footnotes referenced by this post */
-	@OneToMany(mappedBy="paragraph", cascade=CascadeType.REMOVE)
-	public List<FootNote> footNotes;
+	@Filter("paragraph")
+	public Query<FootNote> footNotes;
 	
 	/** Post which this paragraph belongs to */
-	@ManyToOne
+	@Required
+	@NotNull
 	public Post post;
 	
-	/** Number of the post */
+	/** Number of the post (added to sort paragraphs, FIXME remove it with Siena) */
 	public Integer number;
 	
 	public Paragraph(Post post, String content, Integer number)
 	{
 		this.post = post;
 		this.content = content;
-		this.answers = new ArrayList<Post>();
-		this.footNotes = new ArrayList<FootNote>();
+		//this.answers = new ArrayList<Post>();
+		//this.footNotes = new ArrayList<FootNote>();
 		this.number = number;
+	}
+	
+	public static Query<Paragraph> all() {
+		return Model.all(Paragraph.class);
+	}
+	
+	public static Paragraph findById(Long id) {
+		return Paragraph.all().filter("id", id).get();
 	}
 	
 	@Override
@@ -57,10 +70,14 @@ public class Paragraph extends Model {
 	 * @param content Content of the reply post
 	 */
 	public Post reply(User author, String content) {
-		Post post = Post.create(author, content, this, this.post.thread);
-		this.answers.add(post);
-		author.follow(post.thread);
-		return post;
+		Post post = this.post;
+		post.get();
+		Thread thread = post.thread;
+		thread.get();
+		Post reply = Post.create(author, content, this, thread);
+		//this.answers.add(post);
+		author.follow(thread);
+		return reply;
 	}
 
 	/**
@@ -68,13 +85,13 @@ public class Paragraph extends Model {
 	 */
 	public void addFootNote(FootNote footNote) {
 		footNote.paragraph = this;
-		footNotes.add(footNote);
-		footNote.save();
+		//footNotes.add(footNote);
+		footNote.update();
 	}
 	
 	public void getParagraphAndAnswersBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
 		paragraphs.add(this);
-		footNotesList.addAll(footNotes);
+		footNotesList.addAll(footNotes.fetch());
 		getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
 	}
 	
@@ -86,9 +103,9 @@ public class Paragraph extends Model {
 	 * @param footNotesList list of footnotes which will be filled with the footnotes of the collected paragraphs, excluding this paragraph
 	 */
 	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		if (answers.size() != 0) {
+		if (answers.count() != 0) {
 			paragraphs.add(this); // This paragraph contains answers, add it to the list of answered paragraphs
-			for (Post answer : answers) {
+			for (Post answer : answers.fetch()) {
 				answer.getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
 				if (reading != null) { // This answer is after the last post the user has already read
 					reading.updateDate(answer.date);

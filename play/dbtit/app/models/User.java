@@ -1,39 +1,46 @@
 package models;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
-
-import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 
 import play.data.validation.Email;
 import play.data.validation.Required;
-import play.db.jpa.Model;
+import siena.Filter;
+import siena.Generator;
+import siena.Id;
+import siena.Model;
+import siena.NotNull;
+import siena.Query;
 
-@Entity
 public class User extends Model {
+	
+	@Id(Generator.AUTO_INCREMENT)
+	public Long id;
 	
 	/** Display name */
 	@Required
+	@NotNull
 	public String name;
 	
 	/** Email identifying the user */
-	@Required
-	@Email
+	@Required @Email
+	@NotNull
 	public String email;
 	
 	/** User TimeZone */
 	@Required
-	public TimeZone tz;
+	@NotNull
+	//public TimeZone tz;
+	public String tz;
 	
 	/** Remember the user in a cookie */
+	@Required
+	@NotNull
 	public boolean rememberMe;
 	
 	/** List of threads followed by the user */
-	@OneToMany
-	public List<Thread> followedThreads;
+	@Filter("user")
+	public Query<Following> followedThreads;
 	
 	/**
 	 * Ideas of profile settings:
@@ -42,17 +49,19 @@ public class User extends Model {
 	 *  - Number of posts by page
 	 */
 	
-	/** Set of read thread */
-	/*@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-	public List<Reading> readings;*/
-	
-	public User(String name, String email, TimeZone tz, boolean rememberMe) {
+	public User(String name, String email, String tz, boolean rememberMe) {
 		this.name = name;
 		this.email = email;
 		this.tz = tz;
 		this.rememberMe = rememberMe;
-		this.followedThreads = new ArrayList<Thread>();
-		//this.readings = new ArrayList<Reading>();
+	}
+	
+	public static Query<User> all() {
+		return Model.all(User.class);
+	}
+	
+	public static User findByEmail(String email) {
+		return User.all().filter("email", email).get();
 	}
 	
 	/**
@@ -60,9 +69,9 @@ public class User extends Model {
 	 */
 	public void update(Update update) {
 		name = update.name;
-		tz = TimeZone.getTimeZone(update.tzId);
+		tz = update.tzId;
 		rememberMe = update.rememberMe;
-		save();
+		update();
 	}
 	
 	/**
@@ -85,9 +94,11 @@ public class User extends Model {
 	 * @return
 	 */
 	public Reading lastReading(Thread thread) {
-		Reading reading = Reading.find("byThreadAndUser", thread, this).first();
-		if (reading == null) // Creates the reading if it doesn't exist
-			reading = new Reading(thread, this, new Date()).save();
+		Reading reading = Reading.all().filter("thread", thread.id).filter("user", this.id).get();
+		if (reading == null) { // Creates the reading if it doesn't exist
+			reading = new Reading(thread, this, new Date());
+			reading.insert();
+		}
 		return reading;
 	}
 	
@@ -96,9 +107,9 @@ public class User extends Model {
 	 * @param thread Thread to be followed
 	 */
 	public void follow(Thread thread) {
-		if (!followedThreads.contains(thread)) {
-			followedThreads.add(thread);
-			save();
+		if (followedThreads.filter("thread", thread.id).filter("user", this.id).count() == 0) {
+			Following following = new Following(thread, this);
+			following.insert();
 		}
 	}
 	
@@ -107,9 +118,9 @@ public class User extends Model {
 	 * @param thread
 	 */
 	public void doNotFollow(Thread thread) {
-		if (followedThreads.contains(thread)) {
-			followedThreads.remove(thread);
-			save();
+		Following following = followedThreads.filter("thread", thread.id).filter("user", this.id).get();
+		if (following != null) {
+			following.delete();
 		}
 	}
 	
@@ -133,7 +144,7 @@ public class User extends Model {
 		
 		public Update(User user) {
 			name = user.name;
-			tzId = user.tz.getID();
+			tzId = user.tz;
 			rememberMe = user.rememberMe;
 		}
 	}

@@ -5,31 +5,35 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
-import javax.persistence.Entity;
-import javax.persistence.OneToOne;
-import javax.persistence.Transient;
-
+import play.Play;
 import play.data.validation.Required;
-import play.db.jpa.Model;
 import play.libs.Codec;
+import siena.Generator;
+import siena.Id;
+import siena.Model;
+import siena.NotNull;
+import siena.Query;
 import utils.Helper;
 
-@Entity
 public class Thread extends Model {
+	
+	@Id(Generator.AUTO_INCREMENT)
+	public Long id;
 
 	/** The initial post of the thread */
-	@OneToOne
+	@NotNull
 	public Post rootPost;
 	
 	/** The topic of the thread */
 	@Required
+	@NotNull
 	public String title;
 	
 	/** A hash code identifying the thread */
+	@NotNull
 	public String hash;
 	
 	/** A number generator used to salt the hash computation */
-	@Transient
 	private static AtomicLong generator = new AtomicLong(System.currentTimeMillis());
 	
 	/*@OneToMany(mappedBy = "thread", cascade = CascadeType.ALL)
@@ -39,9 +43,17 @@ public class Thread extends Model {
 	protected Thread(String title)
 	{
 		this.title = title;
-		this.hash = Helper.hexTo62(Codec.hexMD5(title + generator.incrementAndGet()));
+		this.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + generator.incrementAndGet()));
 		this.rootPost = null;
 		//this.readings = new ArrayList<Reading>();
+	}
+	
+	public static Query<Thread> all() {
+		return Model.all(Thread.class);
+	}
+	
+	public static Thread findByHash(String hash) {
+		return Thread.all().filter("hash", hash).get();
 	}
 	
 	public String toString() {
@@ -58,10 +70,11 @@ public class Thread extends Model {
 	 */
 	public static Thread create(User author, String title, String content)
 	{
-		Thread thread = new Thread(title).save();
+		Thread thread = new Thread(title);
+		thread.insert();
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
-		thread.save();
+		thread.update();
 		author.follow(thread);
 		return thread;
 	}
@@ -85,6 +98,7 @@ public class Thread extends Model {
 	 * @return
 	 */
 	public long getPostCountAfter(Date date) {
-		return Post.count("thread = ? and date > ?", this, date);
+		//return Post.count("thread = ? and date > ?", this, date);
+		return Post.all(Post.class).filter("thread = ", this.id).filter("date > ", date).count();
 	}
 }

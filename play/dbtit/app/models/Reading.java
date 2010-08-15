@@ -2,29 +2,33 @@ package models;
 
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-
 import play.data.validation.Required;
-import play.db.jpa.Model;
+import siena.Generator;
+import siena.Id;
+import siena.Model;
+import siena.NotNull;
+import siena.Query;
 
 /**
  * A reading is a triplet linking a user and a thread with the date of the last post the user has read in the thread
  * @author julien
  *
  */
-@Entity
 public class Reading extends Model {
+	
+	@Id(Generator.AUTO_INCREMENT)
+	public Long id;
 
 	@Required
-	@ManyToOne
+	@NotNull
 	public Thread thread;
 	
 	@Required
-	@ManyToOne
+	@NotNull
 	public User user;
 	
 	@Required
+	@NotNull
 	public Date date;
 	
 	public Reading(Thread thread, User user, Date date)
@@ -36,6 +40,10 @@ public class Reading extends Model {
 		//this.thread.readings.add(this); // maintains the relationship
 	}
 	
+	public static Query<Reading> all() {
+		return Model.all(Reading.class);
+	}
+	
 	public String toString() {
 		return date.toString();
 	}
@@ -43,7 +51,7 @@ public class Reading extends Model {
 	public void updateDate(Date date) {
 		if (this.date.compareTo(date) < 0) {
 			this.date = date;
-			save();
+			update();
 		}
 	}
 }
