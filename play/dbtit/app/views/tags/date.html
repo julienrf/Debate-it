@@ -1,6 +1,6 @@
 %{
 format = new java.text.SimpleDateFormat("HH'h'mm dd-MM-yyyy");
 if (_tz != null)
-	format.setTimeZone(java.util.TimeZone.getTimeZone(_tz));
+	format.setTimeZone(_tz);
 }%
 ${format.format(_date)}

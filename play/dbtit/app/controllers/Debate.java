@@ -6,7 +6,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import models.Following;
 import models.FootNote;
 import models.Paragraph;
 import models.Post;
@@ -36,10 +35,9 @@ public class Debate extends Controller {
      * @param id
      */
     public static void thread(String hash) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	notFoundIfNull(thread);
     	Post post = thread.rootPost;
-    	post.get();
     	Reading reading;
     	Date lastReading;
     	Set<Paragraph> paragraphsToShow = new HashSet<Paragraph>();
@@ -87,13 +85,12 @@ public class Debate extends Controller {
      * Display a thread starting from a specific post (possibly not the root post)
      */
     public static void branch(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
-    	if (!paragraph.post.thread.id.equals(thread.id))
+    	if (paragraph.post.thread != thread)
     		notFound();
     	
     	Reading reading;
@@ -121,13 +118,12 @@ public class Debate extends Controller {
      * @param paragraphId
      */
     public static void answers(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
-    	if (!paragraph.post.thread.id.equals(thread.id))
+    	if (paragraph.post.thread != thread)
     		notFound();
     	
     	Date lastReading;
@@ -191,13 +187,12 @@ public class Debate extends Controller {
      */
     @Authenticated
     public static void reply(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
-    	if (!paragraph.post.thread.id.equals(thread.id))
+    	if (paragraph.post.thread != thread)
     		notFound();
     	
     	render(thread, paragraph);
@@ -211,14 +206,13 @@ public class Debate extends Controller {
      */
     @Authenticated
     public static void postReply(String hash, Long paragraphId, @Required String content) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	User author = Dbtit.connectedUser(); // author can't be null thx to the @Authenticated annotation
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
-    	if (!paragraph.post.thread.id.equals(thread.id))
+    	if (paragraph.post.thread != thread)
     		notFound();
     	
     	if (validation.hasErrors()) {
@@ -248,12 +242,12 @@ public class Debate extends Controller {
     @Authenticated
     public static void edit(String hash, Long postId)
     {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Post post = Post.findById(postId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(post);
-    	if (post.hasAnswers() || !post.thread.id.equals(thread.id))
+    	if (post.hasAnswers() || post.thread != thread)
     		notFound(); // On ne modifie pas un post qui a déjà reçu des réponses (ou qui fait partie d’un autre thread)
     	
     	String content = post.content;
@@ -270,13 +264,13 @@ public class Debate extends Controller {
     @Authenticated
     public static void postEdit(String hash, Long postId, @Required String content)
     {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Post post = Post.findById(postId);
     	User author = Dbtit.connectedUser();
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(post);
-    	if (!post.thread.id.equals(thread.id) || !post.author.id.equals(author.id))
+    	if (post.thread != thread || post.author != author)
     		notFound();
     	
     	if (post.hasAnswers()) {
@@ -310,7 +304,7 @@ public class Debate extends Controller {
      */
     @Authenticated
     public static void followThread(String hash, String url) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	User user = Dbtit.connectedUser();
     	
     	notFoundIfNull(thread);
@@ -328,7 +322,7 @@ public class Debate extends Controller {
      */
     @Authenticated
     public static void doNotFollowThread(String hash, String url) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	User user = Dbtit.connectedUser();
     	
     	notFoundIfNull(thread);
@@ -350,9 +344,9 @@ public class Debate extends Controller {
     	int currentPage = 1;
     	if (params._contains(pageVar))
     		currentPage = params.get(pageVar, Integer.class);
-    	Pagination pagination = new Pagination(user.followedThreads.count(), currentPage, 10, pageVar);
+    	Pagination pagination = new Pagination(user.followedThreads.size(), currentPage, 10, pageVar);
     	
-    	List<Following> followedThreads = user.followedThreads.fetch().subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
+    	List<Thread> followedThreads = user.followedThreads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
     	
     	render(followedThreads, pagination);
     }

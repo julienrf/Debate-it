@@ -7,19 +7,23 @@ import java.util.Set;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import siena.Filter;
+import siena.Generator;
 import siena.Id;
-import siena.Index;
 import siena.Model;
+import siena.NotNull;
 import siena.Query;
+import siena.Text;
 
 public class Paragraph extends Model {
 	
-	@Id
+	@Id(Generator.AUTO_INCREMENT)
 	public Long id;
 
 	/** HTML content of the paragraph */
 	@Required
 	@MaxSize(1000)
+	@Text
+	@NotNull
 	public String content;
 	
 	/** Answers of the paragraph */
@@ -32,7 +36,7 @@ public class Paragraph extends Model {
 	
 	/** Post which this paragraph belongs to */
 	@Required
-	@Index("post_index")
+	@NotNull
 	public Post post;
 	
 	/** Number of the post (added to sort paragraphs, FIXME remove it with Siena) */
@@ -52,10 +56,6 @@ public class Paragraph extends Model {
 	}
 	
 	public static Paragraph findById(Long id) {
-		for (Paragraph p : Paragraph.all().fetch()) {
-			System.out.println("p: " + p.id);
-		}
-		System.out.println(Paragraph.all().filter("id", id).get());
 		return Paragraph.all().filter("id", id).get();
 	}
 	

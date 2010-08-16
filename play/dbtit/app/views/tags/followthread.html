@@ -6,7 +6,7 @@
 
 	#{if _user != null}
 	<div>
-		#{ifnot _user.isFollowing(_thread)}
+		#{ifnot _user.followedThreads.contains(_thread)}
 			#{a @Debate.followThread(_thread.hash, request.url), title:messages.get('followThread')}&{'follow'}#{/a}
 		#{/ifnot}
 		#{else}

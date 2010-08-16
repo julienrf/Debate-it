@@ -5,7 +5,7 @@
 *{ @param User user }*
 
 <div class="tools">
-    #{if _paragraph.answers.count() != 0}
+    #{if _paragraph.answers.size() != 0}
     	#{if _paragraphsToShow.contains(_paragraph)}
     	<a class="hide-answers" href="#" title="&{'hidePostAnswers'}">&{'hideAnswers'}</a>
     	#{/if}
@@ -14,17 +14,16 @@
     	#{/else}
 	#{/if}
 	<span class="other-tools">
-    	<a href="@{Debate.reply(_thread.hash, _paragraph.id)}" title="&{'replyToPost'}">&{'reply'}</a>
-	    #{if _paragraph.post.parent != null}
-	    	%{ _paragraph.post.parent.get(); }%
-		    <a href="#post_${_paragraph.post.parent.post.id}" title="&{'goToParentPost'}">&{'parent'}</a>
-	    #{/if}
-	    #{if _paragraph.post.author == _user && !_paragraph.post.hasAnswers()}
-		    <a title="&{'editPost'}" href="@{Debate.edit(_thread.hash, _paragraph.post.id)}">&{'edit'}</a>
-	    #{/if}
-	    	<a title="&{'asRoot'}" href="@{Debate.branch(_thread.hash, _paragraph.id)}">r</a>
-	    #{if _user != null}
-	    	*{<a title="&{'forkPost'}">&{'fork'}</a>}*
-		#{/if}
+    <a href="@{Debate.reply(_thread.hash, _paragraph.id)}" title="&{'replyToPost'}">&{'reply'}</a>
+    #{if _paragraph.post.parent != null}
+    <a href="#post_${_paragraph.post.parent.post.id}" title="&{'goToParentPost'}">&{'parent'}</a>
+    #{/if}
+    #{if _paragraph.post.author == _user && !_paragraph.post.hasAnswers()}
+    <a title="&{'editPost'}" href="@{Debate.edit(_thread.hash, _paragraph.post.id)}">&{'edit'}</a>
+    #{/if}
+    <a title="&{'asRoot'}" href="@{Debate.branch(_thread.hash, _paragraph.id)}">r</a>
+    #{if _user != null}
+    *{<a title="&{'forkPost'}">&{'fork'}</a>}*
+	#{/if}
 	</span>
 </div>

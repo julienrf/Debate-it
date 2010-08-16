@@ -8,7 +8,7 @@
 <div class="box post ${_lastReading.compareTo(_post.date) >= 0 ? "read" : "unread" }" id="post_${_post.id}">
     #{posttitle post:_post, tz:_user?.tz /}
 
-	#{list items:_post.paragraphs.fetch(), as:'paragraph'}
+	#{list items:_post.paragraphs, as:'paragraph'}
 	    <div class="paragraph" id="paragraph_${paragraph.id}">
 	    	<div class="container">
 				#{paragraphcontent paragraph:paragraph /}
@@ -17,13 +17,13 @@
 			</div>
 			
 			*{ Affichage des réponses }*
-			#{if paragraph.answers.count() != 0 && _paragraphsToShow.contains(paragraph)}
+			#{if paragraph.answers.size() != 0 && _paragraphsToShow.contains(paragraph)}
 				<div class="answer">
-				#{list items:paragraph.answers.fetch(), as:'reply'}
+				#{list items:paragraph.answers, as:'reply'}
 						#{tree post:reply, lastReading:_lastReading, paragraphsToShow:_paragraphsToShow, user:_user, thread:_thread /}
 				#{/list}
 				</div>
-			#{/if} *{ paragraph.answers.count() != 0 }*
+			#{/if} *{ paragraph.answers.size() != 0 }*
 		</div> <!-- container -->
     #{/list} *{ paragraphs }*
 </div> <!-- post -->
