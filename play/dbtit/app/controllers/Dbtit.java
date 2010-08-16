@@ -17,6 +17,7 @@ import play.i18n.Messages;
 import play.libs.Crypto;
 import play.libs.OpenID;
 import play.libs.OpenID.UserInfo;
+import play.modules.gae.GAE;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -32,7 +33,7 @@ public class Dbtit extends Controller {
 	
 	@Before(priority=10)
 	protected static void autoLogin() {
-		if (connectedUser() == null) {
+		/*if (connectedUser() == null) {
 			// Copied from Secure module
 			Http.Cookie remember = request.cookies.get("rememberme");
 	        if(remember != null && remember.value.indexOf("-") > 0) {
@@ -42,6 +43,15 @@ public class Dbtit extends Controller {
 	                session.put("user-email", email);
 	            }
 	        }
+		}*/
+	}
+	
+	@Before(priority=15)
+	protected static void createNewUser() {
+		com.google.appengine.api.users.User currentUser = GAE.getUser();
+		if (currentUser != null && User.findByEmail(currentUser.getEmail()) == null) {
+			User user = new User(currentUser.getNickname(), currentUser.getEmail(), "Europe/Paris", false);
+			user.insert();
 		}
 	}
 	
@@ -55,20 +65,23 @@ public class Dbtit extends Controller {
 		Authenticated authenticated = getActionAnnotation(Authenticated.class);
 		if (authenticated != null) {
 			if (connectedUser() == null) {
-				login(request.method == "GET" ? request.url : "/");
+				login(request.method == "GET" ? request.action : "Dbtit.index");
 			}
 		}
 	}
 	
 	protected static User connectedUser() {
-		if (!session.contains("user-email")) {
+		com.google.appengine.api.users.User user = GAE.getUser();
+		if (user != null) {
+			return User.findByEmail(user.getEmail());
+		} else {
 			return null;
 		}
-		return User.find("byEmail", session.get("user-email")).first();
 	}
 
 	public static void login(String url) {
-		if (!OpenID.isAuthenticationResponse()) { // L’utilisateur vient d’arriver sur la page login
+		GAE.login("Dbtit.index");
+		/*if (!OpenID.isAuthenticationResponse()) { // L’utilisateur vient d’arriver sur la page login
 			if (url != null)
 				flash.put("url", url);
 			if (!OpenID.id("https://www.google.com/accounts/o8/id")
@@ -85,13 +98,14 @@ public class Dbtit extends Controller {
 			}
 			String email = verifiedUser.extensions.get("email");
 			session.put("user-email", email);
-			User user = User.find("byEmail", email).first();
+			User user = User.findByEmail(email);
 			String redirectUrl = flash.get("url");
 			if (redirectUrl == null)
 				redirectUrl = Router.reverse("Dbtit.index").url;
 			if (user == null) { // New user ?
 				String name = email.substring(0, email.indexOf("@"));
-				user = new User(name, email, TimeZone.getTimeZone("Europe/Paris"), false).save();
+				user = new User(name, email, "Europe/Paris", false);
+				user.insert();
 				Logger.info("New user %s (%s) created", email, user.id);
 				flash.success(Messages.get("welcomeFirst"));
 				profile(redirectUrl);
@@ -102,13 +116,14 @@ public class Dbtit extends Controller {
 				flash.success(Messages.get("welcome", user.name));
 				redirect(redirectUrl);
 			}
-		}
+		}*/
 	}
 	
 	public static void logout() {
-		session.remove("user-email");
+		/*session.remove("user-email");
 		response.setCookie("rememberme", "", 0);
-		index();
+		index();*/
+		GAE.logout("Dbtit.index");
 	}
 	
 	@Authenticated
@@ -134,9 +149,6 @@ public class Dbtit extends Controller {
 		redirect(url);
 	}
 	
-	/**
-	 * Display the thread list
-	 */
     public static void index() {
     	render();
     }

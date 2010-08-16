@@ -1,0 +1,25 @@
+User(julien):
+  email: julien.rf@gmail.com
+  name: Julien Richard-Foy
+
+User(matthieu):
+  email: yiashen@gmail.com
+  name: Matthieu Oger
+
+Paragraph(p1):
+  content: Cet outil est vraiment intéressant pour débattre, n’est-ce pas ?
+
+Post(root):
+  author: julien
+  date: 2010-03-10
+  parent: null
+  paragraphs: [p1]
+
+Thread(t):
+  title: Abyme
+  rootPost: root
+
+Reading(reading):
+  date: 2010-03-10
+  thread: t
+  user: julien

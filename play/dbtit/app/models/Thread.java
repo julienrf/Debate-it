@@ -17,20 +17,17 @@ import utils.Helper;
 
 public class Thread extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 
 	/** The initial post of the thread */
-	@NotNull
 	public Post rootPost;
 	
 	/** The topic of the thread */
 	@Required
-	@NotNull
 	public String title;
 	
 	/** A hash code identifying the thread */
-	@NotNull
 	public String hash;
 	
 	/** A number generator used to salt the hash computation */
@@ -99,6 +96,6 @@ public class Thread extends Model {
 	 */
 	public long getPostCountAfter(Date date) {
 		//return Post.count("thread = ? and date > ?", this, date);
-		return Post.all(Post.class).filter("thread = ", this.id).filter("date > ", date).count();
+		return Post.all(Post.class).filter("thread = ", this).filter("date > ", date).count();
 	}
 }

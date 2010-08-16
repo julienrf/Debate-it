@@ -11,36 +11,31 @@ import org.parsit.SimpleFootNoteFactory;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import siena.Filter;
-import siena.Generator;
 import siena.Id;
-import siena.Max;
+import siena.Index;
 import siena.Model;
-import siena.NotNull;
 import siena.Query;
-import siena.SimpleDate;
-import siena.Text;
 
 public class Post extends Model
 {
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Author of the post */
 	@Required
-	@NotNull
+	@Index("author_index")
 	public User author;
 	
 	/** Date when the message was posted */
 	@Required
-	@SimpleDate @NotNull
 	public Date date;
 	
 	/** The paragraph that this post answers */
+	@Index("parent_index")
 	public Paragraph parent;
 	
 	/** Raw content of the whole post (in Parsit syntax) */
 	@Required @MaxSize(10000)
-	@Text @Max(10000) @NotNull
 	public String content;
 	
 	/** The paragraphs of this post */
@@ -50,7 +45,7 @@ public class Post extends Model
 	
 	/** The thread that this post belongs to */
 	@Required
-	@NotNull
+	@Index("thread_index")
 	public Thread thread;
 
 	/**
@@ -139,6 +134,7 @@ public class Post extends Model
 		for (String p : parsedParagraphs) {
 			Paragraph paragraph = new Paragraph(this, p, number++);
 			paragraph.insert();
+			System.out.println("Paragraph created: " + paragraph.id);
 			for (IFootNote footNote : parsit.getFootNotes()) {
 				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above
 			}

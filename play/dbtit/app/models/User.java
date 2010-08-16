@@ -1,7 +1,6 @@
 package models;
 
 import java.util.Date;
-import java.util.TimeZone;
 
 import play.data.validation.Email;
 import play.data.validation.Required;
@@ -11,31 +10,28 @@ import siena.Id;
 import siena.Model;
 import siena.NotNull;
 import siena.Query;
+import siena.Unique;
 
 public class User extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Display name */
 	@Required
-	@NotNull
 	public String name;
 	
 	/** Email identifying the user */
 	@Required @Email
-	@NotNull
 	public String email;
 	
 	/** User TimeZone */
 	@Required
-	@NotNull
 	//public TimeZone tz;
 	public String tz;
 	
 	/** Remember the user in a cookie */
 	@Required
-	@NotNull
 	public boolean rememberMe;
 	
 	/** List of threads followed by the user */
@@ -94,7 +90,7 @@ public class User extends Model {
 	 * @return
 	 */
 	public Reading lastReading(Thread thread) {
-		Reading reading = Reading.all().filter("thread", thread.id).filter("user", this.id).get();
+		Reading reading = Reading.all().filter("thread", thread).filter("user", this).get();
 		if (reading == null) { // Creates the reading if it doesn't exist
 			reading = new Reading(thread, this, new Date());
 			reading.insert();
@@ -107,9 +103,11 @@ public class User extends Model {
 	 * @param thread Thread to be followed
 	 */
 	public void follow(Thread thread) {
-		if (followedThreads.filter("thread", thread.id).filter("user", this.id).count() == 0) {
+		if (followedThreads.filter("thread", thread).count() == 0) {
 			Following following = new Following(thread, this);
 			following.insert();
+			Following f = Following.all().filter("id", following.id).get();
+			//System.out.println(following.user.id + " " + f.user.id);
 		}
 	}
 	
@@ -118,10 +116,14 @@ public class User extends Model {
 	 * @param thread
 	 */
 	public void doNotFollow(Thread thread) {
-		Following following = followedThreads.filter("thread", thread.id).filter("user", this.id).get();
+		Following following = followedThreads.filter("thread", thread).get();
 		if (following != null) {
 			following.delete();
 		}
+	}
+	
+	public boolean isFollowing(Thread thread) {
+		return followedThreads.filter("thread", thread).count() != 0;
 	}
 	
 	/**

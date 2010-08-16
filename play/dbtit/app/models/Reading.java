@@ -3,10 +3,9 @@ package models;
 import java.util.Date;
 
 import play.data.validation.Required;
-import siena.Generator;
 import siena.Id;
+import siena.Index;
 import siena.Model;
-import siena.NotNull;
 import siena.Query;
 
 /**
@@ -16,19 +15,18 @@ import siena.Query;
  */
 public class Reading extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 
 	@Required
-	@NotNull
+	@Index("thread_index")
 	public Thread thread;
 	
 	@Required
-	@NotNull
+	@Index("user_index")
 	public User user;
 	
 	@Required
-	@NotNull
 	public Date date;
 	
 	public Reading(Thread thread, User user, Date date)

@@ -24,14 +24,55 @@ public class BasicTest extends UnitTest {
 	public void setup() {
 		Fixtures.deleteAll();
 		
-		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault(), false);
-		julien.save();
+		for (Thread thread : Thread.all().fetch()) {
+			thread.delete();
+		}
+		
+		for (Post post : Post.all().fetch()) {
+			post.delete();
+		}
+		
+		for (Paragraph p : Paragraph.all().fetch()) {
+			p.delete();
+		}
+		
+		for (User user : User.all().fetch()) {
+			user.delete();
+		}
+		
+		for (FootNote f : FootNote.all().fetch()) {
+			f.delete();
+		}
+		
+		for (Reading r : Reading.all().fetch()) {
+			r.delete();
+		}
+		
+		for (Following f : Following.all().fetch()) {
+			f.delete();
+		}
+		
+		for (A a : A.all().fetch()) {
+			a.delete();
+		}
+		
+		for (B b : B.all().fetch()) {
+			b.delete();
+		}
+		
+		for (C c : C.all().fetch()) {
+			c.delete();
+		}
+		
+		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", "Europe/Paris", false);
+		julien.insert();
 	}
 	
 	@Test
 	public void user()
 	{
-		User user = User.find("byEmail", "julien.rf@no-log.org").first();
+		assertNotNull(julien);
+		User user = User.all().filter("email", "julien.rf@no-log.org").get();
 		assertNotNull(user);
 		assertEquals("Julien Richard-Foy", user.name);
 	}
@@ -39,24 +80,28 @@ public class BasicTest extends UnitTest {
 	@Test
 	public void post()
 	{
-		Post post = Post.create(julien, "Contenu", null, null);
+		Thread thread = Thread.create(julien, "Titre1", "Contenu");
+		Post post = thread.rootPost;
+		post.get();
 
-		post = Post.find("byParentIsNull").first();
 		assertNotNull(post);
 		assertEquals("Contenu", post.content);
-		assertEquals(post.paragraphs.size(), 1);
-		assertEquals(post.paragraphs.get(0).content, "Contenu");
+		assertEquals(1, post.paragraphs.count());
+		assertEquals("Contenu", post.paragraphs.get().content);
 	}
 	
 	@Test
 	public void reply()
 	{
-		Post post = Post.create(julien, "Contenu", null, null);
+		Thread thread = Thread.create(julien, "Titre2", "Contenu");
+		Post post = thread.rootPost;
+		post.get();
 
-		Paragraph paragraph = post.paragraphs.get(0);
+		Paragraph paragraph = post.paragraphs.get();
 		paragraph.reply(julien, "Reply");
 		
-		Post reply = Post.find("byParent", paragraph).first();
+		Post reply = Post.all().filter("parent", paragraph).get();
+		assertEquals(2, Post.all().count());
 		assertNotNull(reply);
 		assertEquals("Reply", reply.content);
 	}
@@ -69,34 +114,56 @@ public class BasicTest extends UnitTest {
 		post.edit("Nouveau contenu");
 		
 		assertEquals("Nouveau contenu", post.content);
-		assertEquals(post.paragraphs.size(), 1);
+		assertEquals(post.paragraphs.count(), 1);
 		
 		post.edit("Nouveau\n\ncontenu");
 		
-		assertEquals(post.paragraphs.size(), 2);
+		assertEquals(post.paragraphs.count(), 2);
 	}
 	
 	@Test
 	public void threads()
 	{
-		Thread thread = Thread.create(julien, "Titre", "Contenu");
+		Thread thread = Thread.create(julien, "Titre3", "Contenu");
 
-		thread = Thread.find("byTitle", "Titre").first();
+		thread = Thread.all().filter("title", "Titre3").get();
 		assertNotNull(thread);
 		assertNotNull(thread.rootPost);
-		assertEquals(thread.rootPost.content, "Contenu");
+		thread.rootPost.get();
+		assertEquals("Contenu", thread.rootPost.content);
 	}
 	
 	@Test
-	public void follow() {
-		Thread thread = Thread.create(julien, "Titre", "Contenu");
+	public void follow()
+	{
+		User chris = new User("Christopher", "redeye4@gmail.com", "Europe/Paris", false);
+		chris.insert();
 		
-		assertEquals(0, julien.followedThreads.size());
-		assertFalse(julien.followedThreads.contains(thread));
+		Thread thread = Thread.create(julien, "Titre4", "Contenu");
 		
-		julien.follow(thread);
+		Following f = Following.all().get();
+		f.thread.get();
+		//f.user.get();
+		//System.out.println(f.id + " " + f.thread + " " + f.user);
+		assertEquals(1, julien.followedThreads.count()); // Thread is automatically followed by its author
+		assertTrue(julien.followedThreads.filter("thread", thread).get() != null);
+		assertEquals(0, chris.followedThreads.count());
 		
-		assertEquals(1, julien.followedThreads.size());
-		assertTrue(julien.followedThreads.contains(thread));
+		chris.follow(thread);
+		
+		assertEquals(1, chris.followedThreads.count());
+		assertTrue(chris.followedThreads.filter("thread", thread).get() != null);
+	}
+	
+	@Test
+	public void sienaFails()
+	{
+		A a = new A();
+		a.insert();
+
+		C c = new C();
+		c.insert();
+		
+		a.addC(c);
 	}
 }

@@ -5,28 +5,25 @@ import org.parsit.IFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import siena.Generator;
 import siena.Id;
-import siena.Max;
+import siena.Index;
 import siena.Model;
-import siena.NotNull;
 import siena.Query;
 import siena.Table;
-import siena.Text;
 
 @Table("footnotes")
 public class FootNote extends Model implements IFootNote {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Footnote HTML content */
 	@Required @MaxSize(1000) // Play validator
-	@Max(1000) @Text // Siena constraint (useless I guess)
 	public String content;
 	
 	/** Parent post where this footnote is referenced */
 	@Required
+	@Index("paragraph_index")
 	public Paragraph paragraph;
 	
 	

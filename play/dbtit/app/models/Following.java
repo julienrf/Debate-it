@@ -1,20 +1,19 @@
 package models;
 
-import siena.Generator;
 import siena.Id;
+import siena.Index;
 import siena.Model;
-import siena.NotNull;
 import siena.Query;
 
 public class Following extends Model {
 
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
-	@NotNull
+	@Index("user_index")
 	public User user;
 	
-	@NotNull
+	@Index("thread_index")
 	public Thread thread;
 	
 	public Following(Thread thread, User user) {
@@ -25,8 +24,4 @@ public class Following extends Model {
 	public static Query<Following> all() {
 		return Model.all(Following.class);
 	}
-	
-	/*public static Following findByThreadAndUser(Thread thread, User user) {
-		return Following.all(Following.class).filter("thread", thread.id).filter("user", user.id).get();
-	}*/
 }
