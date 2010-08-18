@@ -24,14 +24,35 @@ public class BasicTest extends UnitTest {
 	public void setup() {
 		Fixtures.deleteAll();
 		
-		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault(), false);
-		julien.save();
+		for (Following f : Following.all().fetch())
+			f.delete();
+		
+		for (FootNote f : FootNote.all().fetch())
+			f.delete();
+		
+		for (Paragraph p : Paragraph.all().fetch())
+			p.delete();
+		
+		for (Post p : Post.all().fetch())
+			p.delete();
+		
+		for (Reading r : Reading.all().fetch())
+			r.delete();
+		
+		for (Thread t : Thread.all().fetch())
+			t.delete();
+		
+		for (User u : User.all().fetch())
+			u.delete();
+		
+		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID(), false);
+		julien.update();
 	}
 	
 	@Test
 	public void user()
 	{
-		User user = User.find("byEmail", "julien.rf@no-log.org").first();
+		User user = User.findByEmail("julien.rf@no-log.org");
 		assertNotNull(user);
 		assertEquals("Julien Richard-Foy", user.name);
 	}
@@ -41,11 +62,11 @@ public class BasicTest extends UnitTest {
 	{
 		Post post = Post.create(julien, "Contenu", null, null);
 
-		post = Post.find("byParentIsNull").first();
+		post = Post.all().filter("parent", null).get();
 		assertNotNull(post);
 		assertEquals("Contenu", post.content);
-		assertEquals(post.paragraphs.size(), 1);
-		assertEquals(post.paragraphs.get(0).content, "Contenu");
+		assertEquals(post.paragraphs.count(), 1);
+		assertEquals(post.paragraphs.get().content, "Contenu");
 	}
 	
 	@Test
@@ -53,10 +74,10 @@ public class BasicTest extends UnitTest {
 	{
 		Post post = Post.create(julien, "Contenu", null, null);
 
-		Paragraph paragraph = post.paragraphs.get(0);
+		Paragraph paragraph = post.paragraphs.get();
 		paragraph.reply(julien, "Reply");
 		
-		Post reply = Post.find("byParent", paragraph).first();
+		Post reply = Post.all().filter("parent", paragraph).get();
 		assertNotNull(reply);
 		assertEquals("Reply", reply.content);
 	}
@@ -69,11 +90,11 @@ public class BasicTest extends UnitTest {
 		post.edit("Nouveau contenu");
 		
 		assertEquals("Nouveau contenu", post.content);
-		assertEquals(post.paragraphs.size(), 1);
+		assertEquals(post.paragraphs.count(), 1);
 		
 		post.edit("Nouveau\n\ncontenu");
 		
-		assertEquals(post.paragraphs.size(), 2);
+		assertEquals(post.paragraphs.count(), 2);
 	}
 	
 	@Test
@@ -81,7 +102,7 @@ public class BasicTest extends UnitTest {
 	{
 		Thread thread = Thread.create(julien, "Titre", "Contenu");
 
-		thread = Thread.find("byTitle", "Titre").first();
+		thread = Thread.all().filter("title", "Titre").get();
 		assertNotNull(thread);
 		assertNotNull(thread.rootPost);
 		assertEquals(thread.rootPost.content, "Contenu");
@@ -91,12 +112,17 @@ public class BasicTest extends UnitTest {
 	public void follow() {
 		Thread thread = Thread.create(julien, "Titre", "Contenu");
 		
-		assertEquals(0, julien.followedThreads.size());
-		assertFalse(julien.followedThreads.contains(thread));
+		assertEquals(1, julien.followedThreads.count());
+		assertTrue(julien.isFollowing(thread));
+		
+		julien.doNotFollow(thread);
+		
+		assertEquals(0, julien.followedThreads.count());
+		assertFalse(julien.isFollowing(thread));
 		
 		julien.follow(thread);
 		
-		assertEquals(1, julien.followedThreads.size());
-		assertTrue(julien.followedThreads.contains(thread));
+		assertEquals(1, julien.followedThreads.count());
+		assertTrue(julien.isFollowing(thread));
 	}
 }

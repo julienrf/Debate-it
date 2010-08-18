@@ -14,7 +14,7 @@ import siena.Query;
 
 public class User extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Display name */
@@ -41,6 +41,9 @@ public class User extends Model {
 	/** List of threads followed by the user */
 	@Filter("user")
 	public Query<Following> followedThreads;
+	
+	@Filter("user")
+	public Query<Reading> readings;
 	
 	/**
 	 * Ideas of profile settings:
@@ -94,7 +97,7 @@ public class User extends Model {
 	 * @return
 	 */
 	public Reading lastReading(Thread thread) {
-		Reading reading = Reading.all().filter("thread", thread.id).filter("user", this.id).get();
+		Reading reading = readings.filter("thread", thread).get();
 		if (reading == null) { // Creates the reading if it doesn't exist
 			reading = new Reading(thread, this, new Date());
 			reading.insert();
@@ -107,7 +110,7 @@ public class User extends Model {
 	 * @param thread Thread to be followed
 	 */
 	public void follow(Thread thread) {
-		if (followedThreads.filter("thread", thread.id).filter("user", this.id).count() == 0) {
+		if (!isFollowing(thread)) {
 			Following following = new Following(thread, this);
 			following.insert();
 		}
@@ -118,10 +121,14 @@ public class User extends Model {
 	 * @param thread
 	 */
 	public void doNotFollow(Thread thread) {
-		Following following = followedThreads.filter("thread", thread.id).filter("user", this.id).get();
+		Following following = followedThreads.filter("thread", thread).get();
 		if (following != null) {
 			following.delete();
 		}
+	}
+	
+	public boolean isFollowing(Thread thread) {
+		return followedThreads.filter("thread", thread).count() != 0;
 	}
 	
 	/**

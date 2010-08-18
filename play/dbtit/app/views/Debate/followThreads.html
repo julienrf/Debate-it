@@ -12,7 +12,8 @@
 #{if followedThreads.size() > 0}
 <div class="list box">
 
-#{list items:followedThreads, as:'thread'}
+#{list items:followedThreads, as:'following'}
+	%{ following.thread.get(); thread = following.thread; }%
 	<div class="item ${thread_parity}">
 		#{a @Debate.thread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
 		%{ unreadPostCount = user.getUnreadPostCount(thread) }%

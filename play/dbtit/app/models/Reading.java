@@ -3,7 +3,7 @@ package models;
 import java.util.Date;
 
 import play.data.validation.Required;
-import siena.Generator;
+import siena.Column;
 import siena.Id;
 import siena.Model;
 import siena.NotNull;
@@ -16,15 +16,15 @@ import siena.Query;
  */
 public class Reading extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 
 	@Required
-	@NotNull
+	@NotNull @Column("thread")
 	public Thread thread;
 	
 	@Required
-	@NotNull
+	@NotNull @Column("user")
 	public User user;
 	
 	@Required

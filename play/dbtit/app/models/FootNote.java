@@ -5,11 +5,10 @@ import org.parsit.IFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import siena.Generator;
+import siena.Column;
 import siena.Id;
 import siena.Max;
 import siena.Model;
-import siena.NotNull;
 import siena.Query;
 import siena.Table;
 import siena.Text;
@@ -17,7 +16,7 @@ import siena.Text;
 @Table("footnotes")
 public class FootNote extends Model implements IFootNote {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Footnote HTML content */
@@ -27,6 +26,7 @@ public class FootNote extends Model implements IFootNote {
 	
 	/** Parent post where this footnote is referenced */
 	@Required
+	@Column("paragraph")
 	public Paragraph paragraph;
 	
 	

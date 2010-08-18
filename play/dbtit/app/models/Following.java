@@ -1,6 +1,6 @@
 package models;
 
-import siena.Generator;
+import siena.Column;
 import siena.Id;
 import siena.Model;
 import siena.NotNull;
@@ -8,13 +8,13 @@ import siena.Query;
 
 public class Following extends Model {
 
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
-	@NotNull
+	@NotNull @Column("user")
 	public User user;
 	
-	@NotNull
+	@NotNull @Column("thread")
 	public Thread thread;
 	
 	public Following(Thread thread, User user) {

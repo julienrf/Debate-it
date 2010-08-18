@@ -10,8 +10,8 @@ import org.parsit.SimpleFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
+import siena.Column;
 import siena.Filter;
-import siena.Generator;
 import siena.Id;
 import siena.Max;
 import siena.Model;
@@ -22,12 +22,12 @@ import siena.Text;
 
 public class Post extends Model
 {
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 	
 	/** Author of the post */
 	@Required
-	@NotNull
+	@NotNull @Column("author")
 	public User author;
 	
 	/** Date when the message was posted */
@@ -36,6 +36,7 @@ public class Post extends Model
 	public Date date;
 	
 	/** The paragraph that this post answers */
+	@Column("parent")
 	public Paragraph parent;
 	
 	/** Raw content of the whole post (in Parsit syntax) */
@@ -50,7 +51,7 @@ public class Post extends Model
 	
 	/** The thread that this post belongs to */
 	@Required
-	@NotNull
+	@NotNull @Column("thread")
 	public Thread thread;
 
 	/**

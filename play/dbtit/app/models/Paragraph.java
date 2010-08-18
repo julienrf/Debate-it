@@ -6,8 +6,8 @@ import java.util.Set;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
+import siena.Column;
 import siena.Filter;
-import siena.Generator;
 import siena.Id;
 import siena.Model;
 import siena.NotNull;
@@ -16,14 +16,12 @@ import siena.Text;
 
 public class Paragraph extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 
 	/** HTML content of the paragraph */
-	@Required
-	@MaxSize(1000)
-	@Text
-	@NotNull
+	@Required @MaxSize(1000)
+	@Text @NotNull
 	public String content;
 	
 	/** Answers of the paragraph */
@@ -36,7 +34,7 @@ public class Paragraph extends Model {
 	
 	/** Post which this paragraph belongs to */
 	@Required
-	@NotNull
+	@NotNull @Column("post")
 	public Post post;
 	
 	/** Number of the post (added to sort paragraphs, FIXME remove it with Siena) */

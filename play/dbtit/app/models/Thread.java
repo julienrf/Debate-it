@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import play.Play;
 import play.data.validation.Required;
 import play.libs.Codec;
-import siena.Generator;
+import siena.Column;
 import siena.Id;
 import siena.Model;
 import siena.NotNull;
@@ -17,11 +17,11 @@ import utils.Helper;
 
 public class Thread extends Model {
 	
-	@Id(Generator.AUTO_INCREMENT)
+	@Id
 	public Long id;
 
 	/** The initial post of the thread */
-	@NotNull
+	@NotNull @Column("rootPost")
 	public Post rootPost;
 	
 	/** The topic of the thread */
@@ -86,6 +86,7 @@ public class Thread extends Model {
 	 * @param footNotes A footnotes container which will be filled with posts footnotes
 	 */
 	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphsToShow, List<FootNote> footNotesList) {
+		rootPost.get();
 		rootPost.getAnsweredParagraphsBefore(lastReading, reading, paragraphsToShow, footNotesList);
 		if (reading != null) {
 			reading.updateDate(rootPost.date);
@@ -99,6 +100,6 @@ public class Thread extends Model {
 	 */
 	public long getPostCountAfter(Date date) {
 		//return Post.count("thread = ? and date > ?", this, date);
-		return Post.all(Post.class).filter("thread = ", this.id).filter("date > ", date).count();
+		return Post.all(Post.class).filter("thread", this).filter("date>", date).count();
 	}
 }

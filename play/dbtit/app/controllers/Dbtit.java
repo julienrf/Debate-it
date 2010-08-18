@@ -17,6 +17,7 @@ import play.i18n.Messages;
 import play.libs.Crypto;
 import play.libs.OpenID;
 import play.libs.OpenID.UserInfo;
+import play.modules.gae.GAE;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Http;
@@ -32,7 +33,7 @@ public class Dbtit extends Controller {
 	
 	@Before(priority=10)
 	protected static void autoLogin() {
-		if (connectedUser() == null) {
+		/*if (connectedUser() == null) {
 			// Copied from Secure module
 			Http.Cookie remember = request.cookies.get("rememberme");
 	        if(remember != null && remember.value.indexOf("-") > 0) {
@@ -42,7 +43,7 @@ public class Dbtit extends Controller {
 	                session.put("user-email", email);
 	            }
 	        }
-		}
+		}*/
 	}
 	
 	@Before(priority=20)
@@ -55,20 +56,33 @@ public class Dbtit extends Controller {
 		Authenticated authenticated = getActionAnnotation(Authenticated.class);
 		if (authenticated != null) {
 			if (connectedUser() == null) {
-				login(request.method == "GET" ? request.url : "/");
+				/*login(request.method == "GET" ? request.url : "/");*/
+				GAE.login();
 			}
 		}
 	}
 	
 	protected static User connectedUser() {
-		if (!session.contains("user-email")) {
+		com.google.appengine.api.users.User gaeUser = GAE.getUser();
+		if (gaeUser != null) {
+			User user = User.findByEmail(gaeUser.getEmail());
+			if (user == null) {
+				user = new User(gaeUser.getEmail(), gaeUser.getNickname(), TimeZone.getDefault().getID(), false);
+				user.insert();
+			}
+			return user;
+		} else {
 			return null;
 		}
-		return User.find("byEmail", session.get("user-email")).first();
+		/*if (!session.contains("user-email")) {
+			return null;
+		}
+		return User.find("byEmail", session.get("user-email")).first();*/
 	}
 
 	public static void login(String url) {
-		if (!OpenID.isAuthenticationResponse()) { // L’utilisateur vient d’arriver sur la page login
+		GAE.login("Dbtit.index");
+		/*if (!OpenID.isAuthenticationResponse()) { // L’utilisateur vient d’arriver sur la page login
 			if (url != null)
 				flash.put("url", url);
 			if (!OpenID.id("https://www.google.com/accounts/o8/id")
@@ -102,13 +116,14 @@ public class Dbtit extends Controller {
 				flash.success(Messages.get("welcome", user.name));
 				redirect(redirectUrl);
 			}
-		}
+		}*/
 	}
 	
 	public static void logout() {
-		session.remove("user-email");
+		GAE.logout("Dbtit.index");
+		/*session.remove("user-email");
 		response.setCookie("rememberme", "", 0);
-		index();
+		index();*/
 	}
 	
 	@Authenticated
