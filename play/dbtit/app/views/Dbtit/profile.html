@@ -41,15 +41,6 @@
 	</div>
 	#{/field}
 	
-	#{field 'userUpdate.rememberMe'}
-	<div>
-		<label for="${field.id}"></label>
-		<input type="checkbox" id="${field.id}" name="${field.name}" value="true" ${field.value == true ? 'checked="checked""' : ' '} />&{field.name}
-		<br />
-		<span class="form-error">${field.error}</span>
-	</div>
-	#{/field}
-	
 	<label for="foo"></label>
 	<input type="submit" value="&{'update'}" />
 	

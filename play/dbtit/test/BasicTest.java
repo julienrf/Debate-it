@@ -45,7 +45,7 @@ public class BasicTest extends UnitTest {
 		for (User u : User.all().fetch())
 			u.delete();
 		
-		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID(), false);
+		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
 		julien.insert();
 	}
 	

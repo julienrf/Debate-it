@@ -30,13 +30,7 @@ public class User extends Model {
 	/** User TimeZone */
 	@Required
 	@NotNull
-	//public TimeZone tz;
 	public String tz;
-	
-	/** Remember the user in a cookie */
-	@Required
-	@NotNull
-	public boolean rememberMe;
 	
 	/** List of threads followed by the user */
 	@Filter("user")
@@ -52,11 +46,10 @@ public class User extends Model {
 	 *  - Number of posts by page
 	 */
 	
-	public User(String name, String email, String tz, boolean rememberMe) {
+	public User(String name, String email, String tz) {
 		this.name = name;
 		this.email = email;
 		this.tz = tz;
-		this.rememberMe = rememberMe;
 	}
 	
 	public static Query<User> all() {
@@ -73,7 +66,6 @@ public class User extends Model {
 	public void update(Update update) {
 		name = update.name;
 		tz = update.tzId;
-		rememberMe = update.rememberMe;
 		update();
 	}
 	
@@ -147,12 +139,10 @@ public class User extends Model {
 	public static class Update {
 		@Required public String name;
 		@Required public String tzId;
-		@Required public boolean rememberMe;
 		
 		public Update(User user) {
 			name = user.name;
 			tzId = user.tz;
-			rememberMe = user.rememberMe;
 		}
 	}
 }
