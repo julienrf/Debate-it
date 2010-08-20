@@ -91,6 +91,10 @@ public class Post extends Model
 		return Post.all().filter("id", id).get();
 	}
 	
+	public Query<Paragraph> getParagraphs() {
+		return paragraphs.order("number");
+	}
+	
 	@Override
 	public String toString() {
 		String content = paragraphs.get().content; // A post must have at least one paragraph

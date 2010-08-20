@@ -352,7 +352,7 @@ public class Debate extends Controller {
     		currentPage = params.get(pageVar, Integer.class);
     	Pagination pagination = new Pagination(user.followedThreads.count(), currentPage, 10, pageVar);
     	
-    	List<Following> followedThreads = user.followedThreads.fetch().subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
+    	List<Following> followedThreads = user.followedThreads.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
     	
     	render(followedThreads, pagination);
     }
