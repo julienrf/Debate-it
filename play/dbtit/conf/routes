@@ -21,6 +21,7 @@ GET     /profile                      Dbtit.profile
 POST    /profile                      Dbtit.postProfile
 
 GET     /login                        Dbtit.login
+GET     /loggedIn                     Dbtit.loggedIn
 GET     /logout                       Dbtit.logout
 
 GET     /follow                       Debate.followThreads

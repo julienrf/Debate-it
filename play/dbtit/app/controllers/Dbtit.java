@@ -32,18 +32,13 @@ import play.mvc.With;
 public class Dbtit extends Controller {
 	
 	@Before(priority=10)
-	protected static void autoLogin() {
-		/*if (connectedUser() == null) {
-			// Copied from Secure module
-			Http.Cookie remember = request.cookies.get("rememberme");
-	        if(remember != null && remember.value.indexOf("-") > 0) {
-	            String sign = remember.value.substring(0, remember.value.indexOf("-"));
-	            String email = remember.value.substring(remember.value.indexOf("-") + 1);
-	            if(Crypto.sign(email).equals(sign)) {
-	                session.put("user-email", email);
-	            }
-	        }
-		}*/
+	protected static void checkLoggedIn() {
+		LoggedIn loggedIn = getActionAnnotation(LoggedIn.class);
+		if (loggedIn != null) {
+			if (connectedUser() == null) {
+				login(request.method == "GET" ? request.url : Router.getFullUrl("Dbtit.index"));
+			}
+		}
 	}
 	
 	@Before(priority=20)
@@ -51,82 +46,44 @@ public class Dbtit extends Controller {
 		renderArgs.put("user", connectedUser());
 	}
 	
-	@Before(priority=20)
-	protected static void checkAuthenticated() throws Throwable {
-		Authenticated authenticated = getActionAnnotation(Authenticated.class);
-		if (authenticated != null) {
-			if (connectedUser() == null) {
-				/*login(request.method == "GET" ? request.url : "/");*/
-				GAE.login();
-			}
+	protected static User connectedUser() {
+		com.google.appengine.api.users.User gaeUser = GAE.getUser();
+		if (gaeUser != null) {
+			return User.findByEmail(gaeUser.getEmail());
+		} else {
+			return null;
 		}
 	}
+
+	public static void login(String url) {
+		if (url != null)
+			flash.put("url", url);
+		GAE.login("Dbtit.loggedIn");
+	}
 	
-	protected static User connectedUser() {
+	public static void loggedIn() {
+		String url = flash.contains("url") ? flash.get("url") : Router.getFullUrl("Dbtit.index");
 		com.google.appengine.api.users.User gaeUser = GAE.getUser();
 		if (gaeUser != null) {
 			User user = User.findByEmail(gaeUser.getEmail());
 			if (user == null) {
 				user = new User(gaeUser.getEmail(), gaeUser.getNickname(), TimeZone.getDefault().getID(), false);
 				user.insert();
-			}
-			return user;
-		} else {
-			return null;
-		}
-		/*if (!session.contains("user-email")) {
-			return null;
-		}
-		return User.find("byEmail", session.get("user-email")).first();*/
-	}
-
-	public static void login(String url) {
-		GAE.login("Dbtit.index");
-		/*if (!OpenID.isAuthenticationResponse()) { // L’utilisateur vient d’arriver sur la page login
-			if (url != null)
-				flash.put("url", url);
-			if (!OpenID.id("https://www.google.com/accounts/o8/id")
-					.required("email", "http://axschema.org/contact/email")
-					.verify()) {
-				flash.error(Messages.get("openIdError"));
-				index();
-			}
-		} else { // L’utilisateur est redirigé, par le fournisseur OpenID, sur la page login
-			UserInfo verifiedUser = OpenID.getVerifiedID();
-			if (verifiedUser == null) {
-				flash.error(Messages.get("loginFail"));
-				index();
-			}
-			String email = verifiedUser.extensions.get("email");
-			session.put("user-email", email);
-			User user = User.find("byEmail", email).first();
-			String redirectUrl = flash.get("url");
-			if (redirectUrl == null)
-				redirectUrl = Router.reverse("Dbtit.index").url;
-			if (user == null) { // New user ?
-				String name = email.substring(0, email.indexOf("@"));
-				user = new User(name, email, TimeZone.getTimeZone("Europe/Paris"), false).save();
-				Logger.info("New user %s (%s) created", email, user.id);
+				Logger.info("New user %s (%s) created", user.email, user.id);
 				flash.success(Messages.get("welcomeFirst"));
-				profile(redirectUrl);
-			} else {
-				if (user.rememberMe) {
-					response.setCookie("rememberme", Crypto.sign(email) + "-" + email, "365d");
-				}
-				flash.success(Messages.get("welcome", user.name));
-				redirect(redirectUrl);
+				profile(url);
 			}
-		}*/
+		} else {
+			flash.error(Messages.get("loginFail"));
+		}
+		redirect(url);
 	}
 	
 	public static void logout() {
 		GAE.logout("Dbtit.index");
-		/*session.remove("user-email");
-		response.setCookie("rememberme", "", 0);
-		index();*/
 	}
 	
-	@Authenticated
+	@LoggedIn
 	public static void profile(String url) {
 		User.Update userUpdate = new models.User.Update(connectedUser());
 		if (url != null)
@@ -134,7 +91,7 @@ public class Dbtit extends Controller {
 		render(userUpdate);
 	}
 	
-	@Authenticated
+	@LoggedIn
 	public static void postProfile(@Valid User.Update userUpdate) {
 		User connectedUser = connectedUser();
 		if (validation.hasErrors()) {
@@ -150,7 +107,7 @@ public class Dbtit extends Controller {
 	}
 	
 	/**
-	 * Display the thread list
+	 * Display the home page
 	 */
     public static void index() {
     	render();

@@ -151,7 +151,7 @@ public class Debate extends Controller {
     /**
      * Display a form to create a thread
      */
-    @Authenticated
+    @LoggedIn
     public static void newThread() {
     	render();
     }
@@ -161,7 +161,7 @@ public class Debate extends Controller {
      * @param title
      * @param content
      */
-    @Authenticated
+    @LoggedIn
     public static void createThread(@Required String threadTitle, @Required String content) {
     	User user = Dbtit.connectedUser();
     	
@@ -189,7 +189,7 @@ public class Debate extends Controller {
      * @param thread
      * @param post
      */
-    @Authenticated
+    @LoggedIn
     public static void reply(String hash, Long paragraphId) {
     	Thread thread = Thread.findByHash(hash);
     	Paragraph paragraph = Paragraph.findById(paragraphId);
@@ -209,11 +209,11 @@ public class Debate extends Controller {
      * @param paragraphId
      * @param content
      */
-    @Authenticated
+    @LoggedIn
     public static void postReply(String hash, Long paragraphId, @Required String content) {
     	Thread thread = Thread.findByHash(hash);
     	Paragraph paragraph = Paragraph.findById(paragraphId);
-    	User author = Dbtit.connectedUser(); // author can't be null thx to the @Authenticated annotation
+    	User author = Dbtit.connectedUser(); // author can't be null thx to the @LoggedIn annotation
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
@@ -245,7 +245,7 @@ public class Debate extends Controller {
      * @param hash
      * @param postId
      */
-    @Authenticated
+    @LoggedIn
     public static void edit(String hash, Long postId)
     {
     	Thread thread = Thread.findByHash(hash);
@@ -267,7 +267,7 @@ public class Debate extends Controller {
      * @param postId
      * @param content
      */
-    @Authenticated
+    @LoggedIn
     public static void postEdit(String hash, Long postId, @Required String content)
     {
     	Thread thread = Thread.findByHash(hash);
@@ -308,7 +308,7 @@ public class Debate extends Controller {
      * @param hash
      * @param url
      */
-    @Authenticated
+    @LoggedIn
     public static void followThread(String hash, String url) {
     	Thread thread = Thread.findByHash(hash);
     	User user = Dbtit.connectedUser();
@@ -326,7 +326,7 @@ public class Debate extends Controller {
      * @param hash
      * @param url
      */
-    @Authenticated
+    @LoggedIn
     public static void doNotFollowThread(String hash, String url) {
     	Thread thread = Thread.findByHash(hash);
     	User user = Dbtit.connectedUser();
@@ -342,7 +342,7 @@ public class Debate extends Controller {
     /**
      * Display the following threads page for the current user
      */
-    @Authenticated
+    @LoggedIn
     public static void followThreads() {
     	User user = Dbtit.connectedUser();
     	
@@ -352,7 +352,13 @@ public class Debate extends Controller {
     		currentPage = params.get(pageVar, Integer.class);
     	Pagination pagination = new Pagination(user.followedThreads.count(), currentPage, 10, pageVar);
     	
-    	List<Following> followedThreads = user.followedThreads.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
+    	
+    	List<Following> followedThreads;
+    	if (pagination.getCurrentLimit() > 0) {
+    		followedThreads = user.followedThreads.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
+    	} else {
+    		followedThreads = new ArrayList<Following>();
+    	}
     	
     	render(followedThreads, pagination);
     }
