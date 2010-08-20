@@ -46,7 +46,6 @@ public class Post extends Model
 	
 	/** The paragraphs of this post */
 	@Filter("post")
-	/*@OrderBy("number ASC")*/
 	public Query<Paragraph> paragraphs;
 	
 	/** The thread that this post belongs to */

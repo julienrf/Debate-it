@@ -1,7 +1,7 @@
 <div>
 	<div id="answers">
 		<div class="answer">
-		#{list items:paragraph.answers, as:'reply'}
+		#{list items:paragraph.answers.fetch(), as:'reply'}
 				#{tree post:reply, lastReading:lastReading, paragraphsToShow:paragraphsToShow, user:user, thread:thread /}
 		#{/list}
 		</div>

@@ -68,10 +68,8 @@ public class Paragraph extends Model {
 	 * @param content Content of the reply post
 	 */
 	public Post reply(User author, String content) {
-		Post post = this.post;
 		post.get();
 		Thread thread = post.thread;
-		thread.get();
 		Post reply = Post.create(author, content, this, thread);
 		//this.answers.add(post);
 		author.follow(thread);

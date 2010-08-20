@@ -92,7 +92,8 @@ public class Debate extends Controller {
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	if (paragraph.post.thread != thread)
+    	paragraph.post.get();
+    	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
     	Reading reading;
@@ -125,7 +126,8 @@ public class Debate extends Controller {
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	if (paragraph.post.thread != thread)
+    	paragraph.post.get();
+    	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
     	Date lastReading;
@@ -195,7 +197,7 @@ public class Debate extends Controller {
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
     	paragraph.post.get();
-    	if (paragraph.post.thread.id != thread.id)
+    	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
     	render(thread, paragraph);
@@ -216,7 +218,7 @@ public class Debate extends Controller {
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
     	paragraph.post.get();
-    	if (paragraph.post.thread.id != thread.id)
+    	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
     	if (validation.hasErrors()) {
@@ -251,7 +253,7 @@ public class Debate extends Controller {
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(post);
-    	if (post.hasAnswers() || post.thread.id != thread.id)
+    	if (post.hasAnswers() || !post.thread.id.equals(thread.id))
     		notFound(); // On ne modifie pas un post qui a déjà reçu des réponses (ou qui fait partie d’un autre thread)
     	
     	String content = post.content;
@@ -274,7 +276,7 @@ public class Debate extends Controller {
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(post);
-    	if (post.thread.id != thread.id || post.author.id != author.id)
+    	if (!post.thread.id.equals(thread.id) || !post.author.id.equals(author.id))
     		notFound();
     	
     	if (post.hasAnswers()) {

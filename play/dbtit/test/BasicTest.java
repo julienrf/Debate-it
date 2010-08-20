@@ -46,7 +46,7 @@ public class BasicTest extends UnitTest {
 			u.delete();
 		
 		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID(), false);
-		julien.update();
+		julien.insert();
 	}
 	
 	@Test
@@ -105,7 +105,15 @@ public class BasicTest extends UnitTest {
 		thread = Thread.all().filter("title", "Titre").get();
 		assertNotNull(thread);
 		assertNotNull(thread.rootPost);
-		assertEquals(thread.rootPost.content, "Contenu");
+		thread.rootPost.get();
+		assertEquals("Contenu", thread.rootPost.content);
+		
+		Paragraph paragraph = thread.rootPost.paragraphs.get();
+		paragraph.reply(julien, "Reply");
+		
+		Post reply = Post.all().filter("parent", paragraph).get();
+		assertNotNull(reply);
+		assertEquals("Reply", reply.content);
 	}
 	
 	@Test

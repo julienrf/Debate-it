@@ -16,9 +16,9 @@
 		</div>
 	
 		*{ Affichage des réponses }*
-		#{if _paragraph.answers.size() != 0 && _paragraphsToShow.contains(_paragraph)}
+		#{if _paragraph.answers.count() != 0 && _paragraphsToShow.contains(_paragraph)}
 			<div class="answer">
-			#{list items:_paragraph.answers, as:'reply'}
+			#{list items:_paragraph.answers.fetch(), as:'reply'}
 					#{tree post:reply, lastReading:_lastReading, paragraphsToShow:_paragraphsToShow, user:_user, thread:_thread /}
 			#{/list}
 			</div>
