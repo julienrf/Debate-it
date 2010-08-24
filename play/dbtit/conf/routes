@@ -14,9 +14,6 @@ GET     /admin/disconnect             admin.Security.onDisconnected
 GET     /admin/?                      admin.Admin.index
 *       /admin                        module:crud
 
-GET     /new                          Debate.newThread
-POST    /new                          Debate.createThread
-
 GET     /profile                      Dbtit.profile
 POST    /profile                      Dbtit.postProfile
 
@@ -24,10 +21,17 @@ GET     /login                        Dbtit.login
 GET     /loggedIn                     Dbtit.loggedIn
 GET     /logout                       Dbtit.logout
 
+GET     /new                          Debate.newThread
+POST    /new                          Debate.createThread
+
 GET     /follow                       Debate.followThreads
 
-GET     /{hash}                       Debate.thread
+GET     /{hash}                       Debate.showThread
 GET     /{hash}/{paragraphId}         Debate.branch
+
+PUT     /{hash}/read/{postId}         Debate.readPost
+PUT     /{hash}/unread/{postId}       Debate.unreadPost
+
 GET     /{hash}/answers/{paragraphId} Debate.answers
 
 GET     /{hash}/reply/{paragraphId}   Debate.reply

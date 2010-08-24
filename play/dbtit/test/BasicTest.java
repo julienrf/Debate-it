@@ -133,4 +133,18 @@ public class BasicTest extends UnitTest {
 		assertEquals(1, julien.followedThreads.count());
 		assertTrue(julien.isFollowing(thread));
 	}
+	
+	@Test
+	public void read() {
+		Thread thread = Thread.create(julien, "Titre", "Contenu");
+		
+		assertTrue(!julien.hasRead(thread.rootPost));
+		//assertEquals(1, julien.getUnreadPostCount(thread));
+		
+		julien.read(thread.rootPost);
+		assertTrue(julien.hasRead(thread.rootPost));
+		
+		julien.unread(thread.rootPost);
+		assertTrue(!julien.hasRead(thread.rootPost));
+	}
 }

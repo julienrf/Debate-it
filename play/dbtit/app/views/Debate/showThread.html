@@ -16,13 +16,13 @@
 #{/if}
 
 <div class="hoverable">
-	<h1 class="thread title">#{a @Debate.showThread(thread.hash)}${thread.title}#{/a} » &{'branch'}</h1>
+	<h1 class="thread title">${thread.title}</h1>
 	#{followthread thread:thread, user:user /}
 </div>
 
 %{ footNotes = [] }%
 
-#{treefromparagraph thread:thread, paragraph:paragraph, user:user /}
+#{tree thread:thread, post:post, user:user, footNotes:footNotes /}
 
 #{if footNotes.size() > 0}
 	<ol id="footnotes" class="footnotes">

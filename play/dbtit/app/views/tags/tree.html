@@ -1,29 +1,34 @@
 *{ Display a post tree }*
 *{ @param Post post }*
-*{ @param Date lastReading }*
-*{ @param Collection<Post> paragraphsToShow }*
 *{ @param User user }*
 *{ @param Long threadId }*
+*{ @param List footNotes }*
 
-<div class="box post ${_lastReading.compareTo(_post.date) >= 0 ? "read" : "unread" }" id="post_${_post.id}">
+<div class="box post ${_user.hasRead(_post) ? "read" : "unread" }" id="post_${_post.id}">
     #{posttitle post:_post, tz:_user?.tz /}
 
 	#{list items:_post.paragraphs.fetch(), as:'paragraph'}
-	    <div class="paragraph" id="paragraph_${paragraph.id}">
+		%{
+			// Handle footnotes
+			paragraph.footNotes.fetch().each {
+				_footNotes << it;
+			}
+		}%
+    	<div class="paragraph" id="paragraph_${paragraph.id}">
 	    	<div class="container">
 				#{paragraphcontent paragraph:paragraph /}
 		
-				#{paragraphtools paragraph:paragraph, thread:_thread, user:_user, post:_post, paragraphsToShow:_paragraphsToShow /}
+				#{paragraphtools thread:_thread, post:_post, paragraph:paragraph, user:_user /}
 			</div>
 			
 			*{ Affichage des réponses }*
-			#{if paragraph.answers.count() != 0 && _paragraphsToShow.contains(paragraph)}
+			#{if paragraph.hasAnswers() && _user.hasRead(_post)}
 				<div class="answer">
 				#{list items:paragraph.answers.fetch(), as:'reply'}
-						#{tree post:reply, lastReading:_lastReading, paragraphsToShow:_paragraphsToShow, user:_user, thread:_thread /}
+						#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
 				#{/list}
 				</div>
-			#{/if} *{ paragraph.answers.size() != 0 }*
+			#{/if} *{ paragraph.hasAnswers() }*
 		</div> <!-- container -->
     #{/list} *{ paragraphs }*
 </div> <!-- post -->

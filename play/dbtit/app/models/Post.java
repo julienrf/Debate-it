@@ -52,6 +52,10 @@ public class Post extends Model
 	@Required
 	@NotNull @Column("thread")
 	public Thread thread;
+	
+	/** Who has read this post? */
+	@Filter("post")
+	public Query<Reading> readings;
 
 	/**
 	 * Protected constructor since the static helper should be used for better consistency
@@ -59,13 +63,12 @@ public class Post extends Model
 	 * @param content
 	 * @param parent
 	 */
-	protected Post(User author, Paragraph parent, Thread thread, Date date) // FIXME Add a content parameter?
+	protected Post(User author, Paragraph parent, Thread thread, Date date)
 	{
 		this.thread = thread;
 		this.author = author;
 		this.parent = parent;
 		this.date = date;
-		//this.paragraphs = new ArrayList<Paragraph>();
 	}
 	
 	/**
@@ -157,26 +160,9 @@ public class Post extends Model
 	public boolean hasAnswers()
 	{
     	for (Paragraph paragraph : paragraphs.fetch()) {
-    		if (paragraph.answers.count() != 0)
+    		if (paragraph.hasAnswers())
     			return true;
     	}
 		return false;
 	}
-	
-	/**
-	 * TODO TESTS and *optimization*
-	 * @param deadline
-	 * @param paragraphs
-	 */
-	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		for (Paragraph p : this.paragraphs.fetch())
-			footNotesList.addAll(p.footNotes.fetch());
-
-		if (lastReading.compareTo(date) >= 0) {
-			for (Paragraph paragraph : this.paragraphs.fetch()) {
-				paragraph.getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
-			}
-		}
-	}
-
 }

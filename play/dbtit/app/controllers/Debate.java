@@ -2,6 +2,7 @@ package controllers;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,6 +21,7 @@ import play.Logger;
 import play.data.validation.Required;
 import play.i18n.Messages;
 import play.mvc.Controller;
+import play.mvc.Router;
 import play.mvc.With;
 import utils.Helper;
 import utils.Pagination;
@@ -33,54 +35,15 @@ import utils.Pagination;
 public class Debate extends Controller {
     /**
      * Display a thread
-     * @param id
+     * @param hash Thread hash
      */
-    public static void thread(String hash) {
+    public static void showThread(String hash) {
     	Thread thread = Thread.findByHash(hash);
     	notFoundIfNull(thread);
+    	thread.rootPost.get();
     	Post post = thread.rootPost;
-    	Reading reading;
-    	Date lastReading;
-    	Set<Paragraph> paragraphsToShow = new HashSet<Paragraph>();
-    	List<FootNote> footNotes = new ArrayList<FootNote>();
     	
-    	User user = Dbtit.connectedUser();
-    	if (user != null) {
-			reading = user.lastReading(thread);
-			lastReading = reading.date;
-    	} else {
-    		reading = null;
-    		lastReading = Helper.getMinDate();
-    	}
-    	System.out.println(lastReading);
-    	thread.getAnsweredParagraphsBefore(lastReading, reading, paragraphsToShow, footNotes);
-    	
-    	/*if (params._contains("s")) {
-    		String h = params.get("s");
-    		String[] paragraphs = h.split("\\.");
-    		if (paragraphs != null) {
-    			for (String pId : paragraphs) {
-    				Paragraph p = Paragraph.findById(Long.parseLong(pId));
-	    			if (p != null) {
-	    				paragraphsToShow.add(p);
-	    			}
-	    		}
-    		}
-    	}
-    	if (params._contains("h")) {
-    		String h = params.get("h");
-    		String[] paragraphs = h.split("\\.");
-    		if (paragraphs != null) {
-	    		for (String pId : paragraphs) {
-	    			Paragraph p = Paragraph.findById(Long.parseLong(pId));
-	    			if (p != null) {
-	    				paragraphsToShow.remove(p);
-	    			}
-	    		}
-    		}
-    	}*/
-
-    	render(thread, post, lastReading, paragraphsToShow, footNotes);
+    	render(thread, post);
     }
     
     /**
@@ -96,22 +59,7 @@ public class Debate extends Controller {
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
-    	Reading reading;
-    	Date lastReading;
-    	Set<Paragraph> paragraphsToShow = new HashSet<Paragraph>();
-    	List<FootNote> footNotes = new ArrayList<FootNote>();
-    	
-    	User user = Dbtit.connectedUser();
-    	if (user != null) {
-			reading = user.lastReading(thread);
-			lastReading = reading.date;
-    	} else {
-    		reading = null;
-    		lastReading = Helper.getMinDate();
-    	}
-    	paragraph.getParagraphAndAnswersBefore(lastReading, reading, paragraphsToShow, footNotes);
-    	
-    	render(thread, paragraph, lastReading, paragraphsToShow, footNotes);
+    	render(thread, paragraph);
     }
     
     /**
@@ -130,22 +78,37 @@ public class Debate extends Controller {
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
-    	Date lastReading;
-    	Reading reading;
-    	Set<Paragraph> paragraphsToShow = new HashSet<Paragraph>();
-    	List<FootNote> footNotesList = new ArrayList<FootNote>();
+    	render(thread, paragraph);
+    }
+    
+    @LoggedIn
+    public static void readPost(String hash, Long postId) {
+    	Thread thread = Thread.findByHash(hash);
+    	notFoundIfNull(thread);
+    	
+    	Post post = Post.findById(postId);
+    	notFoundIfNull(post);
+    	
+    	if (!post.thread.id.equals(thread.id))
+    		notFound();
     	
     	User user = Dbtit.connectedUser();
-    	if (user != null) {
-    		reading = user.lastReading(thread);
-    		lastReading = reading.date;
-    	} else {
-    		reading = null;
-    		lastReading = paragraph.post.date;
-    	}
-    	paragraph.getAnsweredParagraphsBefore(lastReading, reading, paragraphsToShow, footNotesList);
+    	user.read(post);
+    }
+    
+    @LoggedIn
+    public static void unreadPost(String hash, Long postId) {
+    	Thread thread = Thread.findByHash(hash);
+    	notFoundIfNull(thread);
     	
-    	render(thread, paragraph, lastReading, paragraphsToShow, footNotesList);
+    	Post post = Post.findById(postId);
+    	notFoundIfNull(post);
+    	
+    	if (!post.thread.id.equals(thread.id))
+    		notFound();
+    	
+    	User user = Dbtit.connectedUser();
+    	user.unread(post);
     }
     
     /**
@@ -181,7 +144,7 @@ public class Debate extends Controller {
     	flash.success(Messages.get("threadCreated", thread.title));
     	Logger.info("Thread (%s) created by user %s (%s)", thread.id, user.name, user.id);
     	
-    	thread(thread.hash);
+    	showThread(thread.hash);
     }
     
     /**
@@ -237,7 +200,7 @@ public class Debate extends Controller {
     	flash.success(Messages.get("postAdded"));
     	Logger.info("Reply (%s) posted to paragraph (%s) by user %s (%s)", reply.id, paragraph.id, author.name, author.id);
     	
-    	thread(thread.hash);
+    	showThread(thread.hash);
     }
     
     /**
@@ -300,7 +263,7 @@ public class Debate extends Controller {
     	flash.success(Messages.get("postUpdated"));
     	Logger.info("Post (%s) edited by user %s (%s)", post.id, author.name, author.id);
     	
-    	thread(thread.hash);
+    	showThread(thread.hash);
     }
     
     /**

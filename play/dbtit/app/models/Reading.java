@@ -20,24 +20,21 @@ public class Reading extends Model {
 	public Long id;
 
 	@Required
-	@NotNull @Column("thread")
-	public Thread thread;
+	@NotNull @Column("post")
+	public Post post;
 	
 	@Required
 	@NotNull @Column("user")
 	public User user;
 	
-	@Required
-	@NotNull
-	public Date date;
+	@Column("thread")
+	public Thread thread; // Needed by the getUnreadPostCount query (unless I'm wrong?)
 	
-	public Reading(Thread thread, User user, Date date)
+	public Reading(Post post, User user)
 	{
-		this.thread = thread;
+		this.post = post;
 		this.user = user;
-		this.date = date;
-		//this.user.readings.add(this); // maintains the relationship
-		//this.thread.readings.add(this); // maintains the relationship
+		this.thread = post.thread;
 	}
 	
 	public static Query<Reading> all() {
@@ -45,13 +42,6 @@ public class Reading extends Model {
 	}
 	
 	public String toString() {
-		return date.toString();
-	}
-	
-	public void updateDate(Date date) {
-		if (this.date.compareTo(date) < 0) {
-			this.date = date;
-			update();
-		}
+		return "" + user + "-" + post;
 	}
 }

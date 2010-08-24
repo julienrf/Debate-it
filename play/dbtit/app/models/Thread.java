@@ -36,16 +36,12 @@ public class Thread extends Model {
 	/** A number generator used to salt the hash computation */
 	private static AtomicLong generator = new AtomicLong(System.currentTimeMillis());
 	
-	/*@OneToMany(mappedBy = "thread", cascade = CascadeType.ALL)
-	public List<Reading> readings;*/
-	
 	/** Protected constructor since the static helper should be used, for better consistency */
 	protected Thread(String title)
 	{
 		this.title = title;
 		this.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + generator.incrementAndGet()));
 		this.rootPost = null;
-		//this.readings = new ArrayList<Reading>();
 	}
 	
 	public static Query<Thread> all() {
@@ -80,26 +76,11 @@ public class Thread extends Model {
 	}
 	
 	/**
-	 * TODO TESTS
-	 * Donne la liste de tous les paragraphes qui contiennent des réponses et qui ont été écrits avant une date
-	 * @param reading Contains the date of the last post read in this thread by the user
-	 * @param footNotes A footnotes container which will be filled with posts footnotes
-	 */
-	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphsToShow, List<FootNote> footNotesList) {
-		rootPost.get();
-		rootPost.getAnsweredParagraphsBefore(lastReading, reading, paragraphsToShow, footNotesList);
-		if (reading != null) {
-			reading.updateDate(rootPost.date);
-		}
-	}
-	
-	/**
 	 * Count the number of posts posted after a given date in this thread
 	 * @param date
 	 * @return
 	 */
 	public long getPostCountAfter(Date date) {
-		//return Post.count("thread = ? and date > ?", this, date);
 		return Post.all(Post.class).filter("thread", this).filter("date>", date).count();
 	}
 }

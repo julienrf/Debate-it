@@ -1,13 +1,14 @@
+%{ footNotes = [] }%
 <div>
 	<div id="answers">
 		<div class="answer">
 		#{list items:paragraph.answers.fetch(), as:'reply'}
-				#{tree post:reply, lastReading:lastReading, paragraphsToShow:paragraphsToShow, user:user, thread:thread /}
+				#{tree thread:thread, post:reply, user:user, footNotes:footNotes /}
 		#{/list}
 		</div>
 	</div>
 	<div id="footnotes">
-		#{list items:footNotesList, as:'footNote'}
+		#{list items:footNotes, as:'footNote'}
 			<li>${ footNote.getContent().raw() }</li>
 		#{/list}
 	</div>

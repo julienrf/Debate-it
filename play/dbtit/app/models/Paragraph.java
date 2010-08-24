@@ -37,15 +37,13 @@ public class Paragraph extends Model {
 	@NotNull @Column("post")
 	public Post post;
 	
-	/** Number of the post (added to sort paragraphs, FIXME remove it with Siena) */
+	/** Number of the post (added to sort paragraphs) */
 	public Integer number;
 	
 	public Paragraph(Post post, String content, Integer number)
 	{
 		this.post = post;
 		this.content = content;
-		//this.answers = new ArrayList<Post>();
-		//this.footNotes = new ArrayList<FootNote>();
 		this.number = number;
 	}
 	
@@ -71,9 +69,12 @@ public class Paragraph extends Model {
 		post.get();
 		Thread thread = post.thread;
 		Post reply = Post.create(author, content, this, thread);
-		//this.answers.add(post);
 		author.follow(thread);
 		return reply;
+	}
+	
+	public boolean hasAnswers() {
+		return answers.count() != 0;
 	}
 
 	/**
@@ -81,32 +82,10 @@ public class Paragraph extends Model {
 	 */
 	public void addFootNote(FootNote footNote) {
 		footNote.paragraph = this;
-		//footNotes.add(footNote);
 		footNote.update();
 	}
 	
-	public void getParagraphAndAnswersBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		paragraphs.add(this);
-		footNotesList.addAll(footNotes.fetch());
-		getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
-	}
-	
-	/**
-	 * Collect the answers of this paragraph and try to add it to the set of paragraph unless their date is further than lastReading.
-	 * @param lastReading deadline
-	 * @param reading optionnal reading object which will be updated according to the date of the collected unread posts
-	 * @param paragraphs set of paragraphs which will be filled with the collected paragraphs
-	 * @param footNotesList list of footnotes which will be filled with the footnotes of the collected paragraphs, excluding this paragraph
-	 */
-	public void getAnsweredParagraphsBefore(Date lastReading, Reading reading, Set<Paragraph> paragraphs, List<FootNote> footNotesList) {
-		if (answers.count() != 0) {
-			paragraphs.add(this); // This paragraph contains answers, add it to the list of answered paragraphs
-			for (Post answer : answers.fetch()) {
-				answer.getAnsweredParagraphsBefore(lastReading, reading, paragraphs, footNotesList);
-				if (reading != null) { // This answer is after the last post the user has already read
-					reading.updateDate(answer.date);
-				}
-			}
-		}
+	public boolean hasFootNotes() {
+		return footNotes.count() != 0;
 	}
 }
