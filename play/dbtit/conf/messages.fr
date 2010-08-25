@@ -36,6 +36,8 @@ followThread=Suivre cette discussion
 doNotFollow=Ne plus suivre
 doNotFollowThread=Ne plus suivre cette discussion
 
+markRead=Marquer le message comme lu
+markUnread=Marquer le message comme non lu
 parent=P
 goToParentPost=Aller au message parent
 rollPost=Afficher ou cacher le message
@@ -78,6 +80,7 @@ userUpdate.tzId=Fuseau horaire
 # userUpdate.rememberMe=Se connecter automatiquement à chaque visite
 
 intro=<p>Debate it! est une plate-forme de <strong>débats</strong> en ligne.</p><p><strong>Exprimez</strong> clairement vos idées avec une syntaxe de mise en forme simple.</p><p><strong>Saisissez</strong> l’essence du débat grâce à un affichage ergonomique.</p><p>Debate it! est <strong>gratuit</strong>, il suffit d’un compte Google pour l’utiliser.</p>
+more=En savoir plus…
 syntaxHelp=Enrichissez la forme de votre message avec une syntaxe simple
 syntaxGuide=<p>La syntaxe de Debate it! est inspirée de la syntaxe <a href="http://wikicreole.org/wiki/Home">Créole</a>, voici un exemple montrant toutes les possibilités de mise en forme et son résultat, en-dessous&nbsp;:</p><pre>Le texte en **gras** ou en //italique// reste lisible.<br />Un retour à la [[http://www.google.com|ligne]] ne crée pas de nouveau paragraphe.<br /><br />Il faut laisser une ligne vide pour cela[[[Note de bas de page]]].<br /><br />&nbsp;* Il est possible de définir des listes<br />&nbsp;- En utilisant l’étoile ou le tiret suivi d’une espace, en début de ligne.</pre><p>Le résultat produit est le suivant :<blockquote><p>Le texte en <strong>gras</strong> ou en <em>italique</em> reste lisible. Un retour à la <a href="http://www.google.com" title="ligne">ligne</a> ne crée pas de nouveau paragraphe.</p><p>Il faut laisser une ligne vide pour cela<sup id="ref-footnote_sample"><a href="#footnote_sample">1</a></sup>.</p><p><ul><li>Il est possible de définir des listes</li></ul></p><p><ul><li>En utilisant l’étoile ou le tiret suivi d’une espace, en début de ligne.</li></ul></p><ol><li id="footnote_sample"><a href="#ref-footnote_sample">&uarr;</a> Note de bas de page</li></ol></blockquote></p>
 

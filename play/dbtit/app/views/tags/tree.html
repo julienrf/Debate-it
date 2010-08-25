@@ -4,8 +4,8 @@
 *{ @param Long threadId }*
 *{ @param List footNotes }*
 
-<div class="box post ${_user.hasRead(_post) ? "read" : "unread" }" id="post_${_post.id}">
-    #{posttitle post:_post, tz:_user?.tz /}
+<div class="box post ${_user?.hasRead(_post) ? "read" : "unread" }" id="post_${_post.id}">
+    #{posttitle thread:_thread, post:_post, user:_user /}
 
 	#{list items:_post.paragraphs.fetch(), as:'paragraph'}
 		%{
@@ -22,7 +22,7 @@
 			</div>
 			
 			*{ Affichage des réponses }*
-			#{if paragraph.hasAnswers() && _user.hasRead(_post)}
+			#{if paragraph.hasAnswers() && _user?.hasRead(_post)}
 				<div class="answer">
 				#{list items:paragraph.answers.fetch(), as:'reply'}
 						#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}

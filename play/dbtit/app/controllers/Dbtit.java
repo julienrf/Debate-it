@@ -112,4 +112,8 @@ public class Dbtit extends Controller {
     public static void index() {
     	render();
     }
+    
+    public static void features() {
+    	render();
+    }
 }

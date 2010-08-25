@@ -7,11 +7,31 @@
         #{stylesheet 'main.sass' /}
         #{stylesheet 'button.sass' /}
         #{get 'moreStyles' /}
-        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon3.png'}" />
+        <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}" />
+        <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
+        <script type="text/javascript">stLight.options({publisher:'3b22fc8f-0f0f-4fc9-a599-f59f5d8fc1c9'});</script>
     </head>
     <body>
     	<header>
-        	<h1><a href="@{Dbtit.index()}">Debate it!</a></h1>
+    		#{if user}
+	    		<nav id="left-nav">
+	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
+					| #{a @Debate.newThread()}&{'createThread'}#{/a}
+					| #{a @Debate.followThreads()}&{'followedThreads'}#{/a}
+				</nav>
+				<nav id="right-nav">
+					<strong>${user.name}</strong>
+					| #{a @Dbtit.profile(request.url)}&{'profile'}#{/a}
+					| #{a @Dbtit.logout()} &{'logout'} #{/a}
+				</nav>
+	    	#{/if}
+	    	#{else}
+	    		<nav id="left-nav">
+	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
+				</nav>
+				#{get 'moreNav' /}
+	    	#{/else}
+    		<div id="end-nav"></div>
     	</header>
     
         #{if flash.success}
@@ -26,15 +46,6 @@
         </div>
         #{/if}
         
-		#{if user != null}
-			<nav>
-				*{#{a @Debate.newThread(), class:'button gray normal'}&{'createThread'}#{/a}}*
-				#{a @Debate.followThreads(), class:'button gray normal'}&{'followedThreads'}#{/a}
-				#{a @Dbtit.profile(request.url), class:'button gray normal'}&{'profile'}#{/a}
-				#{a @Dbtit.logout(), class:'button gray normal'} &{'logout'} (${user.name}) #{/a}
-			</nav>
-		#{/if}
-
         <article>
         	#{doLayout /}
         </article>

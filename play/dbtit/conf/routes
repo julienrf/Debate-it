@@ -17,6 +17,8 @@ GET     /admin/?                      admin.Admin.index
 GET     /profile                      Dbtit.profile
 POST    /profile                      Dbtit.postProfile
 
+GET     /features                     Dbtit.features
+
 GET     /login                        Dbtit.login
 GET     /loggedIn                     Dbtit.loggedIn
 GET     /logout                       Dbtit.logout

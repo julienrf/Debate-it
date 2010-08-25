@@ -94,6 +94,7 @@ public class Debate extends Controller {
     	
     	User user = Dbtit.connectedUser();
     	user.read(post);
+    	Logger.info("Post (%s) read by user (%s)", post.id, user.id);
     }
     
     @LoggedIn
@@ -109,6 +110,7 @@ public class Debate extends Controller {
     	
     	User user = Dbtit.connectedUser();
     	user.unread(post);
+    	Logger.info("Post (%s) marked as unread by user (%s)", post.id, user.id);
     }
     
     /**

@@ -15,12 +15,13 @@ $(document).ready(function(){
 });
 
 /** Ajoute le comportement permettant d’afficher/cacher les outils d’un paragraphe quand l’utilisateur le survole
- * ainsi que le comportement lors du clic sur les boutons permettant d’afficher ou cacher les réponses d’un paragraphe  */
+ * ainsi que le comportement lors du clic sur les boutons permettant d’afficher ou cacher les réponses d’un paragraphe
+ */
 function setupPostTools() {
   // Cache les outils des posts
   $(".post .other-tools").hide();
   
-  // Affiche les outils des paragraphes quand le curseur passe au-dessus de ceux-ci
+  // Affiche les outils des paragraphes quand le curseur passe au-dessus de ceux-ci  * TODO le faire en CSS
   $(".paragraph .container").hover(
 		function(event) { $(this).find(".other-tools").show(); },
 	  	function(event) { $(this).find(".other-tools").hide(); }

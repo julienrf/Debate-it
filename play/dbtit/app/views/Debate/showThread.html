@@ -4,6 +4,7 @@
 	#{stylesheet 'box.sass' /}
 	#{stylesheet 'bubble.sass' /}
 	#{stylesheet 'hover.sass' /}
+	#{stylesheet 'sprite.sass' /}
 	#{stylesheet 'tree.sass' /}
 #{/set}
 
@@ -12,11 +13,13 @@
 </script>
 
 #{if user == null}
-	<nav>#{a @Dbtit.login(request.url), class:'normal gray button'} &{'login'} #{/a} &{'toParticipate'}</nav>
+	#{set 'moreNav'}
+		<div id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a} &{'toParticipate'}</div>
+	#{/set}
 #{/if}
 
-<div class="hoverable">
-	<h1 class="thread title">${thread.title}</h1>
+<div>
+	<span class="thread-title">${thread.title}</span>
 	#{followthread thread:thread, user:user /}
 </div>
 

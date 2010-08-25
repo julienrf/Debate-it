@@ -2,25 +2,15 @@
 *{ @param user }*
 *{ @param thread }*
 
-<div class="bubble hover">
+#{if _user}
+	#{ifnot _user.isFollowing(_thread)}
+		#{sprite name:'follow', action:@Debate.followThread(_thread.hash, request.url), alt:messages.get('followThread') /}
+	#{/ifnot}
+	#{else}
+		#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(_thread.hash, request.url), alt:messages.get('doNotFollowThread') /}
+	#{/else}
+#{/if}
 
-	#{if _user != null}
-	<div>
-		#{ifnot _user.isFollowing(_thread)}
-			#{a @Debate.followThread(_thread.hash, request.url), title:messages.get('followThread')}&{'follow'}#{/a}
-		#{/ifnot}
-		#{else}
-			#{a @Debate.doNotFollowThread(_thread.hash, request.url), title:messages.get('doNotFollowThread')}&{'doNotFollow'}#{/a}
-		#{/else}
-	</div>
-	#{/if}
+#{sprite name:'permalink', action:@Debate.showThread(_thread.hash), alt:messages.get('permanentLink') /}
 
-	<div>#{a @Debate.showThread(_thread.hash)} &{'permanentLink'} #{/a}</div>
-	
-	<div>
-		<!-- AddThis Button BEGIN -->
-		<a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4c5b0365662d2847"><img src="http://s7.addthis.com/static/btn/v2/lg-share-en.gif" width="125" height="16" alt="Bookmark and Share" style="border:0"/></a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4c5b0365662d2847"></script>
-		<!-- AddThis Button END -->
-	</div>
-
-</div>
+<span class="st_email"></span><span class="st_facebook"></span><span class="st_twitter"></span><span class="st_sharethis" displayText="ShareThis"></span>
