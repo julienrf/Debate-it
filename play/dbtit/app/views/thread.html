@@ -1,0 +1,35 @@
+#{extends 'main.html' /}
+#{set title: thread.title + " — Debate it!" /}
+#{set 'moreStyles'}
+	#{stylesheet 'box.sass' /}
+	#{stylesheet 'bubble.sass' /}
+	#{stylesheet 'hover.sass' /}
+	#{stylesheet 'sprite.sass' /}
+	#{stylesheet 'tree.sass' /}
+#{/set}
+
+<script type="text/javascript">
+	var getAnswers = #{jsAction @Debate.answers(thread.hash, ':paragraphId') /}
+	var readPost = #{jsAction @Debate.readPost(thread.hash, ':postId') /}
+</script>
+
+#{if user == null}
+	#{set 'moreNav'}
+		<div id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a} &{'toParticipate'}</div>
+	#{/set}
+#{/if}
+
+<div>
+	<span class="thread-title">#{get 'thread-title' /}</span>
+	#{followthread thread:thread, user:user /}
+</div>
+
+#{get 'thread-content' /}
+
+#{if footNotes.size() > 0}
+	<ol id="footnotes" class="footnotes">
+	#{list items:footNotes, as:'footNote'}
+		<li>${ footNote.getContent().raw() }</li>
+	#{/list}
+	</ol>
+#{/if}

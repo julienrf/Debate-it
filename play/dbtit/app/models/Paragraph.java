@@ -69,7 +69,6 @@ public class Paragraph extends Model {
 		post.get();
 		Thread thread = post.thread;
 		Post reply = Post.create(author, content, this, thread);
-		author.follow(thread);
 		return reply;
 	}
 	

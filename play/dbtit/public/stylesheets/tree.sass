@@ -1,9 +1,13 @@
 /* Thread display */
 
+!brown = #A65F00
+
 .thread-title
 	font-family: serif
 	margin-left: 1em
 	font-size: xx-large
+	color = !brown
+	text-shadow: #888 1px 1px 3px
 
 .answer
 	margin-left: .5em
@@ -13,7 +17,7 @@
 	margin: 0.5em
 	width: 50em
 	&.unread
-		border: medium solid SlateGray
+		border: 2px solid #439400
 
 	.title
 		padding-left: .6em
@@ -21,7 +25,6 @@
 
 		.roll, .roll-branch
 			float: left
-			padding-right: 0.8em
 			text-decoration: none
 			color: #777
 		
@@ -30,6 +33,7 @@
 
 		.author
 			float: left
+			padding-left: 0.8em
 			font-size: small
 		
 		.preview

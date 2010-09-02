@@ -82,6 +82,8 @@ public class Post extends Model
 	{
 		Post post = new Post(author, parent, thread, new Date());
 		post.insert(); // The insert is needed because the paragraphs about to be created will reference this post
+		author.follow(thread);
+		author.read(post);
 		post.setParagraphs(content);
 		return post;
 	}

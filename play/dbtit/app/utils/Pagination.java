@@ -11,7 +11,7 @@ import java.util.Map;
  */
 public class Pagination {
 	private int itemCount;
-	private String pageVar = "page";
+	private String pageVar = "p";
 	private int pageSize = 20;
 	private int currentPage = 1;
 	
@@ -54,6 +54,10 @@ public class Pagination {
 	
 	public int getCurrentPage() {
 		return currentPage;
+	}
+	
+	public void setCurrentPage(int currentPage) {
+		this.currentPage = currentPage;
 	}
 	
 	public String getPageVar() {

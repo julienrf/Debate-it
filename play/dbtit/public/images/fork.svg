@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.0//EN" "http://www.w3.org/TR/2001/PR-SVG-20010719/DTD/svg10.dtd">
+<svg width="13cm" height="9cm" viewBox="155 114 246 171" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <g>
+    <path style="fill: none; fill-opacity:0; stroke-width: 10; stroke: #000000" d="M 160 200 C 300,200 260,220 362.149,263.778"/>
+    <polygon style="fill: #000000" points="389.724,275.596 345.079,278.222 362.149,263.778 360.836,241.456 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 10; stroke: #000000" points="389.724,275.596 345.079,278.222 362.149,263.778 360.836,241.456 "/>
+  </g>
+  <g>
+    <path style="fill: none; fill-opacity:0; stroke-width: 10; stroke: #000000" d="M 160 200 C 300,200 260,180 362.149,136.222"/>
+    <polygon style="fill: #000000" points="389.724,124.404 360.836,158.544 362.149,136.222 345.079,121.778 "/>
+    <polygon style="fill: none; fill-opacity:0; stroke-width: 10; stroke: #000000" points="389.724,124.404 360.836,158.544 362.149,136.222 345.079,121.778 "/>
+  </g>
+</svg>

@@ -71,7 +71,6 @@ public class Thread extends Model {
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
 		thread.update();
-		author.follow(thread);
 		return thread;
 	}
 	
@@ -82,5 +81,9 @@ public class Thread extends Model {
 	 */
 	public long getPostCountAfter(Date date) {
 		return Post.all(Post.class).filter("thread", this).filter("date>", date).count();
+	}
+	
+	public Date lastPostDate() {
+		return Post.all(Post.class).filter("thread", this).order("-date").get().date;
 	}
 }

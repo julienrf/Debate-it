@@ -8,11 +8,9 @@
     #{if _paragraph.hasAnswers()}
     	#{if _user && _user.hasRead(_post)}
     		#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
-    		*{<a class="hide-answers" href="#" title="&{'hidePostAnswers'}">&{'hideAnswers'}</a>}*
     	#{/if}
     	#{else}
     		#{sprite name:'show-answers', action:@Debate.answers(_thread.hash, _paragraph.id), alt:messages.get('showPostAnswers') /}
-    		*{<a class="show-answers" href="#" title="&{'showPostAnswers'}">&{'showAnswers'}</a>}*
     	#{/else}
 	#{/if}
 	<span class="other-tools">
@@ -20,11 +18,11 @@
     #{sprite name:'replyPost', action:@Debate.reply(_thread.hash, _paragraph.id), alt:messages.get('replyToPost') /}
     #{if _post.parent != null}
     	%{ _post.parent.get() }%
-    	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}">&{'parent'}</a>
+    	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}" alt="&{'goToParentPost'}" class="sprite parentPost"></a>
     #{/if}
-   	<a title="&{'asRoot'}" href="@{Debate.branch(_thread.hash, _paragraph.id)}">r</a>
-    #{if _user != null}
-    	*{<a title="&{'forkPost'}">&{'fork'}</a>}*
-	#{/if}
+    #{sprite name:'root', action:@Debate.branch(_thread.hash, _paragraph.id), alt:messages.get('asRoot') /}
+    *{#{if _user != null}
+    	#{sprite name:'forkThread', action:@Debate.fork(_thread.hash, _paragraph.id), alt:messages.get('fork') /}
+	#{/if}}*
 	</span>
 </div>

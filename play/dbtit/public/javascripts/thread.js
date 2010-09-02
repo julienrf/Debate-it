@@ -27,6 +27,13 @@ function setupPostTools() {
 	  	function(event) { $(this).find(".other-tools").hide(); }
   );
   
+  // Configure le comportement du bouton « Marquer comme lu »
+  $(".post a.readPost").click(function(event) {
+	  event.preventDefault();
+	  read($(this).closest(".post"));
+	  return false;
+  	});
+  
   // Configure le comportement du bouton « Afficher les réponses »
   $(".post a.show-answers").click(function(event) {
 	  event.preventDefault();
@@ -102,6 +109,21 @@ function hideReadPosts() {
   //$(".post .container.read").parent(".post").siblings(".answer").prev(".post").children(".container").hide();
 }
 
+/** Marque un post comme lu */
+function read(post) {
+	var id = post.attr('id').substring(5);
+
+	$.ajax({
+		type: 'PUT',
+		url: readPost({postId: id}),
+		success: function(data, textStatus, XMLHttpRequest) {
+				post.removeClass('unread');
+				post.addClass('read');
+				post.find("a.readPost").remove();
+			}
+	});
+}
+
 /** Compacte l’affichage d’un post */
 function hideAnswers(paragraph) {
 	// Supprine les footnotes des réponses
@@ -114,7 +136,7 @@ function hideAnswers(paragraph) {
 	paragraph.children(".answer").remove();
 	
 	// Remplace le lien « Cacher les réponses » par « Afficher les réponses »
-	paragraph.find("a.hide-answers").replaceWith('<a class="show-answers" href="#" title="' + i18n('showPostAnswers') + '">' + i18n('showAnswers') + '</a>');
+	paragraph.find("a.hide-answers").replaceWith('<a class="sprite show-answers" href="#" title="' + i18n('showPostAnswers') + '" alt="' + i18n('showPostAnswers') + '"></a>');
 	paragraph.find("a.show-answers").click(function(event) {
 			event.preventDefault();
 			showAnswers($(this).closest(".paragraph")); // TODO factoriser avec le code setupPostTools ou faire un truc propre
@@ -128,8 +150,6 @@ function showAnswers(paragraph) {
 	var post = paragraph.parents(".post");
 	var id = paragraph.attr('id').substr(10);
 
-	post.removeClass("unread");
-	post.addClass("read");
 	paragraph.append('<img src="public/images/ajax-loader.gif" />');
 	// Ajoute les réponses et les notes de bas de page correspondantes
 	$.get(getAnswers({paragraphId: id}), function(data) {
@@ -144,7 +164,7 @@ function showAnswers(paragraph) {
 	});
 	
 	// Remplace le lien « Afficher les réponses » par « Cacher les réponses »
-	paragraph.find(".tools a.show-answers").replaceWith('<a class="hide-answers" href="#" title="' + i18n('hidePostAnswers') + '">' + i18n('hideAnswers') + '</a>');
+	paragraph.find(".tools a.show-answers").replaceWith('<a class="sprite hide-answers" href="#" title="' + i18n('hidePostAnswers') + '" alt="' + i18n('hidePostAnswers') + '"></a>');
 }
 
 

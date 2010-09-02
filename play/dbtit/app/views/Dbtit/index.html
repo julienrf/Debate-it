@@ -5,13 +5,15 @@
 	#{stylesheet 'index.sass' /}
 #{/set}
 
+<div id="title">Debate it!</div>
+
 <div id="index-wrapper">
 	<div id="side-action">
 		#{if user != null}
-			#{a @Debate.newThread(), class:'button khaki big'} &{'createThread'} #{/a}
+			#{a @Debate.newThread(), class:'button orange big'} &{'createThread'} #{/a}
 		#{/if}
 		#{else}
-			#{a @Dbtit.login(request.url), class:'button khaki big'} &{'login'} #{/a}
+			#{a @Dbtit.login(request.url), class:'button orange big'} &{'login'} #{/a}
 		#{/else}
 	</div>
 	

@@ -4,7 +4,7 @@
 *{ @param Long threadId }*
 
 <div class="box post ${_user.hasRead(_paragraph.post) ? "read" : "unread" }" id="post_${_paragraph.post.id}">
-    #{posttitle post:_paragraph.post, tz:_user?.tz /}
+    #{posttitle thread:_thread, post:_paragraph.post, user:_user /}
 
 	%{
 		// Handle footnotes

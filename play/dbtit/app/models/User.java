@@ -1,6 +1,8 @@
 package models;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import play.data.validation.Email;
@@ -57,6 +59,20 @@ public class User extends Model {
 	
 	public static User findByEmail(String email) {
 		return User.all().filter("email", email).get();
+	}
+	
+	public List<Following> followedThreads() {
+		List<Following> followings = new ArrayList<Following>();
+		followings.addAll(followedThreads.fetch());
+		
+		Collections.sort(followings, new Comparator<Following>() {
+			@Override
+			public int compare(Following o1, Following o2) {
+				return -o1.thread.lastPostDate().compareTo(o2.thread.lastPostDate());
+			}
+		});
+		
+		return followings;
 	}
 	
 	/**

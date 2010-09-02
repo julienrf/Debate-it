@@ -310,17 +310,17 @@ public class Debate extends Controller {
     @LoggedIn
     public static void followThreads() {
     	User user = Dbtit.connectedUser();
+    	List<Following> followedThreads = user.followedThreads();
     	
-    	String pageVar = "p";
+    	Pagination pagination = new Pagination(followedThreads.size());
     	int currentPage = 1;
-    	if (params._contains(pageVar))
-    		currentPage = params.get(pageVar, Integer.class);
-    	Pagination pagination = new Pagination(user.followedThreads.count(), currentPage, 10, pageVar);
+    	if (params._contains(pagination.getPageVar()))
+    		currentPage = params.get(pagination.getPageVar(), Integer.class);
+    	pagination.setCurrentPage(currentPage);
     	
     	
-    	List<Following> followedThreads;
     	if (pagination.getCurrentLimit() > 0) {
-    		followedThreads = user.followedThreads.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
+    		followedThreads = followedThreads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
     	} else {
     		followedThreads = new ArrayList<Following>();
     	}

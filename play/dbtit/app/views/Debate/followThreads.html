@@ -4,27 +4,30 @@
 	#{stylesheet 'pagination.sass' /}
 	#{stylesheet 'box.sass' /}
 	#{stylesheet 'hover.sass' /}
+	#{stylesheet 'sprite.sass' /}
 	#{stylesheet 'follow.sass' /}
 #{/set}
 
 <h1>&{'followedThreads'}</h1>
 
 #{if followedThreads.size() > 0}
-<div class="list box">
-
-#{list items:followedThreads, as:'following'}
-	%{ following.thread.get(); thread = following.thread; }%
-	<div class="item ${thread_parity}">
-		#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
-		%{ unreadPostCount = user.getUnreadPostCount(thread) }%
-		#{if unreadPostCount > 0}
-			#{a @Debate.showThread(thread.hash), class:'unread-post-count', title:messages.get('readNewPosts')} ${unreadPostCount} ${unreadPostCount.pluralize(messages.get('unreadPost'), messages.get('unreadPosts'))} #{/a}
-		#{/if}
-		<span class="tools">#{a @Debate.doNotFollowThread(thread.hash, request.url), title:messages.get('doNotFollowThread')} &{'doNotFollow'} #{/a}</span>
-	</div>
-#{/list}
-
-</div>
+	<table class="list box">
+	
+	#{list items:followedThreads, as:'following'}
+		%{ following.thread.get(); thread = following.thread; }%
+		<tr class="item ${thread_parity}">
+			<td>#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}</td>
+			%{ unreadPostCount = user.getUnreadPostCount(thread) }%
+			<td class="unread-post-count">
+			#{if unreadPostCount > 0}
+				${unreadPostCount} ${unreadPostCount.pluralize(messages.get('unreadPost'), messages.get('unreadPosts'))}
+			#{/if}
+			</td>
+			<td><span class="tools">#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(thread.hash, request.url), alt:messages.get('doNotFollowThread') /}</span></td>
+		</tr>
+	#{/list}
+	
+	</table>
 #{/if}
 
 #{pagination.list pagination:pagination, route:@Debate.followThreads() /}
