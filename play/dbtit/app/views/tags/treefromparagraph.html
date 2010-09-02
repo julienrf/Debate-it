@@ -3,7 +3,12 @@
 *{ @param User user }*
 *{ @param Long threadId }*
 
-<div class="box post ${_user.hasRead(_paragraph.post) ? "read" : "unread" }" id="post_${_paragraph.post.id}">
+#{if _user}
+	<div class="box post ${_user.hasRead(_paragraph.post) ? "read" : "unread" }" id="post_${_paragraph.post.id}">
+#{/if}
+#{else}
+	<div class="box post" id="post_${_paragraph.post.id}">
+#{/else}
     #{posttitle thread:_thread, post:_paragraph.post, user:_user /}
 
 	%{
