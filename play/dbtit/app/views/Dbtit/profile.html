@@ -41,6 +41,12 @@
 	</div>
 	#{/field}
 	
+	#{field 'userUpdate.exploreUnreadPosts'}
+	<div>
+		<input type="checkbox" id="${field.id}" value="true" name="${field.name}" ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
+	</div>
+	#{/field}
+	
 	<label for="foo"></label>
 	<input type="submit" value="&{'update'}" />
 	

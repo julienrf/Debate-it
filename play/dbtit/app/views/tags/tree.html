@@ -27,12 +27,23 @@
 			</div>
 			
 			*{ Affichage des réponses }*
-			#{if paragraph.hasAnswers() && _user?.hasRead(_post)}
-				<div class="answer">
-				#{list items:paragraph.answers.fetch(), as:'reply'}
-						#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
-				#{/list}
-				</div>
+			#{if paragraph.hasAnswers()}
+				#{if _user}
+					#{if _user.exploreUnreadPosts || _user.hasRead(_post)}
+						<div class="answer">
+						#{list items:paragraph.answers.fetch(), as:'reply'}
+								#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
+						#{/list}
+						</div>
+					#{/if}
+				#{/if}
+				#{else}
+					<div class="answer">
+					#{list items:paragraph.answers.fetch(), as:'reply'}
+							#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
+					#{/list}
+					</div>
+				#{/else}
 			#{/if} *{ paragraph.hasAnswers() }*
 		</div> <!-- container -->
     #{/list} *{ paragraphs }*

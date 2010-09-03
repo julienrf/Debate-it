@@ -6,11 +6,16 @@
 
 <div class="tools">
     #{if _paragraph.hasAnswers()}
-    	#{if _user && _user.hasRead(_post)}
-    		#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
+    	#{if _user}
+    		#{if _user.hasRead(_post) || _user.exploreUnreadPosts}
+    			#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
+    		#{/if}
+	    	#{else}
+	    		#{sprite name:'show-answers', action:@Debate.answers(_thread.hash, _paragraph.id), alt:messages.get('showPostAnswers') /}
+	    	#{/else}
     	#{/if}
     	#{else}
-    		#{sprite name:'show-answers', action:@Debate.answers(_thread.hash, _paragraph.id), alt:messages.get('showPostAnswers') /}
+    		#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
     	#{/else}
 	#{/if}
 	<span class="other-tools">

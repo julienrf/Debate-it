@@ -1,0 +1,89 @@
+# You can specialize this file for each language.
+# For exemple, for french create a messages.fr file
+#
+
+login=Login
+logout=Logout
+toParticipate=to contribute to this debate (needs a google account)
+register=Sign up
+
+openIdError=Unable to contact Google
+loginFail=Authentification failed
+welcomeFirst=Welcome, please complete your profile
+welcome=Welcome, %s!
+
+email=Email
+password=Password
+confirmPwd=Confirm password
+name=Name
+
+profile=Profile
+update=Update
+profileUpdated=Your profile has been updated
+
+followedThreads=Followed debates
+unreadPosts=unread posts
+unreadPost=unread post
+readNewPosts=Read the new posts
+
+content=Content
+
+branch=Discussion branch
+shareThread=Share this debate:
+permanentLink=Permanent link
+follow=Follow
+followThread=Follow this debate
+doNotFollow=Do not follow
+doNotFollowThread=Do not follow this debate anymore
+
+markRead=Mark this post as read
+markUnread=Mark this post as unread
+parent=Parent
+goToParentPost=Go to the parent post
+rollPost=Show or hide this post
+edit=Edit
+editPost=Edit this post
+showAnswers=Show answers
+showPostAnswers=Show the answers of this paragraph
+hideAnswers=Hide answers
+hidePostAnswers=Hide the answers of this paragraph
+reply=Reply
+replyToPost=Reply to this post
+delete=Delete
+deletePost=Delete this post
+fork=Fork
+forkPost=Fork this debate from this paragraph
+asRoot=Show the debate from this paragraph
+formErrors=Some fields contain errors
+send=Send
+preview=Preview
+postPreview=Preview the post
+create=Create
+
+references=References
+
+createThread=Create a new debate
+threadTitle=Title
+threadContent=Content
+threadPreview=Preview
+threadCreated=The debate “%s” has been created
+
+formError=The input contains errors
+
+postAdded=Your answer has been added
+postUpdated=Your post has been updated
+postReplied=An answer has been added while you were editing the post. It's now impossible to edit it.
+
+userUpdate.name=Name
+userUpdate.email=Email
+userUpdate.tzId=Time zone
+userUpdate.exploreUnreadPosts=Do not show the answers of unread posts
+# userUpdate.rememberMe=Se connecter automatiquement à chaque visite
+
+intro=<p>Debate it! is a <strong>debate</strong> online platform.</p><p><strong>Express</strong> clearly your ideas with a simple formatting syntax.</p><p><strong>Get</strong> the gist of the debate thanks to an ergonomic display.</p><p>Debate it! is <strong>free</strong>, you only need a Google account to use it.</p>
+more=More…
+syntaxHelp=Format your post with a simple syntax
+syntaxGuide=<p>The Debate it! syntax is inspired from the <a href="http://wikicreole.org/wiki/Home">Creole</a> syntax, here is a small example showing all the formatting capabilities and the result below:</p><pre>Text in **bold** or //italic// stay readable.<br />A simple new [[http://www.google.com|line]] does not create a new paragraph.<br /><br />You have to leave an empty line to do that[[[I'm a footnote]]].<br /><br />&nbsp;* Lists are easy to write<br />&nbsp;- By starting lines with a star or a dash followed by a space.</pre><p>Here is the result:<blockquote><p>Text in <strong>bold</strong> or <em>italic</em> stay readable. A simple new <a href="http://www.google.com" title="line">line</a> does not create a new paragraph.</p><p>You have to leave an empty line to do that<sup id="ref-footnote_sample"><a href="#footnote_sample">1</a></sup>.</p><p><ul><li>Lists are easy to write</li></ul></p><p><ul><li>By starting lines with a star or a dash followed by a space.</li></ul></p><ol><li id="footnote_sample"><a href="#ref-footnote_sample">&uarr;</a>I'm a footnote</li></ol></blockquote></p>
+
+pagination.previous=Previous
+pagination.next=Next

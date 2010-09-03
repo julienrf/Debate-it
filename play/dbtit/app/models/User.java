@@ -33,6 +33,9 @@ public class User extends Model {
 	@NotNull
 	public String tz;
 	
+	/** User preference */
+	public boolean exploreUnreadPosts;
+	
 	/** List of threads followed by the user */
 	@Filter("user")
 	public Query<Following> followedThreads;
@@ -51,6 +54,7 @@ public class User extends Model {
 		this.name = name;
 		this.email = email;
 		this.tz = tz;
+		this.exploreUnreadPosts = false;
 	}
 	
 	public static Query<User> all() {
@@ -81,6 +85,7 @@ public class User extends Model {
 	public void update(Update update) {
 		name = update.name;
 		tz = update.tzId;
+		exploreUnreadPosts = update.exploreUnreadPosts;
 		update();
 	}
 	
@@ -160,10 +165,12 @@ public class User extends Model {
 	public static class Update {
 		@Required public String name;
 		@Required public String tzId;
+		@Required public boolean exploreUnreadPosts;
 		
 		public Update(User user) {
 			name = user.name;
 			tzId = user.tz;
+			exploreUnreadPosts = user.exploreUnreadPosts;
 		}
 	}
 }
