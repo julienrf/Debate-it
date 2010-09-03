@@ -6,25 +6,24 @@
 
 <h1>&{'profile'}</h1>
 
-<div class="form">
+#{form @Dbtit.postProfile()}
+
 	#{ifErrors}
 		<p class="form-error">&{'formError'}</p>
 	#{/ifErrors}
 	
-	#{form @Dbtit.postProfile()}
-	
 	#{field 'userUpdate.name'}
-	<div>
-		<label for="${field.id}">&{field.name}</label>
-		<input type="text" id="${field.id}" name="${field.name}" value="${field.value}" />
+	<div class="row">
+		<label>&{field.name}
+		<input type="text" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}" /></label>
 	    <br />
 	    <span class="form-error">${field.error}</span>
 	</div>
 	#{/field}
 	
 	#{field 'userUpdate.tzId'}
-	<div>
-		<label for="${field.id}">&{field.name}</label>
+	<div class="row">
+		<label>&{field.name}
 		%{ tzIds = java.util.TimeZone.getAvailableIDs(); }%
 		<select name="${field.name}">
 			#{list items:tzIds, as:'tzId'}
@@ -35,20 +34,20 @@
 				<option value="${tzId}">${tzId}</option>
 			#{/else}
 			#{/list}
-		</select>
+		</select></label>
 	    <br />
 	    <span class="form-error">${field.error}</span>
 	</div>
 	#{/field}
 	
 	#{field 'userUpdate.exploreUnreadPosts'}
-	<div>
+	<div class="row">
 		<input type="checkbox" id="${field.id}" value="true" name="${field.name}" ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
 	</div>
 	#{/field}
 	
-	<label for="foo"></label>
-	<input type="submit" value="&{'update'}" />
+	<div class="buttons">
+		<input type="submit" value="&{'update'}" />
+	</div>
 	
-	#{/form}
-</div> <!-- form -->
+#{/form}

@@ -20,23 +20,23 @@
 
 #{include 'syntaxhint.html' /}
 
-<div class="form">
+#{form @Debate.postEdit(thread.hash, post.id)}
+
 	#{ifErrors}
 		<p class="form-error">&{'formError'}</p>
 	#{/ifErrors}
 
-	#{form @Debate.postEdit(thread.hash, post.id)}
+	#{field 'content'}
+	<div class="row">
+	    <textarea class="${field.errorClass}" name="${field.name}" cols="65" rows="15" placeholder="&{field.name}">${field.value}</textarea>
+	    <br />
+	    <span class="form-error">${errors.forKey('content')}</span>
+	</div>
+	#{/field}
 
-		<div>
-			<label for="answer-content">&{'content'}</label>
-		    <textarea id="answer-content" class="answer-content" name="content" cols="55" rows="15">${content}</textarea>
-		    <br />
-		    <span class="form-error">${errors.forKey('content')}</span>
-		</div>
-
-		<label for="foo"></label>
+	<div class="buttons">
 		<input type="submit" value="&{'preview'}" name="preview" />	
 		<input type="submit" value="&{'edit'}" name="edit" />
+	</div>
 	
-	#{/form}
-</div> <!-- form -->
+#{/form}

@@ -19,25 +19,28 @@
 #{include 'syntaxhint.html' /}
 
 #{form @Debate.createThread()}
-#{ifErrors}
-	<p class="form-error">&{'formError'}</p>
-#{/ifErrors}
+	#{ifErrors}
+		<p class="form-error">&{'formError'}</p>
+	#{/ifErrors}
 
-	<div>
-        <label for="thread-title">&{'threadTitle'}</label>
-        <input type="text" id="thread-title" name="threadTitle" size="55" value="${threadTitle}" />
+	#{field 'threadTitle'}
+	<div class="row">
+        <input type="text" id="${field.id}" name="${field.name}" size="80" value="${field.value}" placeholder="&{field.name}" class="${field.errorClass}" />
         <br />
-        <span class="form-error">${errors.forKey('threadTitle')}</span>
+        <span class="form-error">${field.error}</span>
 	</div>
+	#{/field}
 
-	<div>
-        <label for="thread-content">&{'threadContent'}</label>
-        <textarea id="thread-content" name="content" cols="55" rows="15">${content}</textarea>
+	#{field 'content'}
+	<div class="row">
+        <textarea id="${field.id}" name="${field.name}" cols="65" rows="15" placeholder="&{'threadContent'}" class="${field.errorClass}">${field.value}</textarea>
         <br />
-        <span class="form-error">${errors.forKey('content')}</span>
+        <span class="form-error">${field.error}</span>
 	</div>
+	#{/field}
 
-        <label for="foo"></label>
-        <input type="submit" value="&{'preview'}" name="preview" />
-        <input type="submit" value="&{'create'}" name="create" />
+	<div class="buttons">
+	    <input type="submit" value="&{'preview'}" name="preview" />
+	    <input type="submit" value="&{'create'}" name="create" />
+    </div>
 #{/form}

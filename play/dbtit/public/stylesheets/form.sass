@@ -1,34 +1,28 @@
 form
 	background-color: white
-	max-width: 60em
+	display: inline-block
 	border: solid medium lightGray
 	margin:
 		left: 2em
 	padding: 1em
 
-	label
-		display: block
-		text-align: right
-		float: left
-		width: 12%
-		margin: 0.5em
-
-	input, textarea
-		margin: 0.5em
+	.row
+		margin: 1em 0
 
 	textarea
 		overflow: auto
-		width: 82%
+		width: 50em
 		height: 20em
 
-	br
-		clear: both
+	.buttons
+		text-align: center
+	
+	.hasError
+		border: solid thin red
 
 .form-error
-	margin-left: 5em
 	color: red
 	font-weight: bold
-
 
 .hint
 	color: grey
