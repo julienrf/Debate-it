@@ -67,7 +67,7 @@ public class Dbtit extends Controller {
 		if (gaeUser != null) {
 			User user = User.findByEmail(gaeUser.getEmail());
 			if (user == null) {
-				user = new User(gaeUser.getEmail(), gaeUser.getNickname(), TimeZone.getDefault().getID());
+				user = new User(gaeUser.getNickname(), gaeUser.getEmail(), TimeZone.getDefault().getID());
 				user.insert();
 				Logger.info("New user %s (%s) created", user.email, user.id);
 				flash.success(Messages.get("welcomeFirst"));
