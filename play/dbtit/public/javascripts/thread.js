@@ -96,13 +96,9 @@ function togglePost(post) {
 		post.children(".paragraph").slideDown('fast');
 	} else {
 		title.addClass("rolled");
-		var content = post.children(".paragraph").first().find(".content").first().clone().text();
-		if (content.length > 60) {
-			content = content.substring(0, 60);
-			content.replace(/\w+$/, '');
-			content += '…';
-		}
-		title.find(".author").after('<div class="preview">' + content + '</div>');
+		var content = post.children(".paragraph").first().find(".content").first().clone();
+		content.addClass("preview");
+		title.find(".author").after(content);
 		title.find(".roll").html('&rarr;');
 		post.children(".paragraph").slideUp('fast');
 	}
