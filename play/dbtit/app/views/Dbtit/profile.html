@@ -2,6 +2,7 @@
 #{set title: "Debate it!" /}
 #{set 'moreStyles'}
 	#{stylesheet 'form.sass' /}
+	#{stylesheet 'profile.sass' /}
 #{/set}
 
 <h1>&{'profile'}</h1>
@@ -11,6 +12,8 @@
 	#{ifErrors}
 		<p class="form-error">&{'formError'}</p>
 	#{/ifErrors}
+	
+	<div class="user-email">${user.email}</div>
 	
 	#{field 'userUpdate.name'}
 	<div class="row">
@@ -40,7 +43,7 @@
 	</div>
 	#{/field}
 	
-	#{field 'userUpdate.exploreUnreadPosts'}
+	#{field 'userUpdate.stopOnUnreadPosts'}
 	<div class="row">
 		<input type="checkbox" id="${field.id}" value="true" name="${field.name}" ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
 	</div>

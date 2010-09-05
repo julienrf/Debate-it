@@ -34,7 +34,7 @@ public class User extends Model {
 	public String tz;
 	
 	/** User preference */
-	public boolean exploreUnreadPosts;
+	public Boolean exploreUnreadPosts;
 	
 	/** List of threads followed by the user */
 	@Filter("user")
@@ -85,7 +85,7 @@ public class User extends Model {
 	public void update(Update update) {
 		name = update.name;
 		tz = update.tzId;
-		exploreUnreadPosts = update.exploreUnreadPosts;
+		exploreUnreadPosts = !update.stopOnUnreadPosts;
 		update();
 	}
 	
@@ -165,12 +165,12 @@ public class User extends Model {
 	public static class Update {
 		@Required public String name;
 		@Required public String tzId;
-		@Required public boolean exploreUnreadPosts;
+		@Required public boolean stopOnUnreadPosts;
 		
 		public Update(User user) {
 			name = user.name;
 			tzId = user.tz;
-			exploreUnreadPosts = user.exploreUnreadPosts;
+			stopOnUnreadPosts = !user.exploreUnreadPosts;
 		}
 	}
 }

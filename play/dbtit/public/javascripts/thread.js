@@ -123,7 +123,7 @@ function read(post) {
 		success: function(data, textStatus, XMLHttpRequest) {
 				post.removeClass('unread');
 				post.addClass('read');
-				post.find("a.readPost").remove();
+				post.children('.title').find("a.readPost").remove();
 			}
 	});
 }
