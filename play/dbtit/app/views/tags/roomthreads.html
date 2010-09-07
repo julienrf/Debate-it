@@ -1,0 +1,24 @@
+*{ @param room The room to render }*
+*{ @param pagination }*
+*{ @param route }*
+
+#{if _threads.size() > 0}
+	<div class="box">
+		<table class="list">
+			<tr>
+				<th>&{'debate'}</th>
+				<th>&{'lastPostDate'}</th>
+			</tr>
+			#{list items:_threads, as:'thread'}
+				<tr class="item ${thread_parity}">
+					<td>#{a @Debate.showThread(thread.hash), class:'item-title'}${thread.title}#{/a}</td>
+					<td>#{date date:thread.lastPostDate() /}</td>
+				</tr>
+			#{/list}
+		</table>
+		#{pagination.list pagination:_pagination, route:_route /}
+	</div>
+#{/if}
+#{else}
+	<p>&{'emtpyRoom'}</p>
+#{/else}

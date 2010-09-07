@@ -8,14 +8,16 @@
 	#{stylesheet 'follow.sass' /}
 #{/set}
 
-<h1>&{'followedThreads'}</h1>
+<div>
+	<h1>&{'followedThreads'}</h1>
+</div>
 
 #{if followedThreads.size() > 0}
 	<table class="list box">
 	
 	#{list items:followedThreads, as:'following'}
 		%{ following.thread.get(); thread = following.thread; }%
-		<tr class="item ${thread_parity}">
+		<tr class="item ${following_parity}">
 			<td>#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}</td>
 			%{ unreadPostCount = user.getUnreadPostCount(thread) }%
 			<td class="unread-post-count">

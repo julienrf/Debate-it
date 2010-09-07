@@ -40,8 +40,13 @@ public class User extends Model {
 	@Filter("user")
 	public Query<Following> followedThreads;
 	
+	/** List of the post read by the user */
 	@Filter("user")
 	public Query<Reading> readPosts;
+	
+	/** List of the rooms this user subscribed to */
+	@Filter("user")
+	public Query<RoomSubscription> subscriptions;
 	
 	/**
 	 * Ideas of profile settings:
@@ -50,7 +55,7 @@ public class User extends Model {
 	 *  - Number of posts by page
 	 */
 	
-	public User(String name, String email, String tz) {
+	protected User(String name, String email, String tz) {
 		this.name = name;
 		this.email = email;
 		this.tz = tz;
@@ -63,6 +68,13 @@ public class User extends Model {
 	
 	public static User findByEmail(String email) {
 		return User.all().filter("email", email).get();
+	}
+	
+	public static User create(String name, String email, String tz) {
+		User user = new User(name, email, tz);
+		user.insert();
+		user.subscribe(Room.getOpenRoom());
+		return user;
 	}
 	
 	public List<Following> followedThreads() {
@@ -82,11 +94,29 @@ public class User extends Model {
 	/**
 	 * Update user attributes
 	 */
-	public void update(Update update) {
+	public void updateProfile(Update update) {
 		name = update.name;
 		tz = update.tzId;
 		exploreUnreadPosts = !update.stopOnUnreadPosts;
 		update();
+	}
+	
+	public boolean hasSubscribed(Room room) {
+		return subscriptions.filter("room", room).count() != 0;
+	}
+	
+	public void subscribe(Room room) {
+		if (!hasSubscribed(room)) {
+			RoomSubscription subscription = new RoomSubscription(room, this);
+			subscription.insert();
+		}
+	}
+	
+	public void unsubscribe(Room room) {
+		RoomSubscription subscription = subscriptions.filter("room", room).get();
+		if (subscription != null) {
+			subscription.delete();
+		}
 	}
 	
 	/**

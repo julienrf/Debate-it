@@ -12,7 +12,7 @@ import java.util.Map;
 public class Pagination {
 	private int itemCount;
 	private String pageVar = "p";
-	private int pageSize = 20;
+	private int pageSize = 15;
 	private int currentPage = 1;
 	
 	public Pagination(int itemCount) {

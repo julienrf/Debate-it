@@ -1,0 +1,13 @@
+#{extends 'main.html' /}
+#{set title: room.name + " — Debate it!" /}
+#{set 'moreStyles'}
+	#{stylesheet 'form.sass' /}
+	#{stylesheet 'box.sass' /}
+	#{stylesheet 'pagination.sass' /}
+#{/set}
+
+<div>
+	<h1>${room.name}</h1> #{a @Debate.newThread(room.hash)}&{'createThread'}#{/a}
+</div>
+
+#{roomthreads threads:threads, pagination:pagination, route:@Debate.showRoom(room.hash) /}

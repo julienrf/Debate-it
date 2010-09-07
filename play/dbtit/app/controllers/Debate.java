@@ -1,17 +1,13 @@
 package controllers;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import models.Following;
-import models.FootNote;
 import models.Paragraph;
 import models.Post;
-import models.Reading;
+import models.Room;
+import models.RoomSubscription;
 import models.Thread;
 import models.User;
 
@@ -21,9 +17,7 @@ import play.Logger;
 import play.data.validation.Required;
 import play.i18n.Messages;
 import play.mvc.Controller;
-import play.mvc.Router;
 import play.mvc.With;
-import utils.Helper;
 import utils.Pagination;
 
 /**
@@ -33,6 +27,78 @@ import utils.Pagination;
  */
 @With(Dbtit.class)
 public class Debate extends Controller {
+	
+	@LoggedIn
+	public static void listRooms() {
+		User user = Dbtit.connectedUser();
+		List<RoomSubscription> subscriptions;
+		Pagination pagination = new Pagination(user.subscriptions.count());
+		
+    	int currentPage = 1;
+    	if (params._contains(pagination.getPageVar()))
+    		currentPage = params.get(pagination.getPageVar(), Integer.class);
+    	pagination.setCurrentPage(currentPage);
+    	
+    	
+    	if (pagination.getCurrentLimit() > 0) {
+    		subscriptions = user.subscriptions.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
+    	} else {
+    		subscriptions = new ArrayList<RoomSubscription>();
+    	}
+		
+		render(subscriptions, pagination);
+	}
+	
+	/**
+	 * Show the debates of the room
+	 * @param hash
+	 */
+	public static void showRoom(String hash) {
+		Room room = Room.findByHash(hash);
+		notFoundIfNull(room);
+		
+		/*if (!(hash.equals("open") || room.isPublic)) {
+			User user = Dbtit.connectedUser();
+			if (user == null || !user.hasSubscribed(room)) {
+				forbidden();
+			}
+		}*/
+		
+		List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
+		Pagination pagination = new Pagination(room.threads.count());
+		int currentPage = 1;
+		if (params._contains(pagination.getPageVar())) {
+			currentPage = params.get(pagination.getPageVar(), Integer.class);
+		}
+		pagination.setCurrentPage(currentPage);
+		
+		if (pagination.getCurrentLimit() > 0) {
+			threads = threads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
+		}
+		
+		render(room, threads, pagination);
+	}
+	
+	@LoggedIn
+	public static void newRoom() {
+		render();
+	}
+	
+	/**
+	 * Creates a new debate room
+	 * @param name
+	 * @param isPublic
+	 */
+	@LoggedIn
+	public static void createRoom(@Required String name, @Required boolean isPublic) {
+		if (validation.hasErrors()) {
+			render("@newRoom", name, isPublic);
+		}
+		
+		Room room = Room.create(Dbtit.connectedUser(), name/*, isPublic*/);
+		showRoom(room.hash);
+	}
+	
     /**
      * Display a thread
      * @param hash Thread hash
@@ -117,8 +183,11 @@ public class Debate extends Controller {
      * Display a form to create a thread
      */
     @LoggedIn
-    public static void newThread() {
-    	render();
+    public static void newThread(String hash) {
+    	Room room = Room.findByHash(hash);
+    	notFoundIfNull(room);
+    	
+    	render(room);
     }
     
     /**
@@ -127,11 +196,14 @@ public class Debate extends Controller {
      * @param content
      */
     @LoggedIn
-    public static void createThread(@Required String threadTitle, @Required String content) {
+    public static void createThread(@Required String hash, @Required String threadTitle, @Required String content) {
+    	Room room = Room.findByHash(hash);
+    	notFoundIfNull(room);
+    	
     	User user = Dbtit.connectedUser();
     	
     	if (validation.hasErrors()) {
-    		render("@newThread", threadTitle, content);
+    		render("@newThread", room, threadTitle, content);
     	}
     	
     	if (params._contains("preview")) {
@@ -139,10 +211,10 @@ public class Debate extends Controller {
     		List<IFootNote> footNotes = new ArrayList<IFootNote>();
     		Post.preview(content, paragraphs, footNotes);
     		renderArgs.put("preview", true);
-    		render("@newThread", threadTitle, content, paragraphs, footNotes);
+    		render("@newThread", room, threadTitle, content, paragraphs, footNotes);
     	}
     	
-    	Thread thread = Thread.create(user, threadTitle, content);
+    	Thread thread = Thread.create(user, room, threadTitle, content);
     	flash.success(Messages.get("threadCreated", thread.title));
     	Logger.info("Thread (%s) created by user %s (%s)", thread.id, user.name, user.id);
     	
@@ -321,8 +393,6 @@ public class Debate extends Controller {
     	
     	if (pagination.getCurrentLimit() > 0) {
     		followedThreads = followedThreads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
-    	} else {
-    		followedThreads = new ArrayList<Following>();
     	}
     	
     	render(followedThreads, pagination);

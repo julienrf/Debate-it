@@ -1,5 +1,8 @@
 package models;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -33,15 +36,15 @@ public class Thread extends Model {
 	@NotNull
 	public String hash;
 	
-	/** A number generator used to salt the hash computation */
-	private static AtomicLong generator = new AtomicLong(System.currentTimeMillis());
+	@Required
+	@NotNull @Column("room")
+	public Room room;
 	
 	/** Protected constructor since the static helper should be used, for better consistency */
-	protected Thread(String title)
+	protected Thread(Room room, String title)
 	{
 		this.title = title;
-		this.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + generator.incrementAndGet()));
-		this.rootPost = null;
+		this.room = room;
 	}
 	
 	public static Query<Thread> all() {
@@ -60,18 +63,34 @@ public class Thread extends Model {
 	 * Convenient function to create a new thread.
 	 * It creates the thread and its root post and saves it on the persistence layer.
 	 * @param author Author of the root post
+	 * @param room The room which the thread belongs to
 	 * @param title Title of the thread
-	 * @param content Contente of the root post of the thread
+	 * @param content Content of the root post of the thread
 	 * @return The created thread
 	 */
-	public static Thread create(User author, String title, String content)
+	public static Thread create(User author, Room room, String title, String content)
 	{
-		Thread thread = new Thread(title);
+		Thread thread = new Thread(room, title);
 		thread.insert();
+		thread.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + thread.id));
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
 		thread.update();
 		return thread;
+	}
+	
+	public static List<Thread> sortByLastPost(List<Thread> source) {
+		List<Thread> threads = new ArrayList<Thread>();
+		threads.addAll(source);
+		
+		Collections.sort(threads, new Comparator<Thread>() {
+			@Override
+			public int compare(Thread o1, Thread o2) {
+				return -o1.lastPostDate().compareTo(o2.lastPostDate());
+			}
+		});
+		
+		return threads;
 	}
 	
 	/**

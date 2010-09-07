@@ -1,28 +1,21 @@
 package controllers;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.TimeZone;
 
-import models.Post;
+import models.Following;
+import models.Room;
 import models.Thread;
 import models.User;
 import play.Logger;
-import play.data.validation.Required;
 import play.data.validation.Valid;
 import play.i18n.Messages;
-import play.libs.Crypto;
-import play.libs.OpenID;
-import play.libs.OpenID.UserInfo;
 import play.modules.gae.GAE;
 import play.mvc.Before;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Router;
-import play.mvc.With;
+import utils.Pagination;
 
 /**
  * This controller defines basic actions such as login, logout or edit profile
@@ -67,8 +60,7 @@ public class Dbtit extends Controller {
 		if (gaeUser != null) {
 			User user = User.findByEmail(gaeUser.getEmail());
 			if (user == null) {
-				user = new User(gaeUser.getNickname(), gaeUser.getEmail(), TimeZone.getDefault().getID());
-				user.insert();
+				user = User.create(gaeUser.getNickname(), gaeUser.getEmail(), TimeZone.getDefault().getID());
 				Logger.info("New user %s (%s) created", user.email, user.id);
 				flash.success(Messages.get("welcomeFirst"));
 				profile(url);
@@ -97,7 +89,7 @@ public class Dbtit extends Controller {
 		if (validation.hasErrors()) {
 			render("@profile", userUpdate);
 		}
-		connectedUser.update(userUpdate);
+		connectedUser.updateProfile(userUpdate);
 		Logger.info("Profile updated by %s (%s)", connectedUser.name, connectedUser.id);
 		flash.success(Messages.get("profileUpdated"));
 		String url = flash.get("url");
@@ -110,7 +102,23 @@ public class Dbtit extends Controller {
 	 * Display the home page
 	 */
     public static void index() {
-    	render();
+    	Room room = Room.getOpenRoom();
+    	List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
+    	
+    	Pagination pagination = new Pagination(room.threads.count());
+    	int currentPage = 1;
+    	if (params._contains(pagination.getPageVar()))
+    		currentPage = params.get(pagination.getPageVar(), Integer.class);
+    	pagination.setCurrentPage(currentPage);
+    	
+    	
+    	if (pagination.getCurrentLimit() > 0) {
+    		threads = threads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
+    	} else {
+    		threads = new ArrayList<Thread>();
+    	}
+    	
+    	render(threads, pagination);
     }
     
     public static void features() {

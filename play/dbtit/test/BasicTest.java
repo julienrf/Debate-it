@@ -45,7 +45,7 @@ public class BasicTest extends UnitTest {
 		for (User u : User.all().fetch())
 			u.delete();
 		
-		julien = new User("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
+		julien = User.create("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
 		julien.insert();
 	}
 	
@@ -98,9 +98,22 @@ public class BasicTest extends UnitTest {
 	}
 	
 	@Test
+	public void rooms()
+	{
+		Room room = Room.create(julien, "Test room"/*, true*/);
+		
+		assertTrue(julien.hasSubscribed(room));
+		
+		julien.unsubscribe(room);
+		
+		assertFalse(julien.hasSubscribed(room));
+	}
+	
+	@Test
 	public void threads()
 	{
-		Thread thread = Thread.create(julien, "Titre", "Contenu");
+		Room room = Room.create(julien, "test room"/*, true*/);
+		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 
 		thread = Thread.all().filter("title", "Titre").get();
 		assertNotNull(thread);
@@ -118,7 +131,8 @@ public class BasicTest extends UnitTest {
 	
 	@Test
 	public void follow() {
-		Thread thread = Thread.create(julien, "Titre", "Contenu");
+		Room room = Room.create(julien, "test room"/*, true*/);
+		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 		
 		assertEquals(1, julien.followedThreads.count());
 		assertTrue(julien.isFollowing(thread));
@@ -136,15 +150,15 @@ public class BasicTest extends UnitTest {
 	
 	@Test
 	public void read() {
-		Thread thread = Thread.create(julien, "Titre", "Contenu");
+		Room room = Room.create(julien, "test room"/*, true*/);
+		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 		
-		assertTrue(!julien.hasRead(thread.rootPost));
-		//assertEquals(1, julien.getUnreadPostCount(thread));
+		assertTrue(julien.hasRead(thread.rootPost));
 		
 		julien.read(thread.rootPost);
 		assertTrue(julien.hasRead(thread.rootPost));
 		
 		julien.unread(thread.rootPost);
-		assertTrue(!julien.hasRead(thread.rootPost));
+		assertFalse(julien.hasRead(thread.rootPost));
 	}
 }

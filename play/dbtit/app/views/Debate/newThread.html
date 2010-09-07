@@ -8,7 +8,9 @@
 #{/set}
 
 
-<h1>&{'createThread'}</h1>
+<div>
+	#{a @Debate.showRoom(room.hash)}${room.name}#{/a} » <h1>&{'createThread'}</h1>
+</div>
 
 #{if preview}
 	<h2>&{'threadPreview'}</h2>
@@ -18,7 +20,7 @@
 
 #{include 'syntaxhint.html' /}
 
-#{form @Debate.createThread()}
+#{form @Debate.createThread(room.hash)}
 	#{ifErrors}
 		<p class="form-error">&{'formError'}</p>
 	#{/ifErrors}

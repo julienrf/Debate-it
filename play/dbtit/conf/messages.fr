@@ -2,6 +2,11 @@
 # For exemple, for french create a messages.fr file
 #
 
+myRooms=Mes espaces de discussion
+room=Espace de discussion
+threadCount=Débats
+emtpyRoom=Cet espace de discussion ne contient aucun débat.
+
 login=Identifiez-vous
 logout=Se déconnecter
 toParticipate=pour participer à cette discussion (nécessite un compte google)
@@ -63,10 +68,22 @@ create=Créer
 references=Références
 
 createThread=Créer un nouveau débat
+roomId=Espace de discussion : 
+roomHint=Le nouveau débat appartiendra à l’espace de discussion sélectionné. Vous devez d’abord vous abonner à un espace de discussion pour pouvoir y créer un débat.
 threadTitle=Titre
 threadContent=Contenu
 threadPreview=Prévisualisation
 threadCreated=La discussion « %s » a été créée
+
+createRoom=Créer un nouvel espace
+isPublic=Rendre cet espace de discussion public
+isPublicHint=Les espaces publics peuvent être consultés par tout le monde.
+
+emptyRoom=Aucun débat n’a été créé dans cet espace de discussion !
+debate=Débat
+lastPostDate=Dernier message
+
+openRoomState=Débats actuels dans l’espace ouvert de discussions
 
 formError=La saisie contient des erreurs
 
@@ -74,9 +91,9 @@ postAdded=Votre réponse a été ajoutée
 postUpdated=Votre message a été mis à jour
 postReplied=Une réponse a été ajoutée pendant que vous étiez en train d’éditer votre message. L’édition est désormais impossible.
 
-userUpdate.name=Nom
+userUpdate.name=Nom : 
 userUpdate.email=Email
-userUpdate.tzId=Fuseau horaire
+userUpdate.tzId=Fuseau horaire : 
 userUpdate.stopOnUnreadPosts=Ne pas afficher les réponses aux messages non lus
 # userUpdate.rememberMe=Se connecter automatiquement à chaque visite
 

@@ -20,7 +20,8 @@
 #{/if}
 
 <div>
-	<span class="thread-title">#{get 'thread-title' /}</span>
+	%{ thread.room.get(); }%
+	#{a @Debate.showRoom(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
 	#{followthread thread:thread, user:user /}
 </div>
 

@@ -23,10 +23,17 @@ GET     /login                        Dbtit.login
 GET     /loggedIn                     Dbtit.loggedIn
 GET     /logout                       Dbtit.logout
 
-GET     /new                          Debate.newThread
-POST    /new                          Debate.createThread
-
 GET     /follow                       Debate.followThreads
+
+GET     /rooms                        Debate.listRooms
+GET     /room/new                     Debate.newRoom
+POST    /room/new                     Debate.createRoom
+GET     /room/{hash}                  Debate.showRoom
+# PUT     /room/{hash}/subscribe        Debate.subscribeRoom
+# PUT     /room/{hash}/unsubscribe      Debate.unsubscribeRoom
+
+GET     /room/{hash}/new              Debate.newThread
+POST    /room/{hash}/new              Debate.createThread
 
 GET     /{hash}                       Debate.showThread
 GET     /{hash}/{paragraphId}         Debate.branch
