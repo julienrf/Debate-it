@@ -27,4 +27,4 @@
 #{a @Debate.newThread(room.hash)}&{'createThread'}#{/a}
 <div><span class="st_email"></span><span class="st_facebook"></span><span class="st_twitter"></span><span class="st_sharethis" displayText="ShareThis"></span></div>
 
-#{roomthreads threads:threads, pagination:pagination, route:@Rooms.show(room.hash) /}
+#{roomthreads threads:threads, pagination:pagination, route:@Rooms.show(room.hash), tz:user?.tz /}

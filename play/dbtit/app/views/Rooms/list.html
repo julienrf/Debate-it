@@ -11,22 +11,23 @@
 
 
 #{if subscriptions.size() > 0}
-	<table class="list box">
-	
-	<tr class="item">
-		<th>&{'room'}</th>
-		<th>&{'threadCount'}</th>
-	</tr>
-	
-	#{list items:subscriptions, as:'subscription'}
-		<tr class="item ${subscription_parity}">
-			%{ subscription.room.get(); room = subscription.room; }%
-			<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
-			<td>${room.threads.count()}</td>
+	<div class="box">
+		<table class="list">
+		
+		<tr class="item">
+			<th>&{'room'}</th>
+			<th>&{'threadCount'}</th>
 		</tr>
-	#{/list}
-	
-	</table>
+		
+		#{list items:subscriptions, as:'subscription'}
+			<tr class="item ${subscription_parity}">
+				%{ subscription.room.get(); room = subscription.room; }%
+				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
+				<td>${room.threads.count()}</td>
+			</tr>
+		#{/list}
+		
+		</table>
+		#{pagination.list pagination:pagination, route:@Rooms.list() /}
+	</div>
 #{/if}
-
-#{pagination.list pagination:pagination, route:@Rooms.list() /}

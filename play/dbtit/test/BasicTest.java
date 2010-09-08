@@ -105,8 +105,10 @@ public class BasicTest extends UnitTest {
 		assertTrue(julien.hasSubscribed(room));
 		
 		julien.unsubscribe(room);
-		
 		assertFalse(julien.hasSubscribed(room));
+		
+		julien.subscribe(room);
+		assertTrue(julien.hasSubscribed(room));
 	}
 	
 	@Test

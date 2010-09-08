@@ -3,34 +3,31 @@ package utils;
 import java.util.HashMap;
 import java.util.Map;
 
+import play.mvc.Scope;
+
 /**
  * Class intended to help doing pagination
- * Highly inspired by the Yii CPagination class
  * @author julien
  *
  */
 public class Pagination {
+	private Scope.Params params;
 	private int itemCount;
 	private String pageVar = "p";
-	private int pageSize = 15;
-	private int currentPage = 1;
+	private int pageSize = 12;
 	
-	public Pagination(int itemCount) {
+	public Pagination(Scope.Params params, int itemCount) {
+		this.params = params;
 		this.itemCount = itemCount;
 	}
 	
-	public Pagination(int itemCount, int currentPage) {
-		this(itemCount);
-		this.currentPage = currentPage;
-	}
-	
-	public Pagination(int itemCount, int currentPage, int pageSize) {
-		this(itemCount, currentPage);
+	public Pagination(Scope.Params params, int itemCount, int pageSize) {
+		this(params, itemCount);
 		this.pageSize = pageSize;
 	}
 	
-	public Pagination(int itemCount, int currentPage, int pageSize, String pageVar) {
-		this(itemCount, currentPage, pageSize);
+	public Pagination(Scope.Params params, int itemCount, int pageSize, String pageVar) {
+		this(params, itemCount, pageSize);
 		this.pageVar = pageVar;
 	}
 	
@@ -38,26 +35,36 @@ public class Pagination {
 		return (itemCount + pageSize - 1) / pageSize;
 	}
 	
+	/**
+	 * Return a map containing the parameters to use to get a given page
+	 * @param page
+	 * @return
+	 */
 	public Map<String, Object> getParam(int page) {
 		HashMap<String, Object> map = new HashMap<String, Object>();
 		map.put(pageVar, page);
 		return map;
 	}
 	
-	public int getCurrentOffset() {
-		return (currentPage - 1) * pageSize;
+	public int getFrom() {
+		return (getCurrentPage() - 1) * pageSize;
 	}
 	
-	public int getCurrentLimit() {
-		return Math.min(currentPage * pageSize, itemCount);
+	public int getTo() {
+		return Math.min(getCurrentPage() * pageSize, itemCount);
 	}
 	
 	public int getCurrentPage() {
-		return currentPage;
-	}
-	
-	public void setCurrentPage(int currentPage) {
-		this.currentPage = currentPage;
+		if (params._contains(pageVar)) {
+			int currentPage = params.get(pageVar, Integer.class);
+			if ((currentPage - 1) * pageSize >= itemCount) {
+				return 1;
+			} else {
+				return currentPage;
+			}
+		} else {
+			return 1;
+		}
 	}
 	
 	public String getPageVar() {

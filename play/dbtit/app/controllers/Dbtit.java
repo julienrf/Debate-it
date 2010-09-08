@@ -105,18 +105,9 @@ public class Dbtit extends Controller {
     	Room room = Room.getOpenRoom();
     	List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
     	
-    	Pagination pagination = new Pagination(room.threads.count());
-    	int currentPage = 1;
-    	if (params._contains(pagination.getPageVar()))
-    		currentPage = params.get(pagination.getPageVar(), Integer.class);
-    	pagination.setCurrentPage(currentPage);
+    	Pagination pagination = new Pagination(params, room.threads.count());
     	
-    	
-    	if (pagination.getCurrentLimit() > 0) {
-    		threads = threads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
-    	} else {
-    		threads = new ArrayList<Thread>();
-    	}
+   		threads = threads.subList(pagination.getFrom(), pagination.getTo());
     	
     	render(threads, pagination);
     }

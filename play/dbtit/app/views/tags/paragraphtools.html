@@ -24,8 +24,8 @@
     #{if _post.parent != null}
     	%{ _post.parent.get() }%
     	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}" alt="&{'goToParentPost'}" class="sprite parentPost"></a>
-    	#{sprite name:'root', action:@Debate.branch(_thread.hash, _paragraph.id), alt:messages.get('asRoot') /}
     #{/if}
+	#{sprite name:'root', action:@Debate.branch(_thread.hash, _paragraph.id), alt:messages.get('asRoot') /}
     *{#{if _user != null}
     	#{sprite name:'forkThread', action:@Debate.fork(_thread.hash, _paragraph.id), alt:messages.get('fork') /}
 	#{/if}}*

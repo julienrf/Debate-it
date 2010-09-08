@@ -19,16 +19,10 @@ public class Rooms extends Controller {
 	public static void list() {
 		User user = Dbtit.connectedUser();
 		List<RoomSubscription> subscriptions;
-		Pagination pagination = new Pagination(user.subscriptions.count());
+		Pagination pagination = new Pagination(params, user.subscriptions.count());
 		
-    	int currentPage = 1;
-    	if (params._contains(pagination.getPageVar()))
-    		currentPage = params.get(pagination.getPageVar(), Integer.class);
-    	pagination.setCurrentPage(currentPage);
-    	
-    	
-    	if (pagination.getCurrentLimit() > 0) {
-    		subscriptions = user.subscriptions.fetch(pagination.getCurrentLimit(), pagination.getCurrentOffset());
+    	if (pagination.getTo() > 0) {
+    		subscriptions = user.subscriptions.fetch(pagination.getTo() - pagination.getFrom(), pagination.getFrom());
     	} else {
     		subscriptions = new ArrayList<RoomSubscription>();
     	}
@@ -52,16 +46,9 @@ public class Rooms extends Controller {
 		}*/
 		
 		List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
-		Pagination pagination = new Pagination(room.threads.count());
-		int currentPage = 1;
-		if (params._contains(pagination.getPageVar())) {
-			currentPage = params.get(pagination.getPageVar(), Integer.class);
-		}
-		pagination.setCurrentPage(currentPage);
+		Pagination pagination = new Pagination(params, threads.size());
 		
-		if (pagination.getCurrentLimit() > 0) {
-			threads = threads.subList(pagination.getCurrentOffset(), pagination.getCurrentLimit());
-		}
+		threads = threads.subList(pagination.getFrom(), pagination.getTo());
 		
 		render(room, threads, pagination);
 	}
