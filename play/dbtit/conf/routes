@@ -25,12 +25,12 @@ GET     /logout                       Dbtit.logout
 
 GET     /follow                       Debate.followThreads
 
-GET     /rooms                        Debate.listRooms
-GET     /room/new                     Debate.newRoom
-POST    /room/new                     Debate.createRoom
-GET     /room/{hash}                  Debate.showRoom
-# PUT     /room/{hash}/subscribe        Debate.subscribeRoom
-# PUT     /room/{hash}/unsubscribe      Debate.unsubscribeRoom
+GET     /rooms                        Rooms.list
+GET     /room/new                     Rooms.newRoom
+POST    /room/new                     Rooms.create
+GET     /room/{hash}                  Rooms.show
+# PUT     /room/{hash}/subscribe        Rooms.subscribe
+# PUT     /room/{hash}/unsubscribe      Rooms.unsubscribe
 
 GET     /room/{hash}/new              Debate.newThread
 POST    /room/{hash}/new              Debate.createThread

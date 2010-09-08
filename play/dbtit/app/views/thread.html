@@ -21,7 +21,7 @@
 
 <div>
 	%{ thread.room.get(); }%
-	#{a @Debate.showRoom(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
+	#{a @Rooms.show(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
 	<div>#{followthread thread:thread, user:user /}</div>
 </div>
 

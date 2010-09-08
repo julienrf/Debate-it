@@ -16,7 +16,7 @@
     		#{if user}
 	    		<nav id="left-nav">
 	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
-	    			| #{a @Debate.listRooms()}&{'myRooms'}#{/a}
+	    			| #{a @Rooms.list()}&{'myRooms'}#{/a}
 					*{| #{a @Debate.newThread()}&{'createThread'}#{/a}
 					| #{a @Debate.followThreads()}&{'followedThreads'}#{/a}}*
 				</nav>
