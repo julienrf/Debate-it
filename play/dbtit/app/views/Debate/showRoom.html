@@ -6,8 +6,16 @@
 	#{stylesheet 'pagination.sass' /}
 #{/set}
 
+#{if user == null}
+	#{set 'moreNav'}
+		<nav id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a}</nav>
+	#{/set}
+#{/if}
+
 <div>
 	<h1>${room.name}</h1> #{a @Debate.newThread(room.hash)}&{'createThread'}#{/a}
 </div>
+
+<div><span class="st_email"></span><span class="st_facebook"></span><span class="st_twitter"></span><span class="st_sharethis" displayText="ShareThis"></span></div>
 
 #{roomthreads threads:threads, pagination:pagination, route:@Debate.showRoom(room.hash) /}

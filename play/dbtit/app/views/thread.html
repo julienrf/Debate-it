@@ -15,14 +15,14 @@
 
 #{if user == null}
 	#{set 'moreNav'}
-		<div id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a} &{'toParticipate'}</div>
+		<nav id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a} &{'toParticipate'}</nav>
 	#{/set}
 #{/if}
 
 <div>
 	%{ thread.room.get(); }%
 	#{a @Debate.showRoom(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
-	#{followthread thread:thread, user:user /}
+	<div>#{followthread thread:thread, user:user /}</div>
 </div>
 
 #{get 'thread-content' /}
