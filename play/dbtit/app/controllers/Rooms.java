@@ -85,4 +85,26 @@ public class Rooms extends Controller {
 		Room room = Room.create(Dbtit.connectedUser(), name/*, isPublic*/);
 		show(room.hash);
 	}
+	
+	@LoggedIn
+	public static void subscribe(String hash, String url) {
+		Room room = Room.findByHash(hash);
+		notFoundIfNull(room);
+		User user = Dbtit.connectedUser();
+		
+		user.subscribe(room);
+		
+		redirect(url);
+	}
+	
+	@LoggedIn
+	public static void unsubscribe(String hash, String url) {
+		Room room = Room.findByHash(hash);
+		notFoundIfNull(room);
+		User user = Dbtit.connectedUser();
+		
+		user.unsubscribe(room);
+		
+		redirect(url);
+	}
 }

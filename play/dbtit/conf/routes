@@ -29,8 +29,8 @@ GET     /rooms                        Rooms.list
 GET     /room/new                     Rooms.newRoom
 POST    /room/new                     Rooms.create
 GET     /room/{hash}                  Rooms.show
-# PUT     /room/{hash}/subscribe        Rooms.subscribe
-# PUT     /room/{hash}/unsubscribe      Rooms.unsubscribe
+PUT     /room/{hash}/subscribe        Rooms.subscribe
+PUT     /room/{hash}/unsubscribe      Rooms.unsubscribe
 
 GET     /room/{hash}/new              Debate.newThread
 POST    /room/{hash}/new              Debate.createThread

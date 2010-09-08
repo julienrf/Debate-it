@@ -6,6 +6,8 @@ myRooms=Mes espaces de discussion
 room=Espace de discussion
 threadCount=Débats
 emtpyRoom=Cet espace de discussion ne contient aucun débat.
+subscribe=Ajouter à mes espaces de discussion
+unsubscribe=Retirer de mes espaces de discussion
 
 login=Identifiez-vous
 logout=Se déconnecter
