@@ -12,7 +12,7 @@
 			#{list items:_threads, as:'thread'}
 				<tr class="item ${thread_parity}">
 					<td>#{a @Debate.showThread(thread.hash), class:'item-title'}${thread.title}#{/a}</td>
-					<td>#{date date:thread.lastPostDate() /}</td>
+					<td>#{date date:thread.lastPostDate(), tz:user?.tz /}</td>
 				</tr>
 			#{/list}
 		</table>
