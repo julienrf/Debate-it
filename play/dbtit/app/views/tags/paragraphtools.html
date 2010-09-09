@@ -18,7 +18,7 @@
     		#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
     	#{/else}
 	#{/if}
-	<span class="other-tools">
+	<span class="other-tools hover">
     *{<a href="@{Debate.reply(_thread.hash, _paragraph.id)}" title="&{'replyToPost'}">&{'reply'}</a>}*
     #{sprite name:'replyPost', action:@Debate.reply(_thread.hash, _paragraph.id), alt:messages.get('replyToPost') /}
     #{if _post.parent != null}

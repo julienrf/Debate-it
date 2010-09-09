@@ -18,15 +18,7 @@ $(document).ready(function(){
  * ainsi que le comportement lors du clic sur les boutons permettant d’afficher ou cacher les réponses d’un paragraphe
  */
 function setupPostTools() {
-  // Cache les outils des posts
-  $(".post .other-tools").hide();
-  
-  // Affiche les outils des paragraphes quand le curseur passe au-dessus de ceux-ci  * TODO le faire en CSS
-  $(".paragraph .container").hover(
-		function(event) { $(this).find(".other-tools").show(); },
-	  	function(event) { $(this).find(".other-tools").hide(); }
-  );
-  
+	
   // Configure le comportement du bouton « Marquer comme lu »
   $(".post a.readPost").click(function(event) {
 	  event.preventDefault();
