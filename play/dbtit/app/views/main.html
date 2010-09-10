@@ -16,9 +16,9 @@
     		#{if user}
 	    		<nav id="left-nav">
 	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
+					| #{a @Debate.followThreads()}&{'followedThreads'}#{/a}
 	    			| #{a @Rooms.list()}&{'myRooms'}#{/a}
-					*{| #{a @Debate.newThread()}&{'createThread'}#{/a}
-					| #{a @Debate.followThreads()}&{'followedThreads'}#{/a}}*
+					*{| #{a @Debate.newThread()}&{'createThread'}#{/a}}*
 				</nav>
 				<nav id="right-nav">
 					<strong>${user.name}</strong>
@@ -52,7 +52,7 @@
         </article>
         
         <footer>
-        	<p>© 2010 — <a href="mailto:julien.rf@no-log.org">Julien Richard-Foy</a></p>
+        	<p>© 2010</p>
         </footer>
         
         #{script 'jquery-1.4.min.js' /}

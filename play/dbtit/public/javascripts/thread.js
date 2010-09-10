@@ -41,7 +41,7 @@ function setupPostTools() {
   	});
 }
 
-/** Ajoute le comportement permettant d’enrouler/dérouler un paragraphe */
+/** Ajoute le comportement permettant d’enrouler/dérouler un post */
 function setupPostRolling() {
   // Configure l’enroulement/déroulement d’un message
 	$(".post .title .roll").unbind('click');
@@ -88,7 +88,7 @@ function togglePost(post) {
 		post.children(".paragraph").slideDown('fast');
 	} else {
 		title.addClass("rolled");
-		var content = post.children(".paragraph").first().find(".content").first().clone()
+		var content = post.children(".paragraph").first().find(".content").first().clone().text();
 		if (content.length > 60) {
 			content = content.substring(0, 60);
 			content.replace(/\w+$/, '');
