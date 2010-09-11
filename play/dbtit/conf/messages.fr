@@ -29,7 +29,7 @@ update=Mettre à jour
 profileUpdated=Votre profil a été mis à jour
 
 followedThreads=Discussions suivies
-unreadPosts=messages non lus
+unreadPosts=Messages non lus
 unreadPost=message non lu
 readNewPosts=Lire les nouveaux messages
 
@@ -83,7 +83,8 @@ isPublicHint=Les espaces publics peuvent être consultés par tout le monde.
 
 emptyRoom=Aucun débat n’a été créé dans cet espace de discussion !
 debate=Débat
-lastPostDate=Dernier message
+lastPost=Dernier message
+at=à
 
 openRoomState=Débats actuels dans l’espace ouvert de discussions
 

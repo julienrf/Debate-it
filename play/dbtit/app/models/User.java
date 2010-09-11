@@ -77,18 +77,14 @@ public class User extends Model {
 		return user;
 	}
 	
-	public List<Following> followedThreads() {
-		List<Following> followings = new ArrayList<Following>();
-		followings.addAll(followedThreads.fetch());
-		
-		Collections.sort(followings, new Comparator<Following>() {
-			@Override
-			public int compare(Following o1, Following o2) {
-				return -o1.thread.lastPostDate().compareTo(o2.thread.lastPostDate());
-			}
-		});
-		
-		return followings;
+	public List<Thread> followedThreads() {
+		List<Following> followings = followedThreads.fetch();
+		List<Thread> threads = new ArrayList<Thread>();
+		for (Following f : followings) {
+			f.thread.get();
+			threads.add(f.thread);
+		}
+		return Thread.sortByLastPost(threads);
 	}
 	
 	/**

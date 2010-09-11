@@ -311,7 +311,7 @@ public class Debate extends Controller {
     @LoggedIn
     public static void followThreads() {
     	User user = Dbtit.connectedUser();
-    	List<Following> followedThreads = user.followedThreads();
+    	List<Thread> followedThreads = user.followedThreads();
     	Pagination pagination = new Pagination(params, followedThreads.size());
     	
    		followedThreads = followedThreads.subList(pagination.getFrom(), pagination.getTo());

@@ -86,7 +86,7 @@ public class Thread extends Model {
 		Collections.sort(threads, new Comparator<Thread>() {
 			@Override
 			public int compare(Thread o1, Thread o2) {
-				return -o1.lastPostDate().compareTo(o2.lastPostDate());
+				return -o1.lastPost().date.compareTo(o2.lastPost().date);
 			}
 		});
 		
@@ -102,7 +102,7 @@ public class Thread extends Model {
 		return Post.all(Post.class).filter("thread", this).filter("date>", date).count();
 	}
 	
-	public Date lastPostDate() {
-		return Post.all(Post.class).filter("thread", this).order("-date").get().date;
+	public Post lastPost() {
+		return Post.all(Post.class).filter("thread", this).order("-date").get();
 	}
 }
