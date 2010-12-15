@@ -8,36 +8,32 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+
 import play.Play;
 import play.data.validation.Required;
+import play.db.jpa.Model;
 import play.libs.Codec;
-import siena.Column;
-import siena.Id;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
 import utils.Helper;
 
+@Entity
 public class Thread extends Model {
 	
-	@Id
-	public Long id;
-
 	/** The initial post of the thread */
-	@NotNull @Column("rootPost")
+	@OneToOne
 	public Post rootPost;
 	
 	/** The topic of the thread */
 	@Required
-	@NotNull
 	public String title;
 	
 	/** A hash code identifying the thread */
-	@NotNull
 	public String hash;
 	
 	@Required
-	@NotNull @Column("room")
+	@ManyToOne
 	public Room room;
 	
 	/** Protected constructor since the static helper should be used, for better consistency */
@@ -45,14 +41,6 @@ public class Thread extends Model {
 	{
 		this.title = title;
 		this.room = room;
-	}
-	
-	public static Query<Thread> all() {
-		return Model.all(Thread.class);
-	}
-	
-	public static Thread findByHash(String hash) {
-		return Thread.all().filter("hash", hash).get();
 	}
 	
 	public String toString() {
@@ -70,15 +58,15 @@ public class Thread extends Model {
 	 */
 	public static Thread create(User author, Room room, String title, String content)
 	{
-		Thread thread = new Thread(room, title);
-		thread.insert();
+		Thread thread = new Thread(room, title).save();
 		thread.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + thread.id));
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
-		thread.update();
+		thread.save();
 		return thread;
 	}
 	
+	// TODO Faire une jolie requête JPQL
 	public static List<Thread> sortByLastPost(List<Thread> source) {
 		List<Thread> threads = new ArrayList<Thread>();
 		threads.addAll(source);
@@ -99,10 +87,10 @@ public class Thread extends Model {
 	 * @return
 	 */
 	public long getPostCountAfter(Date date) {
-		return Post.all(Post.class).filter("thread", this).filter("date>", date).count();
+		return Post.find("thread = ? and date > ?", this, date).fetch().size();
 	}
 	
 	public Post lastPost() {
-		return Post.all(Post.class).filter("thread", this).order("-date").get();
+		return Post.find("thread = ? order by date desc", this).first();
 	}
 }

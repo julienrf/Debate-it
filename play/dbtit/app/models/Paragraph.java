@@ -1,40 +1,39 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import siena.Column;
-import siena.Filter;
-import siena.Id;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
-import siena.Text;
+import play.db.jpa.Model;
 
+@Entity
 public class Paragraph extends Model {
 	
-	@Id
-	public Long id;
-
 	/** HTML content of the paragraph */
 	@Required @MaxSize(1000)
-	@Text @NotNull
+	@Lob
 	public String content;
 	
 	/** Answers of the paragraph */
-	@Filter("parent")
-	public Query<Post> answers;
+	@OneToMany(mappedBy="parent", cascade=CascadeType.REMOVE) // FIXME Utiliser CascadeType.ALL
+	public List<Post> answers;
 	
 	/** Footnotes referenced by this post */
-	@Filter("paragraph")
-	public Query<FootNote> footNotes;
+	@OneToMany(mappedBy="paragraph", cascade=CascadeType.REMOVE) // FIXME Idem (et virer les footNotes.save plus bas)
+	public List<FootNote> footNotes;
 	
 	/** Post which this paragraph belongs to */
 	@Required
-	@NotNull @Column("post")
+	@ManyToOne
 	public Post post;
 	
 	/** Number of the post (added to sort paragraphs) */
@@ -44,15 +43,13 @@ public class Paragraph extends Model {
 	{
 		this.post = post;
 		this.content = content;
+		this.answers = new ArrayList<Post>();
+		this.footNotes = new ArrayList<FootNote>();
 		this.number = number;
 	}
 	
-	public static Query<Paragraph> all() {
-		return Model.all(Paragraph.class);
-	}
-	
 	public static Paragraph findById(Long id) {
-		return Paragraph.all().filter("id", id).get();
+		return Paragraph.findById(id);
 	}
 	
 	@Override
@@ -66,14 +63,13 @@ public class Paragraph extends Model {
 	 * @param content Content of the reply post
 	 */
 	public Post reply(User author, String content) {
-		post.get();
 		Thread thread = post.thread;
 		Post reply = Post.create(author, content, this, thread);
 		return reply;
 	}
 	
 	public boolean hasAnswers() {
-		return answers.count() != 0;
+		return answers.size() != 0;
 	}
 
 	/**
@@ -81,10 +77,11 @@ public class Paragraph extends Model {
 	 */
 	public void addFootNote(FootNote footNote) {
 		footNote.paragraph = this;
-		footNote.update();
+		footNotes.add(footNote);
+		footNote.save();
 	}
 	
 	public boolean hasFootNotes() {
-		return footNotes.count() != 0;
+		return footNotes.size() != 0;
 	}
 }

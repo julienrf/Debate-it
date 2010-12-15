@@ -1,31 +1,27 @@
 package models;
 
-import siena.Column;
-import siena.Id;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
+import play.data.validation.Required;
+import play.db.jpa.Model;
+
+@Entity
 public class Following extends Model {
 
-	@Id
-	public Long id;
-	
-	@NotNull @Column("user")
+	@Required
+	@ManyToOne
 	public User user;
 	
-	@NotNull @Column("thread")
+	@Required
+	@ManyToOne
 	public Thread thread;
 	
 	public Following(Thread thread, User user) {
 		this.thread = thread;
 		this.user = user;
 	}
-	
-	public static Query<Following> all() {
-		return Model.all(Following.class);
-	}
-	
+
 	/*public static Following findByThreadAndUser(Thread thread, User user) {
 		return Following.all(Following.class).filter("thread", thread.id).filter("user", user.id).get();
 	}*/

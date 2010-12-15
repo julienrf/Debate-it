@@ -5,48 +5,46 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+
+import controllers.admin.Readings;
+
 import play.data.validation.Email;
 import play.data.validation.Required;
-import siena.Filter;
-import siena.Id;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
+import play.db.jpa.Model;
 
+@Entity
 public class User extends Model {
-	
-	@Id
-	public Long id;
 	
 	/** Display name */
 	@Required
-	@NotNull
 	public String name;
 	
 	/** Email identifying the user */
 	@Required @Email
-	@NotNull
 	public String email;
 	
 	/** User TimeZone */
 	@Required
-	@NotNull
 	public String tz;
 	
 	/** User preference */
 	public Boolean exploreUnreadPosts;
 	
 	/** List of threads followed by the user */
-	@Filter("user")
-	public Query<Following> followedThreads;
+	@OneToMany // FIXME Pourquoi ce n’est pas du ManyToMany ?
+	public List<Thread> followedThreads;
 	
 	/** List of the post read by the user */
-	@Filter("user")
-	public Query<Reading> readPosts;
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
+	public List<Reading> readPosts;
 	
 	/** List of the rooms this user subscribed to */
-	@Filter("user")
-	public Query<RoomSubscription> subscriptions;
+	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
+	public List<RoomSubscription> subscriptions;
 	
 	/**
 	 * Ideas of profile settings:
@@ -60,31 +58,25 @@ public class User extends Model {
 		this.email = email;
 		this.tz = tz;
 		this.exploreUnreadPosts = false;
-	}
-	
-	public static Query<User> all() {
-		return Model.all(User.class);
-	}
-	
-	public static User findByEmail(String email) {
-		return User.all().filter("email", email).get();
+		this.followedThreads = new ArrayList<Thread>();
+		this.readPosts = new ArrayList<Reading>();
+		this.subscriptions = new ArrayList<RoomSubscription>();
 	}
 	
 	public static User create(String name, String email, String tz) {
 		User user = new User(name, email, tz);
-		user.insert();
+		user.save();
 		user.subscribe(Room.getOpenRoom());
 		return user;
 	}
 	
+	// TODO il doit y avoir moyen de transformer ça en requête plus efficace
 	public List<Thread> followedThreads() {
-		List<Following> followings = followedThreads.fetch();
-		List<Thread> threads = new ArrayList<Thread>();
-		for (Following f : followings) {
-			f.thread.get();
+		/*List<Thread> threads = new ArrayList<Thread>();
+		for (Following f : followedThreads) {
 			threads.add(f.thread);
-		}
-		return Thread.sortByLastPost(threads);
+		}*/
+		return Thread.sortByLastPost(followedThreads);
 	}
 	
 	/**
@@ -94,22 +86,23 @@ public class User extends Model {
 		name = update.name;
 		tz = update.tzId;
 		exploreUnreadPosts = !update.stopOnUnreadPosts;
-		update();
+		save();
 	}
 	
 	public boolean hasSubscribed(Room room) {
-		return subscriptions.filter("room", room).count() != 0;
+		return RoomSubscription.find("byUserAndRoom", this, room).fetch().size() != 0; // TODO Avec une relation ManyToMany j’aurais juste à faire un subscriptions.contains(room)
+		//return subscriptions.filter("room", room).count() != 0;
 	}
 	
 	public void subscribe(Room room) {
 		if (!hasSubscribed(room)) {
 			RoomSubscription subscription = new RoomSubscription(room, this);
-			subscription.insert();
+			subscription.save();
 		}
 	}
 	
 	public void unsubscribe(Room room) {
-		RoomSubscription subscription = subscriptions.filter("room", room).get();
+		RoomSubscription subscription = RoomSubscription.find("byUserAndRoom", this, room).first();
 		if (subscription != null) {
 			subscription.delete();
 		}
@@ -120,9 +113,9 @@ public class User extends Model {
 	 * @param thread Thread to be followed
 	 */
 	public void follow(Thread thread) {
-		if (!isFollowing(thread)) {
-			Following following = new Following(thread, this);
-			following.insert();
+		if (!followedThreads.contains(thread)) {
+			followedThreads.add(thread);
+			save();
 		}
 	}
 	
@@ -131,9 +124,9 @@ public class User extends Model {
 	 * @param thread
 	 */
 	public void doNotFollow(Thread thread) {
-		Following following = followedThreads.filter("thread", thread).get();
-		if (following != null) {
-			following.delete();
+		if (followedThreads.contains(thread)) {
+			followedThreads.remove(thread);
+			save();
 		}
 	}
 	
@@ -141,7 +134,7 @@ public class User extends Model {
 	 * @return true if this user is following the given thread
 	 */
 	public boolean isFollowing(Thread thread) {
-		return followedThreads.filter("thread", thread).count() != 0;
+		return followedThreads.contains(thread);
 	}
 	
 	
@@ -152,7 +145,8 @@ public class User extends Model {
 	public void read(Post post) {
 		if (!hasRead(post)) {
 			Reading reading = new Reading(post, this);
-			reading.insert();
+			reading.save();
+			readPosts.add(reading);
 		}
 	}
 	
@@ -161,7 +155,7 @@ public class User extends Model {
 	 * @param post
 	 */
 	public void unread(Post post) {
-		Reading reading = readPosts.filter("post", post).get();
+		Reading reading = Reading.find("byUserAndPost", this, post).first();
 		if (reading != null) {
 			reading.delete();
 		}
@@ -171,7 +165,7 @@ public class User extends Model {
 	 * @return true if this user has read the given post
 	 */
 	public boolean hasRead(Post post) {
-		return readPosts.filter("post", post).count() != 0;
+		return Reading.count("user = ? and post = ?", this, post) != 0;
 	}
 	
 	/**
@@ -180,7 +174,7 @@ public class User extends Model {
 	 * @return
 	 */
 	public long getUnreadPostCount(Thread thread) {
-		return Post.all().filter("thread", thread).count() - readPosts.filter("thread", thread).count();
+		return Post.count("thread = ?", thread) - Reading.count("thread = ? and user = ?", thread, this);
 	}
 	
 	

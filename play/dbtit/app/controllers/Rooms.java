@@ -19,10 +19,10 @@ public class Rooms extends Controller {
 	public static void list() {
 		User user = Dbtit.connectedUser();
 		List<RoomSubscription> subscriptions;
-		Pagination pagination = new Pagination(params, user.subscriptions.count());
+		Pagination pagination = new Pagination(params, user.subscriptions.size());
 		
     	if (pagination.getTo() > 0) {
-    		subscriptions = user.subscriptions.fetch(pagination.getTo() - pagination.getFrom(), pagination.getFrom());
+    		subscriptions = user.subscriptions.subList(pagination.getTo() - pagination.getFrom(), pagination.getFrom());
     	} else {
     		subscriptions = new ArrayList<RoomSubscription>();
     	}
@@ -35,7 +35,7 @@ public class Rooms extends Controller {
 	 * @param hash
 	 */
 	public static void show(String hash) {
-		Room room = Room.findByHash(hash);
+		Room room = Room.find("byHash", hash).first();
 		notFoundIfNull(room);
 		
 		/*if (!(hash.equals("open") || room.isPublic)) {
@@ -45,7 +45,7 @@ public class Rooms extends Controller {
 			}
 		}*/
 		
-		List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
+		List<Thread> threads = Thread.sortByLastPost(room.threads);
 		Pagination pagination = new Pagination(params, threads.size());
 		
 		threads = threads.subList(pagination.getFrom(), pagination.getTo());
@@ -69,13 +69,13 @@ public class Rooms extends Controller {
 			render("@newRoom", name, isPublic);
 		}
 		
-		Room room = Room.create(Dbtit.connectedUser(), name/*, isPublic*/);
+		Room room = Room.create(Dbtit.connectedUser(), name, isPublic);
 		show(room.hash);
 	}
 	
 	@LoggedIn
 	public static void subscribe(String hash, String url) {
-		Room room = Room.findByHash(hash);
+		Room room = Room.find("byHash", hash).first();
 		notFoundIfNull(room);
 		User user = Dbtit.connectedUser();
 		
@@ -86,7 +86,7 @@ public class Rooms extends Controller {
 	
 	@LoggedIn
 	public static void unsubscribe(String hash, String url) {
-		Room room = Room.findByHash(hash);
+		Room room = Room.find("byHash", hash).first();
 		notFoundIfNull(room);
 		User user = Dbtit.connectedUser();
 		

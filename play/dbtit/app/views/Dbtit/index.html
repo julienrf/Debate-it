@@ -8,21 +8,22 @@
 <div id="title">Debate it!</div>
 
 <div id="index-wrapper">
+	#{if user == null}
 	<div id="side-action">
-		#{if user != null}
-			#{a @Debate.newThread(models.Room.getOpenRoom().hash), class:'button orange big'} &{'createThread'} #{/a}
-		#{/if}
-		#{else}
-			#{a @Dbtit.login(request.url), class:'button orange big'} &{'login'} #{/a}
-		#{/else}
+		#{a @Dbtit.login(request.url), class:'button orange big'} &{'login'} #{/a}
 	</div>
 	
 	<div id="main-description" class="box">
 		&{'intro'}
 		<p>#{a @Dbtit.features()} &{'more'} #{/a}</p>
 	</div>
-	
+	#{/if} *{ user == null }*
+
 	<h2>&{'openRoomState'}</h2>
 	
 	#{roomthreads threads:threads, pagination:pagination, route:@Dbtit.index(), tz:user?.tz /}
+	
+	<h2>&{'publicRoomsActivity'}</h2>
+	
+	#{roomsactivity rooms:rooms, tz:user?.tz /}
 </div>

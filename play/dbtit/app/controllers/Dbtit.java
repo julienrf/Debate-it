@@ -1,6 +1,7 @@
 package controllers;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
@@ -11,7 +12,6 @@ import models.User;
 import play.Logger;
 import play.data.validation.Valid;
 import play.i18n.Messages;
-import play.modules.gae.GAE;
 import play.mvc.Before;
 import play.mvc.Controller;
 import play.mvc.Router;
@@ -40,22 +40,22 @@ public class Dbtit extends Controller {
 	}
 	
 	protected static User connectedUser() {
-		com.google.appengine.api.users.User gaeUser = GAE.getUser();
+		/*com.google.appengine.api.users.User gaeUser = GAE.getUser();
 		if (gaeUser != null) {
 			return User.findByEmail(gaeUser.getEmail());
-		} else {
+		} else {*/
 			return null;
-		}
+		//}
 	}
 
 	public static void login(String url) {
-		if (url != null)
+		/*if (url != null)
 			flash.put("url", url);
-		GAE.login("Dbtit.loggedIn");
+		GAE.login("Dbtit.loggedIn");*/
 	}
 	
 	public static void loggedIn() {
-		String url = flash.contains("url") ? flash.get("url") : Router.getFullUrl("Dbtit.index");
+		/*String url = flash.contains("url") ? flash.get("url") : Router.getFullUrl("Dbtit.index");
 		com.google.appengine.api.users.User gaeUser = GAE.getUser();
 		if (gaeUser != null) {
 			User user = User.findByEmail(gaeUser.getEmail());
@@ -68,11 +68,11 @@ public class Dbtit extends Controller {
 		} else {
 			flash.error(Messages.get("loginFail"));
 		}
-		redirect(url);
+		redirect(url);*/
 	}
 	
 	public static void logout() {
-		GAE.logout("Dbtit.index");
+		//GAE.logout("Dbtit.index");
 	}
 	
 	@LoggedIn
@@ -99,17 +99,24 @@ public class Dbtit extends Controller {
 	}
 	
 	/**
-	 * Display the home page
+	 * Display the index page
 	 */
     public static void index() {
     	Room room = Room.getOpenRoom();
-    	List<Thread> threads = Thread.sortByLastPost(room.threads.fetch());
+    	List<Thread> threads = Thread.sortByLastPost(room.threads);
     	
-    	Pagination pagination = new Pagination(params, room.threads.count());
+    	Pagination pagination = new Pagination(params, room.threads.size());
+    	threads = threads.subList(pagination.getFrom(), pagination.getTo());
     	
-   		threads = threads.subList(pagination.getFrom(), pagination.getTo());
+    	//List<Room> rooms = Room.all().filter("isPublic", true).fetch(8); // TODO sort by activity date
+    	List<Room> rooms = Room.find("isPublic = true").fetch(8);
+    	Iterator<Room> it = rooms.iterator();
+    	while (it.hasNext()) {
+    		if (it.next().threads.size() == 0)
+    			it.remove();
+    	}
     	
-    	render(threads, pagination);
+    	render(threads, pagination, rooms);
     }
     
     public static void features() {

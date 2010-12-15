@@ -33,9 +33,8 @@ public class Debate extends Controller {
      * @param hash Thread hash
      */
     public static void showThread(String hash) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	notFoundIfNull(thread);
-    	thread.rootPost.get();
     	Post post = thread.rootPost;
     	
     	render(thread, post);
@@ -45,12 +44,11 @@ public class Debate extends Controller {
      * Display a thread starting from a specific post (possibly not the root post)
      */
     public static void branch(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
@@ -64,12 +62,11 @@ public class Debate extends Controller {
      * @param paragraphId
      */
     public static void answers(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
@@ -78,7 +75,7 @@ public class Debate extends Controller {
     
     @LoggedIn
     public static void readPost(String hash, Long postId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	notFoundIfNull(thread);
     	
     	Post post = Post.findById(postId);
@@ -94,7 +91,7 @@ public class Debate extends Controller {
     
     @LoggedIn
     public static void unreadPost(String hash, Long postId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	notFoundIfNull(thread);
     	
     	Post post = Post.findById(postId);
@@ -113,7 +110,7 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void newThread(String hash) {
-    	Room room = Room.findByHash(hash);
+    	Room room = Room.find("byHash", hash).first();
     	notFoundIfNull(room);
     	
     	render(room);
@@ -126,7 +123,7 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void createThread(@Required String hash, @Required String threadTitle, @Required String content) {
-    	Room room = Room.findByHash(hash);
+    	Room room = Room.find("byHash", hash).first();
     	notFoundIfNull(room);
     	
     	User user = Dbtit.connectedUser();
@@ -157,12 +154,11 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void reply(String hash, Long paragraphId) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
@@ -177,13 +173,12 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void postReply(String hash, Long paragraphId, @Required String content) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Paragraph paragraph = Paragraph.findById(paragraphId);
     	User author = Dbtit.connectedUser(); // author can't be null thx to the @LoggedIn annotation
     	
     	notFoundIfNull(thread);
     	notFoundIfNull(paragraph);
-    	paragraph.post.get();
     	if (!paragraph.post.thread.id.equals(thread.id))
     		notFound();
     	
@@ -214,7 +209,7 @@ public class Debate extends Controller {
     @LoggedIn
     public static void edit(String hash, Long postId)
     {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Post post = Post.findById(postId);
     	
     	notFoundIfNull(thread);
@@ -236,7 +231,7 @@ public class Debate extends Controller {
     @LoggedIn
     public static void postEdit(String hash, Long postId, @Required String content)
     {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	Post post = Post.findById(postId);
     	User author = Dbtit.connectedUser();
     	
@@ -276,7 +271,7 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void followThread(String hash, String url) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	User user = Dbtit.connectedUser();
     	
     	notFoundIfNull(thread);
@@ -294,7 +289,7 @@ public class Debate extends Controller {
      */
     @LoggedIn
     public static void doNotFollowThread(String hash, String url) {
-    	Thread thread = Thread.findByHash(hash);
+    	Thread thread = Thread.find("byHash", hash).first();
     	User user = Dbtit.connectedUser();
     	
     	notFoundIfNull(thread);

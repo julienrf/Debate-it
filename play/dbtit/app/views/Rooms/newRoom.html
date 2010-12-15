@@ -22,12 +22,12 @@
 	</div>
 	#{/field}
 	
-	*{#{field 'isPublic'}
+	#{field 'isPublic'}
 	<div class="row">
 		<input type="checkbox" id="${field.id}" value="true" name="${field.name}" ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
 		<div class="hint">&{'isPublicHint'}</div>
 	</div>
-	#{/field}}*
+	#{/field}
 	
 	<div class="buttons">
 		<input type="submit" value="&{'create'}" name="create" />

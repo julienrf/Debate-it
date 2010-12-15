@@ -1,28 +1,25 @@
 package models;
 
-import siena.Column;
-import siena.Id;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
+import javax.persistence.Entity;
+import javax.persistence.ManyToOne;
 
+import play.data.validation.Required;
+import play.db.jpa.Model;
+
+// FIXME Use a @ManyToMany relation instead of using this class
+@Entity
 public class RoomSubscription extends Model {
 
-	@Id
-	public Long id;
-	
-	@NotNull @Column("user")
+	@Required
+	@ManyToOne
 	public User user;
 	
-	@NotNull @Column("room")
+	@Required
+	@ManyToOne
 	public Room room;
 	
 	public RoomSubscription(Room room, User user) {
 		this.room = room;
 		this.user = user;
-	}
-	
-	public static Query<RoomSubscription> all() {
-		return Model.all(RoomSubscription.class);
 	}
 }

@@ -1,41 +1,32 @@
 package models;
 
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+
 import org.parsit.IFootNote;
 import org.parsit.IFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import siena.Column;
-import siena.Id;
-import siena.Max;
-import siena.Model;
-import siena.Query;
-import siena.Table;
-import siena.Text;
+import play.db.jpa.Model;
 
-@Table("footnotes")
+@Entity
 public class FootNote extends Model implements IFootNote {
-	
-	@Id
-	public Long id;
 	
 	/** Footnote HTML content */
 	@Required @MaxSize(1000) // Play validator
-	@Max(1000) @Text // Siena constraint (useless I guess)
+	@Lob
 	public String content;
 	
 	/** Parent post where this footnote is referenced */
 	@Required
-	@Column("paragraph")
+	@ManyToOne
 	public Paragraph paragraph;
 	
 	
 	public FootNote() {
 		
-	}
-	
-	public static Query<FootNote> all() {
-		return Model.all(FootNote.class);
 	}
 	
 	@Override
@@ -58,7 +49,7 @@ public class FootNote extends Model implements IFootNote {
 		@Override
 		public IFootNote createFootNote() {
 			FootNote footNote = new FootNote();
-			footNote.insert();
+			footNote.save();
 			return footNote;
 		}
 	}

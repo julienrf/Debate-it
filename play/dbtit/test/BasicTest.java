@@ -24,35 +24,14 @@ public class BasicTest extends UnitTest {
 	public void setup() {
 		Fixtures.deleteAll();
 		
-		for (Following f : Following.all().fetch())
-			f.delete();
-		
-		for (FootNote f : FootNote.all().fetch())
-			f.delete();
-		
-		for (Paragraph p : Paragraph.all().fetch())
-			p.delete();
-		
-		for (Post p : Post.all().fetch())
-			p.delete();
-		
-		for (Reading r : Reading.all().fetch())
-			r.delete();
-		
-		for (Thread t : Thread.all().fetch())
-			t.delete();
-		
-		for (User u : User.all().fetch())
-			u.delete();
-		
 		julien = User.create("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
-		julien.insert();
+		julien.save();
 	}
 	
 	@Test
 	public void user()
 	{
-		User user = User.findByEmail("julien.rf@no-log.org");
+		User user = User.find("byEmail", "julien.rf@no-log.org").first();
 		assertNotNull(user);
 		assertEquals("Julien Richard-Foy", user.name);
 	}
@@ -62,11 +41,11 @@ public class BasicTest extends UnitTest {
 	{
 		Post post = Post.create(julien, "Contenu", null, null);
 
-		post = Post.all().filter("parent", null).get();
+		post = Post.find("byParentIsNull").first();
 		assertNotNull(post);
 		assertEquals("Contenu", post.content);
-		assertEquals(post.paragraphs.count(), 1);
-		assertEquals(post.paragraphs.get().content, "Contenu");
+		assertEquals(post.paragraphs.size(), 1);
+		assertEquals(post.paragraphs.get(0).content, "Contenu");
 	}
 	
 	@Test
@@ -74,10 +53,10 @@ public class BasicTest extends UnitTest {
 	{
 		Post post = Post.create(julien, "Contenu", null, null);
 
-		Paragraph paragraph = post.paragraphs.get();
+		Paragraph paragraph = post.paragraphs.get(0);
 		paragraph.reply(julien, "Reply");
 		
-		Post reply = Post.all().filter("parent", paragraph).get();
+		Post reply = Post.find("byParent", paragraph).first();
 		assertNotNull(reply);
 		assertEquals("Reply", reply.content);
 	}
@@ -90,17 +69,17 @@ public class BasicTest extends UnitTest {
 		post.edit("Nouveau contenu");
 		
 		assertEquals("Nouveau contenu", post.content);
-		assertEquals(post.paragraphs.count(), 1);
+		assertEquals(post.paragraphs.size(), 1);
 		
 		post.edit("Nouveau\n\ncontenu");
 		
-		assertEquals(post.paragraphs.count(), 2);
+		assertEquals(post.paragraphs.size(), 2);
 	}
 	
 	@Test
 	public void rooms()
 	{
-		Room room = Room.create(julien, "Test room"/*, true*/);
+		Room room = Room.create(julien, "Test room", true);
 		
 		assertTrue(julien.hasSubscribed(room));
 		
@@ -114,45 +93,44 @@ public class BasicTest extends UnitTest {
 	@Test
 	public void threads()
 	{
-		Room room = Room.create(julien, "test room"/*, true*/);
+		Room room = Room.create(julien, "test room", true);
 		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 
-		thread = Thread.all().filter("title", "Titre").get();
+		thread = Thread.find("byTitle", "Titre").first();
 		assertNotNull(thread);
 		assertNotNull(thread.rootPost);
-		thread.rootPost.get();
 		assertEquals("Contenu", thread.rootPost.content);
 		
-		Paragraph paragraph = thread.rootPost.paragraphs.get();
+		Paragraph paragraph = thread.rootPost.paragraphs.get(0);
 		paragraph.reply(julien, "Reply");
 		
-		Post reply = Post.all().filter("parent", paragraph).get();
+		Post reply = Post.find("byParent", paragraph).first();
 		assertNotNull(reply);
 		assertEquals("Reply", reply.content);
 	}
 	
 	@Test
 	public void follow() {
-		Room room = Room.create(julien, "test room"/*, true*/);
+		Room room = Room.create(julien, "test room", true);
 		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 		
-		assertEquals(1, julien.followedThreads.count());
+		assertEquals(1, julien.followedThreads.size());
 		assertTrue(julien.isFollowing(thread));
 		
 		julien.doNotFollow(thread);
 		
-		assertEquals(0, julien.followedThreads.count());
+		assertEquals(0, julien.followedThreads.size());
 		assertFalse(julien.isFollowing(thread));
 		
 		julien.follow(thread);
 		
-		assertEquals(1, julien.followedThreads.count());
+		assertEquals(1, julien.followedThreads.size());
 		assertTrue(julien.isFollowing(thread));
 	}
 	
 	@Test
 	public void read() {
-		Room room = Room.create(julien, "test room"/*, true*/);
+		Room room = Room.create(julien, "test room", true);
 		Thread thread = Thread.create(julien, room, "Titre", "Contenu");
 		
 		assertTrue(julien.hasRead(thread.rootPost));

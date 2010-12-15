@@ -1,8 +1,16 @@
 package models;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 
 import org.parsit.IFootNote;
 import org.parsit.Parsit;
@@ -10,52 +18,41 @@ import org.parsit.SimpleFootNoteFactory;
 
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
-import siena.Column;
-import siena.Filter;
-import siena.Id;
-import siena.Max;
-import siena.Model;
-import siena.NotNull;
-import siena.Query;
-import siena.SimpleDate;
-import siena.Text;
+import play.db.jpa.Model;
 
+@Entity
 public class Post extends Model
 {
-	@Id
-	public Long id;
-	
 	/** Author of the post */
 	@Required
-	@NotNull @Column("author")
+	@ManyToOne
 	public User author;
 	
 	/** Date when the message was posted */
 	@Required
-	@SimpleDate @NotNull
 	public Date date;
 	
 	/** The paragraph that this post answers */
-	@Column("parent")
+	@ManyToOne
 	public Paragraph parent;
 	
 	/** Raw content of the whole post (in Parsit syntax) */
 	@Required @MaxSize(10000)
-	@Text @Max(10000) @NotNull
+	@Lob
 	public String content;
 	
 	/** The paragraphs of this post */
-	@Filter("post")
-	public Query<Paragraph> paragraphs;
+	@OneToMany(mappedBy="post", cascade=CascadeType.REMOVE) @OrderBy("number ASC")
+	public List<Paragraph> paragraphs;
 	
 	/** The thread that this post belongs to */
 	@Required
-	@NotNull @Column("thread")
+	@ManyToOne
 	public Thread thread;
 	
 	/** Who has read this post? */
-	@Filter("post")
-	public Query<Reading> readings;
+	@OneToMany(mappedBy="post", cascade=CascadeType.REMOVE)
+	public List<Reading> readings;
 
 	/**
 	 * Protected constructor since the static helper should be used for better consistency
@@ -69,6 +66,8 @@ public class Post extends Model
 		this.author = author;
 		this.parent = parent;
 		this.date = date;
+		this.paragraphs = new ArrayList<Paragraph>();
+		this.readings = new ArrayList<Reading>();
 	}
 	
 	/**
@@ -81,28 +80,16 @@ public class Post extends Model
 	public static Post create(User author, String content, Paragraph parent, Thread thread)
 	{
 		Post post = new Post(author, parent, thread, new Date());
-		post.insert(); // The insert is needed because the paragraphs about to be created will reference this post
+		post.save(); // The save is needed because the paragraphs about to be created will reference this post
 		author.follow(thread);
 		author.read(post);
 		post.setParagraphs(content);
 		return post;
 	}
 	
-	public static Query<Post> all() {
-		return Model.all(Post.class);
-	}
-	
-	public static Post findById(Long id) {
-		return Post.all().filter("id", id).get();
-	}
-	
-	public Query<Paragraph> getParagraphs() {
-		return paragraphs.order("number");
-	}
-	
 	@Override
 	public String toString() {
-		String content = paragraphs.get().content; // A post must have at least one paragraph
+		String content = paragraphs.get(0).content; // A post must have at least one paragraph
 		return content.substring(0, Math.min(content.length(), 40));
 	}
 	
@@ -135,9 +122,10 @@ public class Post extends Model
 		this.content = content;
 		
 		// Remove current paragraphs and footnotes
-		for (Paragraph paragraph : paragraphs.fetch()) {
+		for (Paragraph paragraph : paragraphs) {
 			paragraph.delete();
 		}
+		paragraphs.clear();
 		
 		// Parse content
 		Parsit parsit = new Parsit(new FootNote.Factory());
@@ -146,13 +134,13 @@ public class Post extends Model
 		// Set new paragraphs
 		int number = 0;
 		for (String p : parsedParagraphs) {
-			Paragraph paragraph = new Paragraph(this, p, number++);
-			paragraph.insert();
+			Paragraph paragraph = new Paragraph(this, p, number++).save();
 			for (IFootNote footNote : parsit.getFootNotes()) {
-				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above
+				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above (Java doesn't support selftype annotations…)
 			}
+			paragraphs.add(paragraph);
 		}
-		this.update();
+		this.save();
 	}
 	
 	/**
@@ -161,7 +149,7 @@ public class Post extends Model
 	 */
 	public boolean hasAnswers()
 	{
-    	for (Paragraph paragraph : paragraphs.fetch()) {
+    	for (Paragraph paragraph : paragraphs) {
     		if (paragraph.hasAnswers())
     			return true;
     	}
