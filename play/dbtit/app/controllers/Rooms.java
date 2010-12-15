@@ -22,7 +22,7 @@ public class Rooms extends Controller {
 		Pagination pagination = new Pagination(params, user.subscriptions.size());
 		
     	if (pagination.getTo() > 0) {
-    		subscriptions = user.subscriptions.subList(pagination.getTo() - pagination.getFrom(), pagination.getFrom());
+    		subscriptions = user.subscriptions.subList(pagination.getFrom(), pagination.getTo() - pagination.getFrom());
     	} else {
     		subscriptions = new ArrayList<RoomSubscription>();
     	}
