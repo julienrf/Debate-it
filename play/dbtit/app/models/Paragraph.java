@@ -48,10 +48,6 @@ public class Paragraph extends Model {
 		this.number = number;
 	}
 	
-	public static Paragraph findById(Long id) {
-		return Paragraph.findById(id);
-	}
-	
 	@Override
 	public String toString() {
 		return content.substring(0, Math.min(content.length(), 40));

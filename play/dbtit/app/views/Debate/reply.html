@@ -18,9 +18,9 @@
 	</div>
 </div>
 
-#{if paragraph.footNotes.count() > 0}
+#{if paragraph.footNotes.size() > 0}
 	<ol id="footnotes">
-		#{list items:paragraph.footNotes.fetch(), as:'footNote'}
+		#{list items:paragraph.footNotes, as:'footNote'}
 			<li>${ footNote.getContent().raw() }</li>
 		#{/list}
 	</ol>

@@ -13,7 +13,7 @@
 
 	%{
 		// Handle footnotes
-		_paragraph.footNotes.fetch().each {
+		_paragraph.footNotes.each {
 			_footNotes << it;
 		}
 	}%
@@ -29,7 +29,7 @@
 			#{if _user}
 				#{if _user.exploreUnreadPosts || _user.hasRead(_paragraph.post)}
 					<div class="answer">
-					#{list items:_paragraph.answers.fetch(), as:'reply'}
+					#{list items:_paragraph.answers, as:'reply'}
 							#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes  /}
 					#{/list}
 					</div>
@@ -37,7 +37,7 @@
 			#{/if}
 			#{else}
 				<div class="answer">
-				#{list items:_paragraph.answers.fetch(), as:'reply'}
+				#{list items:_paragraph.answers, as:'reply'}
 						#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes  /}
 				#{/list}
 				</div>

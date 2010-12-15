@@ -23,7 +23,7 @@
 	#{list items:followedThreads, as:'thread'}
 		<tr class="item ${thread_parity}">
 			<td>#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}</td>
-			%{ lastPost = thread.lastPost(); lastPost.author.get(); }%
+			%{ lastPost = thread.lastPost(); }%
 			<td>${lastPost.author.name}, &{'at'} #{date date:lastPost.date, tz:user?.tz /}</td>
 			%{ unreadPostCount = user.getUnreadPostCount(thread) }%
 			<td class="unread-post-count">${unreadPostCount}</td>

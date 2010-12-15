@@ -12,10 +12,10 @@
 #{/else}
     #{posttitle thread:_thread, post:_post, user:_user /}
 
-	#{list items:_post.paragraphs.fetch(), as:'paragraph'}
+	#{list items:_post.paragraphs, as:'paragraph'}
 		%{
 			// Handle footnotes
-			paragraph.footNotes.fetch().each {
+			paragraph.footNotes.each {
 				_footNotes << it;
 			}
 		}%
@@ -31,7 +31,7 @@
 				#{if _user}
 					#{if _user.exploreUnreadPosts || _user.hasRead(_post)}
 						<div class="answer">
-						#{list items:paragraph.answers.fetch(), as:'reply'}
+						#{list items:paragraph.answers, as:'reply'}
 								#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
 						#{/list}
 						</div>
@@ -39,7 +39,7 @@
 				#{/if}
 				#{else}
 					<div class="answer">
-					#{list items:paragraph.answers.fetch(), as:'reply'}
+					#{list items:paragraph.answers, as:'reply'}
 							#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
 					#{/list}
 					</div>

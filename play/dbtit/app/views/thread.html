@@ -18,7 +18,6 @@
 #{/if}
 
 <div>
-	%{ thread.room.get(); }%
 	#{a @Rooms.show(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
 	<div>#{followthread thread:thread, user:user /}</div>
 </div>

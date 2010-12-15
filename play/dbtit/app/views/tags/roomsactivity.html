@@ -12,7 +12,7 @@
 			<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
 			%{ thread = room.lastActivity(); }%
 			<td>#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}</td>
-			%{ post = thread.lastPost(); post.author.get(); }%
+			%{ post = thread.lastPost(); }%
 			<td> ${post.author.name}, &{'at'} #{date date:post.date, tz: _tz /} </td>
 		</tr>
 	#{/list}

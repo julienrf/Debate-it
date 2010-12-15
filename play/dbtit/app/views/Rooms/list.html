@@ -20,9 +20,9 @@
 		
 		#{list items:subscriptions, as:'subscription'}
 			<tr class="item ${subscription_parity}">
-				%{ subscription.room.get(); room = subscription.room; }%
+				%{ room = subscription.room; }%
 				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
-				<td>${room.threads.count()}</td>
+				<td>${room.threads.size()}</td>
 			</tr>
 		#{/list}
 		

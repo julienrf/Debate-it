@@ -22,7 +22,6 @@
     *{<a href="@{Debate.reply(_thread.hash, _paragraph.id)}" title="&{'replyToPost'}">&{'reply'}</a>}*
     #{sprite name:'replyPost', action:@Debate.reply(_thread.hash, _paragraph.id), alt:messages.get('replyToPost') /}
     #{if _post.parent != null}
-    	%{ _post.parent.get() }%
     	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}" alt="&{'goToParentPost'}" class="sprite parentPost"></a>
     #{/if}
 	#{sprite name:'root', action:@Debate.branch(_thread.hash, _paragraph.id), alt:messages.get('asRoot') /}
