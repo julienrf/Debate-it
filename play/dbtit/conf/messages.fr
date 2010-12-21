@@ -87,6 +87,7 @@ lastPost=Dernier message
 at=à
 
 openRoomState=Débats actuels dans l’espace ouvert de discussions
+publicRoomsActivity=Activité récente des espaces de discussions publics
 
 formError=La saisie contient des erreurs
 
