@@ -3,11 +3,9 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Following;
 import models.Paragraph;
 import models.Post;
 import models.Room;
-import models.RoomSubscription;
 import models.Thread;
 import models.User;
 

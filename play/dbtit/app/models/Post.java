@@ -1,13 +1,15 @@
 package models;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
@@ -51,8 +53,8 @@ public class Post extends Model
 	public Thread thread;
 	
 	/** Who has read this post? */
-	@OneToMany(mappedBy="post", cascade=CascadeType.REMOVE)
-	public List<Reading> readings;
+	@ManyToMany(mappedBy="readPosts")
+	Collection<User> readers;
 
 	/**
 	 * Protected constructor since the static helper should be used for better consistency
@@ -67,7 +69,7 @@ public class Post extends Model
 		this.parent = parent;
 		this.date = date;
 		this.paragraphs = new ArrayList<Paragraph>();
-		this.readings = new ArrayList<Reading>();
+		this.readers = new HashSet<User>();
 	}
 	
 	/**

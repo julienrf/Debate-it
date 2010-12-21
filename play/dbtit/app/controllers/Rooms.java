@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import models.Room;
-import models.RoomSubscription;
 import models.Thread;
 import models.User;
 import play.data.validation.Required;
@@ -18,13 +17,13 @@ public class Rooms extends Controller {
 	@LoggedIn
 	public static void list() {
 		User user = Dbtit.connectedUser();
-		List<RoomSubscription> subscriptions;
+		List<Room> subscriptions;
 		Pagination pagination = new Pagination(params, user.subscriptions.size());
 		
     	if (pagination.getTo() > 0) {
     		subscriptions = user.subscriptions.subList(pagination.getFrom(), pagination.getTo() - pagination.getFrom());
     	} else {
-    		subscriptions = new ArrayList<RoomSubscription>();
+    		subscriptions = new ArrayList<Room>();
     	}
 		
 		render(subscriptions, pagination);

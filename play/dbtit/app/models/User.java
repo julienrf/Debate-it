@@ -1,16 +1,11 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
-
-import controllers.admin.Readings;
 
 import play.data.validation.Email;
 import play.data.validation.Required;
@@ -39,12 +34,12 @@ public class User extends Model {
 	public List<Thread> followedThreads;
 	
 	/** List of the post read by the user */
-	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
-	public List<Reading> readPosts;
+	@ManyToMany
+	public List<Post> readPosts;
 	
 	/** List of the rooms this user subscribed to */
-	@OneToMany(mappedBy="user", cascade=CascadeType.REMOVE)
-	public List<RoomSubscription> subscriptions;
+	@ManyToMany
+	public List<Room> subscriptions;
 	
 	/**
 	 * Ideas of profile settings:
@@ -59,8 +54,8 @@ public class User extends Model {
 		this.tz = tz;
 		this.exploreUnreadPosts = false;
 		this.followedThreads = new ArrayList<Thread>();
-		this.readPosts = new ArrayList<Reading>();
-		this.subscriptions = new ArrayList<RoomSubscription>();
+		this.readPosts = new ArrayList<Post>();
+		this.subscriptions = new ArrayList<Room>();
 	}
 	
 	public static User create(String name, String email, String tz) {
@@ -72,10 +67,6 @@ public class User extends Model {
 	
 	// TODO il doit y avoir moyen de transformer ça en requête plus efficace
 	public List<Thread> followedThreads() {
-		/*List<Thread> threads = new ArrayList<Thread>();
-		for (Following f : followedThreads) {
-			threads.add(f.thread);
-		}*/
 		return Thread.sortByLastPost(followedThreads);
 	}
 	
@@ -90,21 +81,20 @@ public class User extends Model {
 	}
 	
 	public boolean hasSubscribed(Room room) {
-		return RoomSubscription.find("byUserAndRoom", this, room).fetch().size() != 0; // TODO Avec une relation ManyToMany j’aurais juste à faire un subscriptions.contains(room)
-		//return subscriptions.filter("room", room).count() != 0;
+		return subscriptions.contains(room);
 	}
 	
 	public void subscribe(Room room) {
 		if (!hasSubscribed(room)) {
-			RoomSubscription subscription = new RoomSubscription(room, this);
-			subscription.save();
+			subscriptions.add(room);
+			save(); // FIXME Ce save est-il nécessaire ? Est-il possible de le sortir du modèle ?
 		}
 	}
 	
 	public void unsubscribe(Room room) {
-		RoomSubscription subscription = RoomSubscription.find("byUserAndRoom", this, room).first();
-		if (subscription != null) {
-			subscription.delete();
+		if (hasSubscribed(room)) {
+			subscriptions.remove(room);
+			save();
 		}
 	}
 	
@@ -144,9 +134,8 @@ public class User extends Model {
 	 */
 	public void read(Post post) {
 		if (!hasRead(post)) {
-			Reading reading = new Reading(post, this);
-			reading.save();
-			readPosts.add(reading);
+			readPosts.add(post);
+			save();
 		}
 	}
 	
@@ -155,9 +144,9 @@ public class User extends Model {
 	 * @param post
 	 */
 	public void unread(Post post) {
-		Reading reading = Reading.find("byUserAndPost", this, post).first();
-		if (reading != null) {
-			reading.delete();
+		if (hasRead(post)) {
+			readPosts.remove(post);
+			save();
 		}
 	}
 	
@@ -165,7 +154,7 @@ public class User extends Model {
 	 * @return true if this user has read the given post
 	 */
 	public boolean hasRead(Post post) {
-		return Reading.count("user = ? and post = ?", this, post) != 0;
+		return readPosts.contains(post);
 	}
 	
 	/**
@@ -174,7 +163,7 @@ public class User extends Model {
 	 * @return
 	 */
 	public long getUnreadPostCount(Thread thread) {
-		return Post.count("thread = ?", thread) - Reading.count("thread = ? and user = ?", thread, this);
+		return Post.count("thread = ? and not ? member of e.readers", thread, this);
 	}
 	
 	

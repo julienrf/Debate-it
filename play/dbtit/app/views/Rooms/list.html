@@ -18,9 +18,8 @@
 			<th>&{'threadCount'}</th>
 		</tr>
 		
-		#{list items:subscriptions, as:'subscription'}
+		#{list items:subscriptions, as:'room'}
 			<tr class="item ${subscription_parity}">
-				%{ room = subscription.room; }%
 				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
 				<td>${room.threads.size()}</td>
 			</tr>

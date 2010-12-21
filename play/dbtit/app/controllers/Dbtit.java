@@ -5,7 +5,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
-import models.Following;
 import models.Room;
 import models.Thread;
 import models.User;
