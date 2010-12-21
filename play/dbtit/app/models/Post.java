@@ -82,6 +82,8 @@ public class Post extends Model
 	public static Post create(User author, String content, Paragraph parent, Thread thread)
 	{
 		Post post = new Post(author, parent, thread, new Date());
+		if (parent != null)
+			parent.answers.add(post);
 		post.save(); // The save is needed because the paragraphs about to be created will reference this post
 		author.follow(thread);
 		author.read(post);
@@ -138,7 +140,7 @@ public class Post extends Model
 		for (String p : parsedParagraphs) {
 			Paragraph paragraph = new Paragraph(this, p, number++).save();
 			for (IFootNote footNote : parsit.getFootNotes()) {
-				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above (Java doesn't support selftype annotations…)
+				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above
 			}
 			paragraphs.add(paragraph);
 		}

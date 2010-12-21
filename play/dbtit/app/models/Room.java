@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.TypedQuery;
 
 import play.Play;
 import play.data.validation.Required;
@@ -56,7 +57,12 @@ public class Room extends Model {
 	public Thread lastActivity() {
 		if (threads.size() == 0)
 			return null;
-		else
-			return Thread.sortByLastPost(threads).get(0); // TODO utiliser autre chose que Siena, parce que ça me gave de ne pas avoir de jointures
+		else {
+			// TODO Factoriser cette requête quelque part, il y a de fortes chances que j’en aie besoin ailleurs
+			TypedQuery<Thread> q = em().createQuery("SELECT t FROM Thread t, Post p WHERE t.room = :room AND p.thread = t ORDER BY p.date DESC", Thread.class);
+			q.setParameter("room", this);
+			q.setMaxResults(1);
+			return q.getSingleResult();
+		}
 	}
 }

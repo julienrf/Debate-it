@@ -30,7 +30,7 @@ public class User extends Model {
 	public Boolean exploreUnreadPosts;
 	
 	/** List of threads followed by the user */
-	@OneToMany // FIXME Pourquoi ce n’est pas du ManyToMany ?
+	@ManyToMany
 	public List<Thread> followedThreads;
 	
 	/** List of the post read by the user */

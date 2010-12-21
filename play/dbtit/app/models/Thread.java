@@ -41,6 +41,7 @@ public class Thread extends Model {
 	{
 		this.title = title;
 		this.room = room;
+		room.threads.add(this);
 	}
 	
 	public String toString() {

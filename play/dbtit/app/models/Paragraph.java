@@ -76,8 +76,4 @@ public class Paragraph extends Model {
 		footNotes.add(footNote);
 		footNote.save();
 	}
-	
-	public boolean hasFootNotes() {
-		return footNotes.size() != 0;
-	}
 }
