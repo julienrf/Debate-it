@@ -8,6 +8,7 @@ threadCount=Débats
 emtpyRoom=Cet espace de discussion ne contient aucun débat.
 subscribe=Ajouter à mes espaces de discussion
 unsubscribe=Retirer de mes espaces de discussion
+noSubscribedRooms=Vous n’êtes abonné à aucun espace de discussion.
 
 login=Identifiez-vous
 logout=Se déconnecter
@@ -88,6 +89,7 @@ at=à
 
 openRoomState=Débats actuels dans l’espace ouvert de discussions
 publicRoomsActivity=Activité récente des espaces de discussions publics
+noRecentActivity=Aucune activité.
 
 formError=La saisie contient des erreurs
 

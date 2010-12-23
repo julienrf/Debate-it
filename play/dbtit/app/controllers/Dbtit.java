@@ -126,7 +126,7 @@ public class Dbtit extends Controller {
 	public static void index() {
 		Room room = Room.getOpenRoom();
 		Pagination pagination = new Pagination(params, 4);
-		List<Thread> threads = room.getSortedThreads(pagination.getFrom(), pagination.getPageSize());
+		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getFrom(), pagination.getPageSize());
 
 		// TODO
 		List<Room> rooms = Room.find("isPublic = true").fetch(8);

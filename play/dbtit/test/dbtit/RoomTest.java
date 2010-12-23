@@ -34,11 +34,11 @@ public class RoomTest extends UnitTest {
 
 	@Test
 	public void testLastActivity() {
-		Thread thread = Thread.create(creator, room, "Title", "Content");
-		assertEquals(thread, room.getSortedThreads(0, 1).get(0));
-		
-		thread = Thread.create(creator, room, "Titre", "Contenu");
-		assertEquals(thread, room.getSortedThreads(0, 1).get(0));
+		Thread thread1 = Thread.create(creator, room, "Title", "Content");
+		assertEquals(thread1, room.threads.get(0));
+		Thread thread2 = Thread.create(creator, room, "Titre", "Contenu");
+		room.refresh();
+		assertEquals(thread2, room.threads.get(0));
 	}
 
 }

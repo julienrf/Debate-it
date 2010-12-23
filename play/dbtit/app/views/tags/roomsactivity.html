@@ -11,7 +11,7 @@
 	#{list items:_rooms, as:'room'}
 		<tr class="item ${room_parity}">
 			<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
-			%{ thread = room.getSortedThreads(0, 1).get(0) }%
+			%{ thread = room.threads.first() }%
 			<td>#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}</td>
 			%{ post = thread.lastPost() }%
 			<td> ${post.author.name}, &{'at'} #{date date:post.date, tz: _tz /} </td>

@@ -32,9 +32,16 @@ public class Thread extends Model {
 	/** A hash code identifying the thread */
 	public String hash;
 	
+	/** The room which this thread belongs to */
 	@Required
 	@ManyToOne
 	public Room room;
+	
+	/**
+	 * The date of the last activity (posting) in this thread (this date is stored to sort more easily threads by activity date)
+	 * This class expects that created posts will update the lastActivity of their thread.
+	 */
+	public Date lastActivity;
 	
 	/** Protected constructor since the static helper should be used, for better consistency */
 	protected Thread(Room room, String title)

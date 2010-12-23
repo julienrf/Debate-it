@@ -45,7 +45,7 @@ public class Rooms extends Controller {
 		}
 		
 		Pagination pagination = new Pagination(params, 4);
-		List<Thread> threads = room.getSortedThreads(pagination.getFrom(), pagination.getPageSize());
+		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getFrom(), pagination.getPageSize());
 		
 		render(room, threads, pagination);
 	}

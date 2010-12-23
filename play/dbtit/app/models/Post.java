@@ -81,20 +81,28 @@ public class Post extends Model
 	 */
 	public static Post create(User author, String content, Paragraph parent, Thread thread)
 	{
+		// Create the post
 		Post post = new Post(author, parent, thread, new Date());
 		if (parent != null)
 			parent.answers.add(post);
 		post.save(); // The save is needed because the paragraphs about to be created will reference this post
+		post.setParagraphs(content);
+		
+		// Update the activity of the thread
+		thread.lastActivity = post.date;
+		thread.save();
+		
+		// Make the author automatically follows the post's thread
 		author.follow(thread);
 		author.read(post);
-		post.setParagraphs(content);
+		
 		return post;
 	}
 	
 	@Override
 	public String toString() {
 		String content = paragraphs.get(0).content; // A post must have at least one paragraph
-		return content.substring(0, Math.min(content.length(), 40));
+		return content.substring(0, Math.min(content.length(), 50));
 	}
 	
 	// TODO make this method non static
