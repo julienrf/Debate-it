@@ -9,6 +9,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 
 import play.Play;
 import play.data.validation.Required;
@@ -54,5 +55,26 @@ public class Room extends Model {
 			room.save();
 		}
 		return room;
+	}
+	
+	public static List<RoomThread> getRecentPublicActivity(int from, int max) {
+		Query q = Room.em().createQuery("SELECT DISTINCT r, t FROM Room r, Thread t WHERE t.room = r AND r.isPublic = true ORDER BY t.lastActivity DESC)");
+		q.setFirstResult(from);
+		q.setMaxResults(max);
+		List<RoomThread> rooms = new ArrayList<RoomThread>(); // Mapping à la main :( Je déteste JPA et Java.
+		for (Object[] o : (List<Object[]>)q.getResultList()) {
+			rooms.add(new RoomThread((Room)o[0], (Thread)o[1]));
+		}
+		return rooms;
+	}
+	
+	public static class RoomThread {
+		public Room room;
+		public Thread thread;
+		
+		public RoomThread(Room room, Thread thread) {
+			this.room = room;
+			this.thread = thread;
+		}
 	}
 }

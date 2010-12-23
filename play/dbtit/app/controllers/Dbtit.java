@@ -1,17 +1,15 @@
 package controllers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.TimeZone;
 
 import models.Room;
+import models.Room.RoomThread;
 import models.Thread;
 import models.User;
 import play.Logger;
 import play.data.validation.Valid;
 import play.i18n.Messages;
-import play.libs.Crypto;
 import play.libs.OpenID;
 import play.libs.OpenID.UserInfo;
 import play.mvc.Before;
@@ -127,14 +125,7 @@ public class Dbtit extends Controller {
 		Room room = Room.getOpenRoom();
 		Pagination pagination = new Pagination(params, 4);
 		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getFrom(), pagination.getPageSize());
-
-		// TODO
-		List<Room> rooms = Room.find("isPublic = true").fetch(8);
-		Iterator<Room> it = rooms.iterator();
-		while (it.hasNext()) {
-			if (it.next().threads.size() == 0)
-				it.remove();
-		}
+		List<RoomThread> rooms = Room.getRecentPublicActivity(0, 6);
 
 		render(threads, pagination, rooms);
 	}
