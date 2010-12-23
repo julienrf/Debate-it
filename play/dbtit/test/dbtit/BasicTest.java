@@ -11,6 +11,7 @@ public class BasicTest extends UnitTest {
 
 	@Before
 	public void setup() {
+		Fixtures.deleteAll();
 		julien = User.create("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
 		julien.save();
 	}

@@ -44,10 +44,8 @@ public class Rooms extends Controller {
 			}
 		}
 		
-		List<Thread> threads = room.getSortedThreads();
-		Pagination pagination = new Pagination(params, threads.size());
-		
-		threads = threads.subList(pagination.getFrom(), pagination.getTo());
+		Pagination pagination = new Pagination(params, 4);
+		List<Thread> threads = room.getSortedThreads(pagination.getFrom(), pagination.getPageSize());
 		
 		render(room, threads, pagination);
 	}

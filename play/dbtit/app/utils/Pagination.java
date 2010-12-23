@@ -54,6 +54,10 @@ public class Pagination {
 		return Math.min(getCurrentPage() * pageSize, itemCount);
 	}
 	
+	public int getPageSize() {
+		return pageSize;
+	}
+	
 	public int getCurrentPage() {
 		if (params._contains(pageVar)) {
 			int currentPage = params.get(pageVar, Integer.class);

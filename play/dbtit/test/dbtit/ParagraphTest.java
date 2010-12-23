@@ -11,6 +11,7 @@ import models.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import play.test.Fixtures;
 import play.test.UnitTest;
 
 public class ParagraphTest extends UnitTest {
@@ -21,6 +22,7 @@ public class ParagraphTest extends UnitTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Fixtures.deleteAll();
 		author = User.create("Creator", "foo@bar.bz", TimeZone.getDefault().getID());
 		room = Room.create(author, "Room", false);
 		thread = Thread.create(author, room, "Title", "Content");

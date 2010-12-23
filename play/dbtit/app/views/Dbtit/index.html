@@ -21,7 +21,7 @@
 
 	<h2>&{'openRoomState'}</h2>
 	
-	#{roomthreads threads:threads, pagination:pagination, route:@Dbtit.index(), tz:user?.tz /}
+	#{roomthreads room:models.Room.getOpenRoom(), threads:threads, pagination:pagination, route:@Dbtit.index(), tz:user?.tz /}
 	
 	<h2>&{'publicRoomsActivity'}</h2>
 	

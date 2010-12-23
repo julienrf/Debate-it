@@ -22,6 +22,7 @@ public class UserTest extends UnitTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Fixtures.deleteAll();
 		user = User.create("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
 		creator = User.create("Creator", "foo@bar.bz", TimeZone.getDefault().getID());
 		room = Room.create(creator, "Room", false);

@@ -9,6 +9,7 @@ import models.User;
 import org.junit.Before;
 import org.junit.Test;
 
+import play.test.Fixtures;
 import play.test.UnitTest;
 
 public class RoomTest extends UnitTest {
@@ -18,6 +19,7 @@ public class RoomTest extends UnitTest {
 
 	@Before
 	public void setUp() throws Exception {
+		Fixtures.deleteAll();
 		creator = User.create("Creator", "foo@bar.bz", TimeZone.getDefault().getID());
 		room = Room.create(creator, "Room", false);
 	}
@@ -33,10 +35,10 @@ public class RoomTest extends UnitTest {
 	@Test
 	public void testLastActivity() {
 		Thread thread = Thread.create(creator, room, "Title", "Content");
-		assertEquals(thread, room.lastActivity());
+		assertEquals(thread, room.getSortedThreads(0, 1).get(0));
 		
 		thread = Thread.create(creator, room, "Titre", "Contenu");
-		assertEquals(thread, room.lastActivity());
+		assertEquals(thread, room.getSortedThreads(0, 1).get(0));
 	}
 
 }

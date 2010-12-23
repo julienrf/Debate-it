@@ -3,6 +3,9 @@
 *{ @param route }*
 
 #{if _threads.size() > 0}
+	<div>
+		#{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
+	</div>
 	<div class="box">
 		<table class="list">
 			<tr>
@@ -22,4 +25,7 @@
 #{/if}
 #{else}
 	<p>&{'emtpyRoom'}</p>
+	<div>
+		#{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
+	</div>
 #{/else}

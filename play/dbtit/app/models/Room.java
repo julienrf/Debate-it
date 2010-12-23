@@ -5,10 +5,9 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import play.Play;
 import play.data.validation.Required;
@@ -17,7 +16,7 @@ import play.libs.Codec;
 import utils.Helper;
 
 @Entity
-@NamedQuery(name = "threadsSortedByActivity", query = "SELECT t FROM Thread t, Post p WHERE t.room = :room AND p.thread = t ORDER BY p.date DESC")
+@NamedQuery(name = "threadsSortedByActivity", query = "SELECT DISTINCT p.thread, p.date FROM Post p WHERE p.thread.room = :room ORDER BY p.date DESC")
 public class Room extends Model {
 
 	@Required
@@ -56,21 +55,18 @@ public class Room extends Model {
 		return room;
 	}
 
-	public List<Thread> getSortedThreads() {
-		TypedQuery<Thread> q = em().createNamedQuery("threadsSortedByActivity",
-				Thread.class).setParameter("room", this);
-		return q.getResultList();
-	}
-
-	public Thread lastActivity() {
-		if (threads.size() == 0)
-			return null;
-		else {
-			TypedQuery<Thread> q = em().createNamedQuery(
-					"threadsSortedByActivity", Thread.class).setParameter(
-					"room", this);
-			q.setMaxResults(1);
-			return q.getSingleResult();
+	public List<Thread> getSortedThreads(int from, int max) {
+		// TODO
+		//TypedQuery<Thread> q = em().createNamedQuery("threadsSortedByActivity",
+		//		Thread.class).setParameter("room", this);
+		Query q = em().createNamedQuery("threadsSortedByActivity").setParameter("room", this);
+		q.setFirstResult(from);
+		q.setMaxResults(max);
+		List<Thread> threads = new ArrayList<Thread>();
+		List<Object[]> res = q.getResultList();
+		for (Object[] o : res) {
+			threads.add((Thread)o[0]);
 		}
+		return threads;
 	}
 }

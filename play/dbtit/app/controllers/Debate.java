@@ -304,10 +304,8 @@ public class Debate extends Controller {
     @LoggedIn
     public static void followThreads() {
     	User user = Dbtit.connectedUser();
-    	List<Thread> followedThreads = user.followedThreadsSortedByActivity();
-    	Pagination pagination = new Pagination(params, followedThreads.size());
-    	
-   		followedThreads = followedThreads.subList(pagination.getFrom(), pagination.getTo());
+    	Pagination pagination = new Pagination(params, 10);
+    	List<Thread> followedThreads = user.followedThreadsSortedByActivity(pagination.getFrom(), pagination.getPageSize());
     	
     	render(followedThreads, pagination);
     }

@@ -6,8 +6,7 @@ import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.TypedQuery;
+import javax.persistence.Query;
 
 import play.data.validation.Email;
 import play.data.validation.Required;
@@ -16,7 +15,7 @@ import play.db.jpa.Model;
 @Entity
 @NamedQuery(
 		name="followedThreadsSortedByActivity",
-		query="SELECT t FROM Thread t, Post p, User u WHERE u = :user AND t MEMBER OF u.followedThreads AND p.thread = t ORDER BY p.date DESC")
+		query="SELECT DISTINCT p.thread, p.date FROM Post p, User u WHERE u = :user AND p.thread MEMBER OF u.followedThreads ORDER BY p.date DESC")
 public class User extends Model {
 	
 	/** Display name */
@@ -70,9 +69,17 @@ public class User extends Model {
 		return user;
 	}
 	
-	public List<Thread> followedThreadsSortedByActivity() {
-		TypedQuery<Thread> q = em().createNamedQuery("followedThreadsSortedByActivity", Thread.class).setParameter("user", this);
-		return q.getResultList();
+	public List<Thread> followedThreadsSortedByActivity(int from, int max) {
+		// TODO
+		//TypedQuery<Thread> q = em().createNamedQuery("followedThreadsSortedByActivity", Thread.class).setParameter("user", this);
+		Query q = em().createNamedQuery("followedThreadsSortedByActivity").setParameter("user", this);
+		q.setFirstResult(from);
+		q.setMaxResults(max);
+		List<Thread> threads = new ArrayList<Thread>();
+		for (Object[] o : (List<Object[]>)q.getResultList()) {
+			threads.add((Thread)o[0]);
+		}
+		return threads;
 	}
 	
 	/**
