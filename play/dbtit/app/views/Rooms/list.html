@@ -5,23 +5,35 @@
 #{/set}
 
 <div>
-	<h1>&{'myRooms'}</h1> #{a @Rooms.newRoom()}&{'createRoom'}#{/a}
+	<h1>&{'myRooms'}</h1>
 </div>
 
 
 #{if subscriptions.size() > 0}
+	<div>#{a @Rooms.newRoom()}&{'createRoom'}#{/a}</div>
 	<div class="box">
 		<table class="list">
 		
 		<tr class="item">
 			<th>&{'room'}</th>
 			<th>&{'threadCount'}</th>
+			<th></th>
 		</tr>
 		
 		#{list items:subscriptions, as:'room'}
-			<tr class="item ${subscription_parity}">
+			<tr class="item ${subscription_parity} hoverable">
 				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
 				<td>${room.threads.size()}</td>
+				<td class="hover">
+					#{if user != null}
+						#{if user.hasSubscribed(room)}
+							#{a @Rooms.unsubscribe(room.hash, request.url)}&{'unsubscribe'}#{/a}
+						#{/if}
+						#{else}
+							#{a @Rooms.subscribe(room.hash, request.url)}&{'subscribe'}#{/a}
+						#{/else}
+					#{/if}
+				</td>
 			</tr>
 		#{/list}
 		
@@ -29,3 +41,9 @@
 		#{pagination.list pagination:pagination, route:@Rooms.list() /}
 	</div>
 #{/if}
+#{else}
+	<div>
+		&{'noSubscribedRooms'}<br />
+		#{a @Rooms.newRoom()}&{'createRoom'}#{/a}
+	</div>
+#{/else}

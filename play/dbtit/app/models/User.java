@@ -61,7 +61,7 @@ public class User extends Model {
 	public static User create(String name, String email, String tz) {
 		User user = new User(name, email, tz);
 		user.save();
-		user.subscribe(Room.getOpenRoom()); // FIXME Supprimer ça ?
+		//user.subscribe(Room.getOpenRoom()); // FIXME
 		return user;
 	}
 	

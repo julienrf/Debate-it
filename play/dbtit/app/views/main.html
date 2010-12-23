@@ -15,9 +15,9 @@
     	<header>
     		#{if user}
 	    		<nav id="left-nav">
-	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
-					| #{a @Debate.followThreads()}&{'followedThreads'}#{/a}
-	    			| #{a @Rooms.list()}&{'myRooms'}#{/a}
+	    			#{a @Dbtit.index(), class:'home-link', rel:'home', title:'Debate it!'}Debate it!#{/a}
+					| #{a @Debate.followThreads(), title:messages.get('seeFollowedThreads')}&{'followedThreads'}#{/a}
+	    			| #{a @Rooms.list(), title:messages.get('seeSubscribedRooms')}&{'myRooms'}#{/a}
 					*{| #{a @Debate.newThread()}&{'createThread'}#{/a}}*
 				</nav>
 				<nav id="right-nav">
@@ -28,28 +28,32 @@
 	    	#{/if}
 	    	#{else}
 	    		<nav id="left-nav">
-	    			#{a @Dbtit.index(), class:'home-link', rel:'home', alt:'Debate it!'}Debate it!#{/a}
+	    			#{a @Dbtit.index(), class:'home-link', rel:'home', title:'Debate it!'}Debate it!#{/a}
 				</nav>
 				#{get 'moreNav' /}
 	    	#{/else}
     		<div id="end-nav"></div>
     	</header>
+
+		<div id="page">
     
-        #{if flash.success}
-        <div class="flash success">
-        	${flash.success}
-        </div>
-        #{/if}
+	        #{if flash.success}
+	        <div class="flash success">
+	        	${flash.success}
+	        </div>
+	        #{/if}
+	        
+	        #{if flash.error}
+	        <div class="flash error">
+	        	${flash.error}
+	        </div>
+	        #{/if}
+	        
+	        <article>
+	        	#{doLayout /}
+	        </article>
         
-        #{if flash.error}
-        <div class="flash error">
-        	${flash.error}
         </div>
-        #{/if}
-        
-        <article>
-        	#{doLayout /}
-        </article>
         
         <footer>
         	<p>© 2010</p>
