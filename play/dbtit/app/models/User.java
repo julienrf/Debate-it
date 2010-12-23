@@ -5,13 +5,18 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.TypedQuery;
 
 import play.data.validation.Email;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
+@NamedQuery(
+		name="followedThreadsSortedByActivity",
+		query="SELECT t FROM Thread t, Post p, User u WHERE u = :user AND t MEMBER OF u.followedThreads AND p.thread = t ORDER BY p.date DESC")
 public class User extends Model {
 	
 	/** Display name */
@@ -65,9 +70,9 @@ public class User extends Model {
 		return user;
 	}
 	
-	// TODO il doit y avoir moyen de transformer ça en requête plus efficace
-	public List<Thread> followedThreads() {
-		return Thread.sortByLastPost(followedThreads);
+	public List<Thread> followedThreadsSortedByActivity() {
+		TypedQuery<Thread> q = em().createNamedQuery("followedThreadsSortedByActivity", Thread.class).setParameter("user", this);
+		return q.getResultList();
 	}
 	
 	/**

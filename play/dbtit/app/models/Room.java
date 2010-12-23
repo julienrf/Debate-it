@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.TypedQuery;
 
@@ -16,19 +17,20 @@ import play.libs.Codec;
 import utils.Helper;
 
 @Entity
+@NamedQuery(name = "threadsSortedByActivity", query = "SELECT t FROM Thread t, Post p WHERE t.room = :room AND p.thread = t ORDER BY p.date DESC")
 public class Room extends Model {
 
 	@Required
 	public String name;
-	
+
 	@Required
 	public Boolean isPublic;
-	
+
 	public String hash;
-	
-	@OneToMany(mappedBy="room", cascade=CascadeType.REMOVE)
+
+	@OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
 	public List<Thread> threads;
-	
+
 	protected Room(String name, boolean isPublic) {
 		this.name = name;
 		this.isPublic = isPublic;
@@ -43,7 +45,7 @@ public class Room extends Model {
 		creator.subscribe(room); // TODO handle administration rights
 		return room;
 	}
-	
+
 	public static Room getOpenRoom() {
 		Room room = Room.find("byHash", "open").first();
 		if (room == null) { // Create it if it does not exist
@@ -53,14 +55,20 @@ public class Room extends Model {
 		}
 		return room;
 	}
-	
+
+	public List<Thread> getSortedThreads() {
+		TypedQuery<Thread> q = em().createNamedQuery("threadsSortedByActivity",
+				Thread.class).setParameter("room", this);
+		return q.getResultList();
+	}
+
 	public Thread lastActivity() {
 		if (threads.size() == 0)
 			return null;
 		else {
-			// TODO Factoriser cette requête quelque part, il y a de fortes chances que j’en aie besoin ailleurs
-			TypedQuery<Thread> q = em().createQuery("SELECT t FROM Thread t, Post p WHERE t.room = :room AND p.thread = t ORDER BY p.date DESC", Thread.class);
-			q.setParameter("room", this);
+			TypedQuery<Thread> q = em().createNamedQuery(
+					"threadsSortedByActivity", Thread.class).setParameter(
+					"room", this);
 			q.setMaxResults(1);
 			return q.getSingleResult();
 		}

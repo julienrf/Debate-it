@@ -67,21 +67,6 @@ public class Thread extends Model {
 		return thread;
 	}
 	
-	// TODO Faire une jolie requête JPQL
-	public static List<Thread> sortByLastPost(List<Thread> source) {
-		List<Thread> threads = new ArrayList<Thread>();
-		threads.addAll(source);
-		
-		Collections.sort(threads, new Comparator<Thread>() {
-			@Override
-			public int compare(Thread o1, Thread o2) {
-				return -o1.lastPost().date.compareTo(o2.lastPost().date);
-			}
-		});
-		
-		return threads;
-	}
-	
 	/**
 	 * Count the number of posts posted after a given date in this thread
 	 * @param date

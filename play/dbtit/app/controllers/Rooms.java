@@ -37,14 +37,14 @@ public class Rooms extends Controller {
 		Room room = Room.find("byHash", hash).first();
 		notFoundIfNull(room);
 		
-		/*if (!(hash.equals("open") || room.isPublic)) {
+		if (!room.isPublic) {
 			User user = Dbtit.connectedUser();
 			if (user == null || !user.hasSubscribed(room)) {
 				forbidden();
 			}
-		}*/
+		}
 		
-		List<Thread> threads = Thread.sortByLastPost(room.threads);
+		List<Thread> threads = room.getSortedThreads();
 		Pagination pagination = new Pagination(params, threads.size());
 		
 		threads = threads.subList(pagination.getFrom(), pagination.getTo());

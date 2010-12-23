@@ -125,12 +125,11 @@ public class Dbtit extends Controller {
 	 */
 	public static void index() {
 		Room room = Room.getOpenRoom();
-		List<Thread> threads = Thread.sortByLastPost(room.threads);
+		List<Thread> threads = room.getSortedThreads();
 
 		Pagination pagination = new Pagination(params, room.threads.size());
 		threads = threads.subList(pagination.getFrom(), pagination.getTo());
 
-		// List<Room> rooms = Room.all().filter("isPublic", true).fetch(8); //
 		// TODO sort by activity date
 		List<Room> rooms = Room.find("isPublic = true").fetch(8);
 		Iterator<Room> it = rooms.iterator();
