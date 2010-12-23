@@ -20,7 +20,7 @@ public class Rooms extends Controller {
 		List<Room> subscriptions;
 		Pagination pagination = new Pagination(params, user.subscriptions.size());
 		
-    	if (pagination.getTo() > 0) {
+    	if (pagination.getTo() > 0) { // J’aime pas JPA
     		subscriptions = user.subscriptions.subList(pagination.getFrom(), pagination.getTo() - pagination.getFrom());
     	} else {
     		subscriptions = new ArrayList<Room>();
@@ -44,8 +44,8 @@ public class Rooms extends Controller {
 			}
 		}
 		
-		Pagination pagination = new Pagination(params, 4);
-		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getFrom(), pagination.getPageSize());
+		Pagination pagination = new Pagination(params, room.threads.size(), 12);
+		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getCurrentPage(), pagination.getPageSize());
 		
 		render(room, threads, pagination);
 	}
