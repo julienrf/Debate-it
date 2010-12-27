@@ -3,6 +3,7 @@
 #{set 'moreStyles'}
 	#{stylesheet 'form.sass' /}
 	#{stylesheet 'pagination.sass' /}
+	#{stylesheet 'sprite.sass' /}
 #{/set}
 
 #{if user == null}
@@ -15,8 +16,19 @@
 	<h1>${room.name}</h1>
 </div>
 
-#{if room.isPublic}
-	<div><span class="st_email"></span><span class="st_facebook"></span><span class="st_twitter"></span><span class="st_sharethis" displayText="ShareThis"></span></div>
-#{/if}
+<div id="side-actions">
+	#{if user != null}
+		#{if user.hasSubscribed(room)}
+			#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')} &{'unsubscribe'} #{/a}
+		#{/if}
+		#{else}
+			#{a @Rooms.subscribe(room.hash, request.url), title: messages.get('subscribeRoom')} &{'subscribe'} #{/a}
+		#{/else}
+	#{/if}
+	#{if room.isPublic}
+		#{sprite name:'permalink', action:@Rooms.show(room.hash), alt:messages.get('permanentLink') /}
+		#{sharethis /}
+	#{/if}
+</div>
 
 #{roomthreads room:room, threads:threads, pagination:pagination, route:@Rooms.show(room.hash), tz:user?.tz /}

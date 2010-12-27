@@ -6,8 +6,10 @@ myRooms=Mes espaces de discussion
 room=Espace de discussion
 threadCount=Débats
 emtpyRoom=Cet espace de discussion ne contient aucun débat.
-subscribe=Ajouter à mes espaces de discussion
-unsubscribe=Retirer de mes espaces de discussion
+subscribe=Ajouter
+unsubscribe=Retirer
+subscribeRoom=Ajouter à mes espaces de discussion
+unsubscribeRoom=Retirer de mes espaces de discussion
 noSubscribedRooms=Vous n’êtes abonné à aucun espace de discussion.
 
 login=Identifiez-vous
@@ -90,6 +92,8 @@ at=à
 openRoomState=Débats actuels dans l’espace ouvert de discussions
 publicRoomsActivity=Activité récente des espaces de discussions publics
 noRecentActivity=Aucune activité.
+
+noThread=Aucune discussion n’est associée aux tags demandés
 
 formError=La saisie contient des erreurs
 

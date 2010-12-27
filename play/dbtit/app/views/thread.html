@@ -19,16 +19,16 @@
 
 <div>
 	#{a @Rooms.show(thread.room.hash)}${thread.room.name}#{/a} » #{get 'thread-title' /}
-	<div>#{followthread thread:thread, user:user /}</div>
-</div>
+	#{if thread.tags.size() > 0}
+		<div class="thread-tags">
+			#{list items: thread.tags, as: 'tag'}
+				#{a @Debate.listTaggedThreads(tag.name), class: 'tag'}${tag.name}#{/a} 
+			#{/list}
+		</div>
+	#{/if}
 
-#{if thread.tags.size() > 0}
-	<div class="thread-tags">
-		#{list items: thread.tags, as: 'tag'}
-			#{a @Debate.listTaggedThreads(tag.name), class: 'tag'} ${tag.name} #{/a} 
-		#{/list}
-	</div>
-#{/if}
+	<div id="side-actions">#{followthread thread:thread, user:user /}</div>
+</div>
 
 #{get 'thread-content' /}
 

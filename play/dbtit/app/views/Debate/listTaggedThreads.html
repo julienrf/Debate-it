@@ -5,9 +5,12 @@
 	<h1>&{'tags'}</h1>
 </div>
 
-#{list items: tags, as: 'tag'}
-	${tag}
-#{/list}
+
+<div>
+	#{list items: tags, as: 'tag'}
+		<span class="tag">${tag}</span>
+	#{/list}
+</div>
 
 #{if threads.size() > 0}
 <div class="box">
@@ -32,5 +35,5 @@
 </div>
 #{/if}
 #{else}
-&{'noThreads'}
+&{'noThread'}
 #{/else}

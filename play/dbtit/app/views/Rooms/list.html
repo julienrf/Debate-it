@@ -25,14 +25,7 @@
 				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
 				<td>${room.threads.size()}</td>
 				<td class="hover">
-					#{if user != null}
-						#{if user.hasSubscribed(room)}
-							#{a @Rooms.unsubscribe(room.hash, request.url)}&{'unsubscribe'}#{/a}
-						#{/if}
-						#{else}
-							#{a @Rooms.subscribe(room.hash, request.url)}&{'subscribe'}#{/a}
-						#{/else}
-					#{/if}
+					#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')}&{'unsubscribe'}#{/a}
 				</td>
 			</tr>
 		#{/list}

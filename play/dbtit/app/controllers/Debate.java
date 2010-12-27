@@ -31,7 +31,7 @@ public class Debate extends Controller {
 	 * Display a list of threads accordingly to a set of tags
 	 */
 	public static void listTaggedThreads(String tagList) {
-		String[] tags = tagList.split("\\|");
+		String[] tags = tagList.split("\\s+");
 		/*
 		 * TODO Pour bien gérer la pagination je voudrais pouvoir exprimer le
 		 * concept correspondant à l’ensemble des threads contenant tous les
