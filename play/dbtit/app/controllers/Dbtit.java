@@ -122,10 +122,13 @@ public class Dbtit extends Controller {
 	 * Display the index page
 	 */
 	public static void index() {
-		Room room = Room.getOpenRoom();
-		Pagination pagination = new Pagination(params, room.threads.size(), 4);
-		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", room).fetch(pagination.getCurrentPage(), pagination.getPageSize());
-		List<RoomThread> rooms = Room.getRecentPublicActivity(0, 5);
+		// Get the more active threads of the open room
+		Room openRoom = Room.getOpenRoom();
+		Pagination pagination = new Pagination(params, openRoom.threads.size(), 4);
+		List<Thread> threads = Thread.find("room = ? ORDER BY lastActivity DESC", openRoom).fetch(pagination.getCurrentPage(), pagination.getPageSize());
+		
+		// Get the first most active public rooms
+		List<RoomThread> rooms = Room.getRecentPublicActivity(5);
 
 		render(threads, pagination, rooms);
 	}

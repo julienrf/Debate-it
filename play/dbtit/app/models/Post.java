@@ -89,7 +89,7 @@ public class Post extends Model
 		post.setParagraphs(content);
 		
 		// Update the activity of the thread
-		thread.lastActivity = post.date;
+		thread.updateLastActivity(post.date);
 		thread.save();
 		
 		// Make the author automatically follows the post's thread

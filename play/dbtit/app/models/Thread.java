@@ -49,6 +49,7 @@ public class Thread extends Model {
 		this.title = title;
 		this.room = room;
 		room.threads.add(this);
+		this.lastActivity = new Date();
 	}
 	
 	public String toString() {
@@ -85,5 +86,13 @@ public class Thread extends Model {
 	
 	public Post lastPost() {
 		return Post.find("thread = ? order by date desc", this).first();
+	}
+	
+	public void updateLastActivity(Date date) {
+		if (lastActivity.compareTo(date) < 0) {
+			lastActivity = date;
+			room.updateLastActivity(date);
+			save();
+		}
 	}
 }

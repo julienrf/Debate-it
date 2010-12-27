@@ -1,15 +1,14 @@
 package models;
 
+import java.util.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 import play.Play;
 import play.data.validation.Required;
@@ -31,11 +30,14 @@ public class Room extends Model {
 	@OneToMany(mappedBy = "room", cascade = CascadeType.REMOVE)
 	@OrderBy("lastActivity DESC")
 	public List<Thread> threads;
+	
+	public Date lastActivity;
 
 	protected Room(String name, boolean isPublic) {
 		this.name = name;
 		this.isPublic = isPublic;
 		this.threads = new ArrayList<Thread>();
+		this.lastActivity = Helper.getMinDate();
 	}
 
 	public static Room create(User creator, String name, boolean isPublic) {
@@ -57,15 +59,14 @@ public class Room extends Model {
 		return room;
 	}
 	
-	public static List<RoomThread> getRecentPublicActivity(int from, int max) {
-		Query q = Room.em().createQuery("SELECT DISTINCT r, t FROM Room r, Thread t WHERE t.room = r AND r.isPublic = true ORDER BY t.lastActivity DESC)");
-		q.setFirstResult(from);
+	public static List<RoomThread> getRecentPublicActivity(int max) {
+		Query q = em().createQuery("SELECT r, t FROM Room r, Thread t WHERE t.room = r AND r.isPublic = true AND t.lastActivity >= ALL (SELECT t.lastActivity FROM Thread t WHERE t.room = r) ORDER BY r.lastActivity DESC");
 		q.setMaxResults(max);
-		List<RoomThread> rooms = new ArrayList<RoomThread>(); // Mapping à la main :( Je déteste JPA et Java.
+		List<RoomThread> roomThreads = new ArrayList<RoomThread>(); // Mapping à la main :( Je déteste JPA et Java.
 		for (Object[] o : (List<Object[]>)q.getResultList()) {
-			rooms.add(new RoomThread((Room)o[0], (Thread)o[1]));
+			roomThreads.add(new RoomThread((Room)o[0], (Thread)o[1]));
 		}
-		return rooms;
+		return roomThreads;
 	}
 	
 	public static class RoomThread {
@@ -75,6 +76,13 @@ public class Room extends Model {
 		public RoomThread(Room room, Thread thread) {
 			this.room = room;
 			this.thread = thread;
+		}
+	}
+
+	public void updateLastActivity(Date date) {
+		if (lastActivity.compareTo(date) < 0) {
+			lastActivity = date;
+			save();
 		}
 	}
 }
