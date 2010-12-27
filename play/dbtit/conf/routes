@@ -35,6 +35,8 @@ PUT     /room/{hash}/unsubscribe      Rooms.unsubscribe
 GET     /room/{hash}/new              Debate.newThread
 POST    /room/{hash}/new              Debate.createThread
 
+GET     /tag/{tagList}                Debate.listTaggedThreads
+
 GET     /{hash}                       Debate.showThread
 GET     /{hash}/{paragraphId}         Debate.branch
 

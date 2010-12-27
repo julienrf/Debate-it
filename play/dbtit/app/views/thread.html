@@ -22,6 +22,14 @@
 	<div>#{followthread thread:thread, user:user /}</div>
 </div>
 
+#{if thread.tags.size() > 0}
+	<div class="thread-tags">
+		#{list items: thread.tags, as: 'tag'}
+			#{a @Debate.listTaggedThreads(tag.name), class: 'tag'} ${tag.name} #{/a} 
+		#{/list}
+	</div>
+#{/if}
+
 #{get 'thread-content' /}
 
 #{if footNotes.size() > 0}

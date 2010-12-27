@@ -26,12 +26,12 @@ public class ThreadTest extends UnitTest {
 		user = User.create("Julien Richard-Foy", "julien.rf@no-log.org", TimeZone.getDefault().getID());
 		creator = User.create("Creator", "foo@bar.bz", TimeZone.getDefault().getID());
 		room = Room.create(creator, "Room", false);
-		thread = Thread.create(creator, room, "Title", "Content");
+		thread = Thread.create(creator, room, "Title", "Content", new String[0]);
 	}
 
 	@Test
 	public void testCreateUserRoomStringString() {
-		Thread.create(user, room, "Titre", "Contenu");
+		Thread.create(user, room, "Titre", "Contenu", new String[0]);
 		
 		Thread thread = Thread.find("byTitle", "Titre").first();
 		assertNotNull(thread);

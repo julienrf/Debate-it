@@ -25,7 +25,7 @@ public class PostTest extends UnitTest {
 		Fixtures.deleteAll();
 		author = User.create("Creator", "foo@bar.bz", TimeZone.getDefault().getID());
 		room = Room.create(author, "Room", false);
-		thread = Thread.create(author, room, "Title", "Content");
+		thread = Thread.create(author, room, "Title", "Content", new String[0]);
 	}
 
 	@Test

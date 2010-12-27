@@ -1,0 +1,36 @@
+#{extends 'main.html' /}
+#{set 'title'}Debate it!#{/set}
+
+<div>
+	<h1>&{'tags'}</h1>
+</div>
+
+#{list items: tags, as: 'tag'}
+	${tag}
+#{/list}
+
+#{if threads.size() > 0}
+<div class="box">
+	<table class="list">
+	
+		<tr class="item">
+			<th>&{'room'}</th>
+			<th>&{'thread'}</th>
+			<th>&{'lastPost'}</th>
+		</tr>
+		
+		#{list items:threads, as:'thread'}
+			<tr class="item ${thread_parity}">
+				<td>#{a @Rooms.show(thread.room.hash), class:'item-title'} ${thread.room.name} #{/a}</td>
+				<td>#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}</td>
+				%{ post = thread.lastPost() }%
+				<td> ${post.author.name}, &{'at'} #{date date:post.date, tz: user?.tz /} </td>
+			</tr>
+		#{/list}
+	
+	</table>
+</div>
+#{/if}
+#{else}
+&{'noThreads'}
+#{/else}

@@ -1,14 +1,13 @@
 package models;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicLong;
+import java.util.TreeSet;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
@@ -37,6 +36,10 @@ public class Thread extends Model {
 	@ManyToOne
 	public Room room;
 	
+	/** The tags associated with this thread */
+	@ManyToMany(cascade=CascadeType.PERSIST)
+	public Set<Tag> tags;
+	
 	/**
 	 * The date of the last activity (posting) in this thread (this date is stored to sort more easily threads by activity date)
 	 * This class expects that created posts will update the lastActivity of their thread.
@@ -50,6 +53,7 @@ public class Thread extends Model {
 		this.room = room;
 		room.threads.add(this);
 		this.lastActivity = new Date();
+		this.tags = new TreeSet<Tag>();
 	}
 	
 	public String toString() {
@@ -65,14 +69,26 @@ public class Thread extends Model {
 	 * @param content Content of the root post of the thread
 	 * @return The created thread
 	 */
-	public static Thread create(User author, Room room, String title, String content)
+	public static Thread create(User author, Room room, String title, String content, String[] tagList)
 	{
 		Thread thread = new Thread(room, title).save();
 		thread.hash = Helper.hexTo62(Codec.hexMD5(Play.secretKey + thread.id));
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
+		for (String tag : tagList) {
+			thread.tagWith(tag);
+		}
 		thread.save();
 		return thread;
+	}
+	
+	public static List<Thread> findTaggedWith(String tag, int page, int length) {
+		return Thread.find("SELECT t FROM Thread t JOIN t.tags AS tag WHERE tag.name = ?", tag).fetch(page, length);
+	}
+	
+	public static List<Thread> findTaggedWith(String[] tags, int page, int length) {
+		return Thread.find("SELECT DISTINCT t FROM Thread t JOIN t.tags AS tag WHERE tag.name IN (:tags) GROUP BY t.id, t.rootPost, t.title, t.hash, t.room, t.lastActivity HAVING COUNT(tag) = :size"
+	    ).bind("tags", tags).bind("size", tags.length).fetch(page, length);
 	}
 	
 	/**
@@ -95,4 +111,9 @@ public class Thread extends Model {
 			save();
 		}
 	}
+	
+	public void tagWith(String tag) {
+		tags.add(Tag.findOrCreateByName(tag));
+	}
+	
 }

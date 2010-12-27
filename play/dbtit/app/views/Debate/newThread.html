@@ -6,7 +6,6 @@
 	#{stylesheet 'tree.sass' /}
 #{/set}
 
-
 <div>
 	#{a @Rooms.show(room.hash)}${room.name}#{/a} » <h1>&{'createThread'}</h1>
 </div>
@@ -39,9 +38,67 @@
         <span class="form-error">${field.error}</span>
 	</div>
 	#{/field}
+	
+	#{field 'tags'}
+	<div class="row">
+		<input type="text" id="${field.id}" name="${field.name}" size="80" value="${field.value}" placeholder="&{field.name}" class="${field.errorClass}" />
+		<br />
+		<span class="form-error">${field.error}</span>
+	</div>
+	#{/field}
 
 	<div class="buttons">
 	    <input type="submit" value="&{'preview'}" name="preview" />
 	    <input type="submit" value="&{'create'}" name="create" />
     </div>
 #{/form}
+
+#{set 'moreScripts'}
+<script type="text/javascript" language="javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
+<script type="text/javascript">
+$(function() {
+		var availableTags = [
+			#{list items: models.Tag.findAll(), as: 'tag'}
+				"${tag.name}" ${tag_isLast ? '' : ','}
+			#{/list}
+		];
+		function split( val ) {
+			return val.split( /\s+/ );
+		}
+		function extractLast( term ) {
+			return split( term ).pop();
+		}
+	$("#tags")
+			// don't navigate away from the field on tab when selecting an item
+			.bind( "keydown", function( event ) {
+				if ( event.keyCode === $.ui.keyCode.TAB &&
+						$( this ).data( "autocomplete" ).menu.active ) {
+					event.preventDefault();
+				}
+			})
+			.autocomplete({
+				minLength: 0,
+				source: function( request, response ) {
+					// delegate back to autocomplete, but extract the last term
+					response( $.ui.autocomplete.filter(
+						availableTags, extractLast( request.term ) ) );
+				},
+				focus: function() {
+					// prevent value inserted on focus
+					return false;
+				},
+				select: function( event, ui ) {
+					var terms = split( this.value );
+					// remove the current input
+					terms.pop();
+					// add the selected item
+					terms.push( ui.item.value );
+					// add placeholder to get the comma-and-space at the end
+					terms.push( "" );
+					this.value = terms.join( " " );
+					return false;
+				}
+			});
+});
+</script>
+#{/set}

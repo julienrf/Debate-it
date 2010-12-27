@@ -34,9 +34,9 @@ public class RoomTest extends UnitTest {
 
 	@Test
 	public void testLastActivity() {
-		Thread thread1 = Thread.create(creator, room, "Title", "Content");
+		Thread thread1 = Thread.create(creator, room, "Title", "Content", new String[0]);
 		assertEquals(thread1, room.threads.get(0));
-		Thread thread2 = Thread.create(creator, room, "Titre", "Contenu");
+		Thread thread2 = Thread.create(creator, room, "Titre", "Contenu", new String[0]);
 		room.refresh();
 		assertEquals(thread2, room.threads.get(0));
 	}
