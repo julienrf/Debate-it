@@ -2,7 +2,7 @@
 <div>
 	<div id="answers">
 		<div class="answer">
-		#{list items:paragraph.answers.fetch(), as:'reply'}
+		#{list items:paragraph.answers, as:'reply'}
 				#{tree thread:thread, post:reply, user:user, footNotes:footNotes /}
 		#{/list}
 		</div>
