@@ -11,6 +11,8 @@
 	#{/else}
 #{/if}
 
+#{sprite name:'rss', action:@@Debate.rssThread(_thread.hash), alt:messages.get('rssFeed') /}
+
 #{sprite name:'permalink', action:@Debate.showThread(_thread.hash), alt:messages.get('permanentLink') /}
 
 #{sharethis /}

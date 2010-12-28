@@ -41,6 +41,7 @@ content=Contenu
 branch=Branche de la discussion
 shareThread=Partager cette discussion :
 permanentLink=Lien permanent
+rssFeed=Flux RSS de la discussion
 follow=Suivre
 followThread=Suivre cette discussion
 doNotFollow=Ne plus suivre

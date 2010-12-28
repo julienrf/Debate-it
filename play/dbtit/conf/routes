@@ -2,6 +2,7 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+GET     /list                         Dbtit.listview
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                      staticDir:public
 
@@ -38,7 +39,6 @@ POST    /room/{hash}/new              Debate.createThread
 GET     /tag/{tagList}                Debate.listTaggedThreads
 
 GET     /{hash}                       Debate.showThread
-GET     /{hash}/{paragraphId}         Debate.branch
 
 PUT     /{hash}/read/{postId}         Debate.readPost
 PUT     /{hash}/unread/{postId}       Debate.unreadPost
@@ -54,10 +54,9 @@ POST    /{hash}/edit/{postId}         Debate.postEdit
 PUT     /{hash}/follow                Debate.followThread
 PUT     /{hash}/stopfollow            Debate.doNotFollowThread
 
+GET     /{hash}/rss                   Debate.rssThread
+GET     /{hash}/{paragraphId}         Debate.branch
+
 
 # Home page
 GET     /                             Dbtit.index
-
-
-# Catch all
-#*       /{controller}/{action}  {controller}.{action}

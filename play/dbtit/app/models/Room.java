@@ -85,4 +85,9 @@ public class Room extends Model {
 			save();
 		}
 	}
+	
+	@Override
+	public String toString() {
+		return name;
+	}
 }

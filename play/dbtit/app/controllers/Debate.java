@@ -73,6 +73,16 @@ public class Debate extends Controller {
 
 		render(thread, paragraph);
 	}
+	
+	/**
+	 * Display a RSS Feed from a Thread
+	 */
+	public static void rssThread(String hash) {
+		List<Post> posts = Post.find("SELECT p FROM Post p, Thread t WHERE p.thread = t AND t.hash = ? ORDER BY p.date DESC", hash).fetch();
+		response.contentType = "application/rss+xml";
+		request.format = "xml"; // TODO Move in the route file
+		render(posts);
+	}
 
 	/**
 	 * Return the answers of a given paragraph of a thread (This operation is

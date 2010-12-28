@@ -1,0 +1,20 @@
+%{ lastPost = posts.get(0) }%
+%{ thread = lastPost.thread }%
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0">
+    <channel>
+        <title>Debate It! — ${thread.title}</title>
+        <description>${thread.title}</description>
+        <lastBuildDate>${lastPost.date}</lastBuildDate>
+        <link>@@{Debate.showThread(thread.hash)}</link>
+        #{list items: posts, as: 'post'}
+	        <item>
+	            <title>${post}</title>
+	            <description>${post.content}</description>
+	            <pubDate>${post.date}</pubDate>
+	            <link>@@{Debate.showThread(thread.hash)}#post_${post.id}</link>
+	            <author>${post.author.email}</author>
+	        </item>
+        #{/list}
+    </channel>
+</rss>
