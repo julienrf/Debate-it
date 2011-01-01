@@ -171,10 +171,10 @@ public class Debate extends Controller {
 			Post.preview(content, paragraphs, footNotes);
 			renderArgs.put("preview", true);
 			render("@newThread", room, threadTitle, content, paragraphs,
-					footNotes);
+					footNotes, tags);
 		}
 
-		String[] tagList = tags.split("\\s+");
+		String[] tagList = tags.trim().split("\\s+");
 		Thread thread = Thread.create(user, room, threadTitle, content, tagList);
 		flash.success(Messages.get("threadCreated", thread.title));
 		Logger.info("Thread (%s) created by user %s (%s)", thread.id,

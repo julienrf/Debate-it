@@ -76,7 +76,8 @@ public class Thread extends Model {
 		Post rootPost = Post.create(author, content, null, thread);
 		thread.rootPost = rootPost;
 		for (String tag : tagList) {
-			thread.tagWith(tag);
+			if (!tag.isEmpty())
+				thread.tagWith(tag);
 		}
 		thread.save();
 		return thread;
