@@ -3,13 +3,20 @@
 <html lang="${lang}">
     <head>
         <title>#{get 'title' /}</title>
+        
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        
         #{stylesheet 'main.sass' /}
         #{stylesheet 'button.sass' /}
         #{get 'moreStyles' /}
+        
         <link rel="shortcut icon" type="image/png" href="@{'/public/images/favicon.png'}" />
+        
+        #{script 'jquery-1.4.min.js' /}
         <script type="text/javascript" src="http://w.sharethis.com/button/buttons.js"></script>
         <script type="text/javascript">stLight.options({publisher:'3b22fc8f-0f0f-4fc9-a599-f59f5d8fc1c9'});</script>
+        #{get 'moreScripts' /}
+        
     </head>
     <body>
     	<header>
@@ -18,7 +25,6 @@
 	    			#{a @Dbtit.index(), class:'home-link', rel:'home', title:'Debate it!'}Debate it!#{/a}
 					| #{a @Debate.followThreads(), title:messages.get('seeFollowedThreads')}&{'followedThreads'}#{/a}
 	    			| #{a @Rooms.list(), title:messages.get('seeSubscribedRooms')}&{'myRooms'}#{/a}
-					*{| #{a @Debate.newThread()}&{'createThread'}#{/a}}*
 				</nav>
 				<nav id="right-nav">
 					<strong>${user.name}</strong>
@@ -59,9 +65,7 @@
         	<p>© <a href="mailto:julien@richard-foy.fr">Julien Richard-Foy</a> 2010</p>
         </footer>
         
-        #{script 'jquery-1.4.min.js' /}
-        #{script 'thread.js' /}
-        #{get 'moreScripts' /}
+        #{get 'moreFooterScripts' /}
     	#{i18n /}
     </body>
 </html>
