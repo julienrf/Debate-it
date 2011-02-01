@@ -12,7 +12,20 @@
 
 #{if followedThreads.size() > 0}
 <div class="box">
-	<table class="list">
+	%{
+		def showThread = { thread ->
+			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '" class="item-title">' + thread.title + '</a>'
+		}
+		def lastPost = { thread -> post = thread.lastPost()
+			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add user?.tz
+		}
+		def unreadPostCount = { thread -> user.getUnreadPostCount(thread).wrap('span.unread-post-count') }
+		def follow = {
+			//play.modules.dataview.Tag.invoke("sprite", [name: doNotFollow, action: @Debate.doNotFollowThread(thread.hash, request.url), alt: messages.get('doNotFollowThread')])
+		}
+	}%
+	#{listview.table followedThreads, columns: ['debate': showThread, 'lastPost': lastPost, 'unreadPosts': unreadPostCount, '': follow] /}
+	*{<table class="list">
 	
 	<tr>
 		<th>&{'debate'}</th>
@@ -20,7 +33,7 @@
 		<th>&{'unreadPosts'}</th>
 	</tr>
 	
-	#{list items:followedThreads, as:'thread'}
+	#{list followedThreads, as:'thread'}
 		<tr class="item ${thread_parity}">
 			<td>#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}</td>
 			%{ lastPost = thread.lastPost(); }%
@@ -31,7 +44,7 @@
 		</tr>
 	#{/list}
 	
-	</table>
+	</table>}*
 	#{pagination.list pagination:pagination, route:@Debate.followThreads() /}
 <div>
 #{/if}

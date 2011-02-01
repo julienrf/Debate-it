@@ -24,7 +24,7 @@ import utils.Pagination;
  * 
  */
 public class Dbtit extends Controller {
-
+	
 	@Before(priority = 10)
 	protected static void checkLoggedIn() {
 		LoggedIn loggedIn = getActionAnnotation(LoggedIn.class);

@@ -2,7 +2,6 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET     /list                         Dbtit.listview
 # Map static resources from the /app/public folder to the /public path
 GET     /public/                      staticDir:public
 
@@ -55,6 +54,7 @@ PUT     /{hash}/follow                Debate.followThread
 PUT     /{hash}/stopfollow            Debate.doNotFollowThread
 
 GET     /{hash}/rss                   Debate.rssThread
+#GET     /{hash}/rss                   Debate.rssThread(format:'xml')
 GET     /{hash}/{paragraphId}         Debate.branch
 
 

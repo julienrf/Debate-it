@@ -1,10 +1,22 @@
 #{if _rooms.size() > 0}
 <div class="box">
-	<table class="list">
+	%{
+		def showRoom = { i -> room = i.room
+			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: room.hash]) + '" class="item-title">' + room.name + '</a>'
+		}
+		def showThread = { i -> thread = i.thread
+			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '">' + thread.title + '</a>'
+		}
+		def lastPost = { i -> post = i.thread.lastPost()
+			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add _tz
+		}
+	}%
+	#{listview.table _rooms, columns: ['room': showRoom, 'debate': showThread, 'lastPost': lastPost] /}
+	*{<table class="list">
 	
 	<tr class="item">
 		<th>&{'room'}</th>
-		<th>&{'thread'}</th>
+		<th>&{'debate'}</th>
 		<th>&{'lastPost'}</th>
 	</tr>
 	
@@ -18,7 +30,7 @@
 		</tr>
 	#{/list}
 	
-	</table>
+	</table>}*
 </div>
 #{/if}
 #{else}

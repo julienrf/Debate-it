@@ -1,5 +1,8 @@
 #{extends 'main.html' /}
 #{set 'title'}Debate it!#{/set}
+#{set 'moreStyles'}
+	#{stylesheet 'pagination.sass' /}
+#{/set}
 
 <div>
 	<h1>&{'tags'}</h1>
@@ -14,7 +17,19 @@
 
 #{if threads.size() > 0}
 <div class="box">
-	<table class="list">
+	%{
+		def showRoom = { thread ->
+			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: thread.room.hash]) + '" class="item-title">' + thread.room.name + '</a>'
+		}
+		def showThread = { thread ->
+			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '">' + thread.title + '</a>'
+		}
+		def lastPost = { thread -> post = thread.lastPost()
+			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add user?._tz
+		}
+	}%
+	#{listview.table threads, columns: ['room': showRoom, 'thread': showThread, 'lastPost': lastPost] /}
+	*{<table class="list">
 	
 		<tr class="item">
 			<th>&{'room'}</th>
@@ -31,7 +46,7 @@
 			</tr>
 		#{/list}
 	
-	</table>
+	</table>}*
 </div>
 #{/if}
 #{else}

@@ -88,7 +88,7 @@ isPublicHint=Les espaces publics peuvent être consultés par tout le monde.
 emptyRoom=Aucun débat n’a été créé dans cet espace de discussion !
 debate=Débat
 lastPost=Dernier message
-at=à
+at=le
 
 openRoomState=Débats actuels dans l’espace ouvert de discussions
 publicRoomsActivity=Activité récente des espaces de discussions publics
