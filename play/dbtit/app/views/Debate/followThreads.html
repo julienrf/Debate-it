@@ -12,7 +12,7 @@
 
 #{if followedThreads.size() > 0}
 <div class="box">
-	%{
+	*{%{
 		def showThread = { thread ->
 			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '" class="item-title">' + thread.title + '</a>'
 		}
@@ -24,8 +24,8 @@
 			//play.modules.dataview.Tag.invoke("sprite", [name: doNotFollow, action: @Debate.doNotFollowThread(thread.hash, request.url), alt: messages.get('doNotFollowThread')])
 		}
 	}%
-	#{listview.table followedThreads, columns: ['debate': showThread, 'lastPost': lastPost, 'unreadPosts': unreadPostCount, '': follow] /}
-	*{<table class="list">
+	#{dataview.table followedThreads, columns: ['debate': showThread, 'lastPost': lastPost, 'unreadPosts': unreadPostCount, '': follow] /}}*
+	<table class="list">
 	
 	<tr>
 		<th>&{'debate'}</th>
@@ -44,7 +44,7 @@
 		</tr>
 	#{/list}
 	
-	</table>}*
+	</table>
 	#{pagination.list pagination:pagination, route:@Debate.followThreads() /}
 <div>
 #{/if}

@@ -12,7 +12,7 @@
 #{if subscriptions.size() > 0}
 	<div>#{a @Rooms.newRoom()}&{'createRoom'}#{/a}</div>
 	<div class="box">
-		%{
+		*{%{
 			def showRoom = { room ->
 				'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: room.hash]) + '" class="item-title">' + room.name + '</a>'
 			}
@@ -21,8 +21,8 @@
 				'<a href="' + play.mvc.Router.reverse("Rooms.unsubscribe", [hash: room.hash, url: request.url]) + '" class="hover", title="' + messages.get('unsubscribeRoom') + '">' + messages.get('unsubscribe') + '</a>'
 			}
 		}%
-		#{listview.table subscriptions, columns: [room: showRoom, threadCount: threadCount, '': unsubscribe], options: [rowClasses: 'hoverable'] /}
-		*{<table class="list">
+		#{dataview.table subscriptions, columns: [room: showRoom, threadCount: threadCount, '': unsubscribe], options: [rowClass: 'hoverable'] /}}*
+		<table class="list">
 		
 		<tr class="item">
 			<th>&{'room'}</th>
@@ -40,7 +40,7 @@
 			</tr>
 		#{/list}
 		
-		</table>}*
+		</table>
 		#{pagination.list pagination:pagination, route:@Rooms.list() /}
 	</div>
 #{/if}

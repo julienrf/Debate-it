@@ -17,7 +17,7 @@
 
 #{if threads.size() > 0}
 <div class="box">
-	%{
+	*{%{
 		def showRoom = { thread ->
 			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: thread.room.hash]) + '" class="item-title">' + thread.room.name + '</a>'
 		}
@@ -28,8 +28,8 @@
 			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add user?._tz
 		}
 	}%
-	#{listview.table threads, columns: ['room': showRoom, 'thread': showThread, 'lastPost': lastPost] /}
-	*{<table class="list">
+	#{dataview.table threads, columns: ['room': showRoom, 'thread': showThread, 'lastPost': lastPost] /}}*
+	<table class="list">
 	
 		<tr class="item">
 			<th>&{'room'}</th>
@@ -46,7 +46,7 @@
 			</tr>
 		#{/list}
 	
-	</table>}*
+	</table>
 </div>
 #{/if}
 #{else}

@@ -1,6 +1,6 @@
 #{if _rooms.size() > 0}
 <div class="box">
-	%{
+	*{%{
 		def showRoom = { i -> room = i.room
 			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: room.hash]) + '" class="item-title">' + room.name + '</a>'
 		}
@@ -11,8 +11,8 @@
 			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add _tz
 		}
 	}%
-	#{listview.table _rooms, columns: ['room': showRoom, 'debate': showThread, 'lastPost': lastPost] /}
-	*{<table class="list">
+	#{dataview.table _rooms, columns: ['room': showRoom, 'debate': showThread, 'lastPost': lastPost] /}}*
+	<table class="list">
 	
 	<tr class="item">
 		<th>&{'room'}</th>
@@ -30,7 +30,7 @@
 		</tr>
 	#{/list}
 	
-	</table>}*
+	</table>
 </div>
 #{/if}
 #{else}
