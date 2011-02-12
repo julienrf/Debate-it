@@ -7,28 +7,13 @@
 		#{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
 	</div>
 	<div class="box">
-		*{%{
-			def showThread = { thread ->
-				'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '" class="item-title">' + thread.title + '</a>'
-			}
-			def lastPost = { thread -> post = thread.lastPost()
-				post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO , _tz)
-			}
-		}%
-		#{dataview.table _threads, columns: ['debate': showThread, 'lastPost': lastPost] /}}*
-		<table class="list">
-			<tr>
-				<th>&{'debate'}</th>
-				<th>&{'lastPost'}</th>
-			</tr>
-			#{list items:_threads, as:'thread'}
-				<tr class="item ${thread_parity}">
-					<td>#{a @Debate.showThread(thread.hash), class:'item-title'}${thread.title}#{/a}</td>
-					%{ lastPost = thread.lastPost(); }%
-					<td>${lastPost.author.name}, &{'at'} #{date date:lastPost.date, tz:_tz /}</td>
-				</tr>
-			#{/list}
-		</table>
+		#{table _threads, as: 'thread', class: 'list', rowClass: 'item'}
+			#{column messages.get('debate')}#{a @Debate.showThread(thread.hash), class:'item-title'}${thread.title}#{/a}#{/column}
+			#{column messages.get('lastPost')}
+				%{ lastPost = thread.lastPost(); }%
+				${lastPost.author.name}, #{date date:lastPost.date, tz:_tz /}
+			#{/column}
+		#{/table}
 		#{pagination.list pagination:_pagination, route:_route /}
 	</div>
 #{/if}

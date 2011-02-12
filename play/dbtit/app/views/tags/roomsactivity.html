@@ -1,37 +1,25 @@
 #{if _rooms.size() > 0}
-<div class="box">
-	*{%{
-		def showRoom = { i -> room = i.room
-			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: room.hash]) + '" class="item-title">' + room.name + '</a>'
-		}
-		def showThread = { i -> thread = i.thread
-			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '">' + thread.title + '</a>'
-		}
-		def lastPost = { i -> post = i.thread.lastPost()
-			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add _tz
-		}
-	}%
-	#{dataview.table _rooms, columns: ['room': showRoom, 'debate': showThread, 'lastPost': lastPost] /}}*
-	<table class="list">
+
+	#{table _rooms, as: 'roomThread', class: 'box list', rowClass: 'item'}
 	
-	<tr class="item">
-		<th>&{'room'}</th>
-		<th>&{'debate'}</th>
-		<th>&{'lastPost'}</th>
-	</tr>
 	
-	#{list items:_rooms, as:'roomThread'}
-		<tr class="item ${roomThread_parity}">
-			%{ room = roomThread.room ; thread = roomThread.thread }%
-			<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
-			<td>#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}</td>
-			%{ post = thread.lastPost() }%
-			<td> ${post.author.name}, &{'at'} #{date date:post.date, tz: _tz /} </td>
-		</tr>
-	#{/list}
+		#{column messages.get('room')}
+			%{ room = roomThread.room }%
+			#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
+		#{/column}
+			
+		#{column messages.get('debate')}
+			%{ thread = roomThread.thread }%
+			#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}
+		#{/column}
+		
+		#{column messages.get('lastPost')}
+			%{ post = roomThread.thread.lastPost() }%
+			${post.author.name}, &{'at'} #{date date:post.date, tz: _tz /}
+		#{/column}
 	
-	</table>
-</div>
+	#{/table}
+
 #{/if}
 #{else}
 	<div>&{'noRecentActivity'}</div>

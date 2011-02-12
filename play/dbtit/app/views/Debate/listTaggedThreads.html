@@ -16,38 +16,14 @@
 </div>
 
 #{if threads.size() > 0}
-<div class="box">
-	*{%{
-		def showRoom = { thread ->
-			'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: thread.room.hash]) + '" class="item-title">' + thread.room.name + '</a>'
-		}
-		def showThread = { thread ->
-			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '">' + thread.title + '</a>'
-		}
-		def lastPost = { thread -> post = thread.lastPost()
-			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add user?._tz
-		}
-	}%
-	#{dataview.table threads, columns: ['room': showRoom, 'thread': showThread, 'lastPost': lastPost] /}}*
-	<table class="list">
-	
-		<tr class="item">
-			<th>&{'room'}</th>
-			<th>&{'thread'}</th>
-			<th>&{'lastPost'}</th>
-		</tr>
-		
-		#{list items:threads, as:'thread'}
-			<tr class="item ${thread_parity}">
-				<td>#{a @Rooms.show(thread.room.hash), class:'item-title'} ${thread.room.name} #{/a}</td>
-				<td>#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}</td>
-				%{ post = thread.lastPost() }%
-				<td> ${post.author.name}, &{'at'} #{date date:post.date, tz: user?.tz /} </td>
-			</tr>
-		#{/list}
-	
-	</table>
-</div>
+	#{table threads, as: 'thread', class: 'box list', rowClass: 'item'}
+		#{column messages.get('room')} #{a @Rooms.show(thread.room.hash), class:'item-title'} ${thread.room.name} #{/a} #{/column}
+		#{column messages.get('debate')} #{a @Debate.showThread(thread.hash)} ${thread.title} #{/a} #{/column}
+		#{column messages.get('lastPost')}
+			%{ post = thread.lastPost() }%
+			${post.author.name}, #{date date:post.date, tz: user?.tz /}
+		#{/column}
+	#{/table}
 #{/if}
 #{else}
 &{'noThread'}

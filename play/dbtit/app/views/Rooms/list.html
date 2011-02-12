@@ -12,35 +12,15 @@
 #{if subscriptions.size() > 0}
 	<div>#{a @Rooms.newRoom()}&{'createRoom'}#{/a}</div>
 	<div class="box">
-		*{%{
-			def showRoom = { room ->
-				'<a href="' + play.mvc.Router.reverse("Rooms.show", [hash: room.hash]) + '" class="item-title">' + room.name + '</a>'
-			}
-			def threadCount = { room -> room.threads.size() }
-			def unsubscribe = { room ->
-				'<a href="' + play.mvc.Router.reverse("Rooms.unsubscribe", [hash: room.hash, url: request.url]) + '" class="hover", title="' + messages.get('unsubscribeRoom') + '">' + messages.get('unsubscribe') + '</a>'
-			}
-		}%
-		#{dataview.table subscriptions, columns: [room: showRoom, threadCount: threadCount, '': unsubscribe], options: [rowClass: 'hoverable'] /}}*
-		<table class="list">
-		
-		<tr class="item">
-			<th>&{'room'}</th>
-			<th>&{'threadCount'}</th>
-			<th></th>
-		</tr>
-		
-		#{list items:subscriptions, as:'room'}
-			<tr class="item ${subscription_parity} hoverable">
-				<td>#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}</td>
-				<td>${room.threads.size()}</td>
-				<td class="hover">
-					#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')}&{'unsubscribe'}#{/a}
-				</td>
-			</tr>
-		#{/list}
-		
-		</table>
+		#{table subscriptions, as: 'room', class: 'list', rowClass: 'item hoverable'}
+			#{column messages.get('room')}
+				#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
+			#{/column}
+			#{column messages.get('threadCount')} ${room.threads.size()} #{/column}
+			#{column class: 'hover'}
+				#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')}&{'unsubscribe'}#{/a}
+			#{/column}
+		#{/table}
 		#{pagination.list pagination:pagination, route:@Rooms.list() /}
 	</div>
 #{/if}

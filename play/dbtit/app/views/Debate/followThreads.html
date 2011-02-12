@@ -12,39 +12,21 @@
 
 #{if followedThreads.size() > 0}
 <div class="box">
-	*{%{
-		def showThread = { thread ->
-			'<a href="' + play.mvc.Router.reverse("Debate.showThread", [hash: thread.hash]) + '" class="item-title">' + thread.title + '</a>'
-		}
-		def lastPost = { thread -> post = thread.lastPost()
-			post.author.name + ', ' + post.date.format("dd MMMM yyyy, HH'h'mm", lang) // TODO add user?.tz
-		}
-		def unreadPostCount = { thread -> user.getUnreadPostCount(thread).wrap('span.unread-post-count') }
-		def follow = {
-			//play.modules.dataview.Tag.invoke("sprite", [name: doNotFollow, action: @Debate.doNotFollowThread(thread.hash, request.url), alt: messages.get('doNotFollowThread')])
-		}
-	}%
-	#{dataview.table followedThreads, columns: ['debate': showThread, 'lastPost': lastPost, 'unreadPosts': unreadPostCount, '': follow] /}}*
-	<table class="list">
-	
-	<tr>
-		<th>&{'debate'}</th>
-		<th>&{'lastPost'}</th>
-		<th>&{'unreadPosts'}</th>
-	</tr>
-	
-	#{list followedThreads, as:'thread'}
-		<tr class="item ${thread_parity}">
-			<td>#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}</td>
+	#{table followedThreads, as: 'thread', class: 'list', rowClass: 'item'}
+		#{column messages.get('debate')}
+			#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
+		#{/column}
+		#{column messages.get('lastPost')}
 			%{ lastPost = thread.lastPost(); }%
-			<td>${lastPost.author.name}, &{'at'} #{date date:lastPost.date, tz:user?.tz /}</td>
-			%{ unreadPostCount = user.getUnreadPostCount(thread) }%
-			<td class="unread-post-count">${unreadPostCount}</td>
-			<td><span class="tools">#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(thread.hash, request.url), alt:messages.get('doNotFollowThread') /}</span></td>
-		</tr>
-	#{/list}
-	
-	</table>
+			${lastPost.author.name}, #{date date:lastPost.date, tz:user?.tz /}
+		#{/column}
+		#{column messages.get('unreadPosts'), class: 'unread-post-count'}
+			${user.getUnreadPostCount(thread)}
+		#{/column}
+		#{column}
+			<span class="tools">#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(thread.hash, request.url), alt:messages.get('doNotFollowThread') /}</span>
+		#{/column}
+	#{/table}
 	#{pagination.list pagination:pagination, route:@Debate.followThreads() /}
 <div>
 #{/if}
