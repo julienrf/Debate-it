@@ -15,7 +15,7 @@
 		
 		#{column messages.get('lastPost')}
 			%{ post = roomThread.thread.lastPost() }%
-			${post.author.name}, &{'at'} #{date date:post.date, tz: _tz /}
+			${post.author.name}, #{date date:post.date, tz: _tz /}
 		#{/column}
 	
 	#{/table}
