@@ -1,0 +1,7 @@
+require:
+    - play
+    - play -> crud
+    - play -> secure
+    - play -> table 1.2
+    - play -> sass 1.0
+    - play -> cloudbees 0.1
