@@ -4,15 +4,12 @@ import javax.persistence.Entity;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 
-import org.parsit.IFootNote;
-import org.parsit.IFootNoteFactory;
-
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class FootNote extends Model implements IFootNote {
+public class FootNote extends Model /*implements IFootNote*/ {
 	
 	/** Footnote HTML content */
 	@Required @MaxSize(1000) // Play validator
@@ -25,11 +22,11 @@ public class FootNote extends Model implements IFootNote {
 	public Paragraph paragraph;
 	
 	
-	public FootNote() {
-		
+	public FootNote(final String content) {
+		this.content = content;
 	}
 	
-	@Override
+	/*@Override
 	public String getIdentifier() {
 		return id.toString() + "_";
 	}
@@ -42,15 +39,15 @@ public class FootNote extends Model implements IFootNote {
 	@Override
 	public void setContent(String content) {
 		this.content = content;
-	}
+	}*/
 	
 	
-	public static class Factory implements IFootNoteFactory {
+	/*public static class Factory implements IFootNoteFactory {
 		@Override
-		public IFootNote createFootNote() {
+		public FootNote createFootNote() {
 			FootNote footNote = new FootNote();
 			footNote.save();
 			return footNote;
 		}
-	}
+	}*/
 }

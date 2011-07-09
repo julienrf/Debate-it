@@ -3,14 +3,9 @@ package controllers;
 import java.util.ArrayList;
 import java.util.List;
 
-import models.Paragraph;
-import models.Post;
-import models.Room;
+import models.*;
+
 import models.Thread;
-import models.User;
-
-import org.parsit.IFootNote;
-
 import play.Logger;
 import play.data.validation.Required;
 import play.i18n.Messages;
@@ -150,8 +145,10 @@ public class Debate extends Controller {
 	/**
 	 * Creates a thread and display it
 	 * 
-	 * @param title
-	 * @param content
+	 * @param hash Hash of the room in which the thread will be created
+     * @param threadTitle Thread title
+	 * @param content Thread content
+     * @param tags Tags associated with the thread, separated by spaces
 	 */
 	@LoggedIn
 	public static void createThread(@Required String hash,
@@ -167,7 +164,7 @@ public class Debate extends Controller {
 
 		if (params._contains("preview")) {
 			List<String> paragraphs = new ArrayList<String>();
-			List<IFootNote> footNotes = new ArrayList<IFootNote>();
+			List<FootNote> footNotes = new ArrayList<FootNote>();
 			Post.preview(content, paragraphs, footNotes);
 			renderArgs.put("preview", true);
 			render("@newThread", room, threadTitle, content, paragraphs,
@@ -186,8 +183,8 @@ public class Debate extends Controller {
 	/**
 	 * Diplay the reply form
 	 * 
-	 * @param thread
-	 * @param post
+	 * @param hash Hash of the thread containing the paragraph
+	 * @param paragraphId Id of the paragraph to answer
 	 */
 	@LoggedIn
 	public static void reply(String hash, Long paragraphId) {
@@ -205,7 +202,7 @@ public class Debate extends Controller {
 	/**
 	 * Add a reply to a post and display the thread
 	 * 
-	 * @param threadId
+	 * @param hash
 	 * @param paragraphId
 	 * @param content
 	 */
@@ -228,7 +225,7 @@ public class Debate extends Controller {
 
 		if (params._contains("preview")) {
 			List<String> paragraphs = new ArrayList<String>();
-			List<IFootNote> footNotes = new ArrayList<IFootNote>();
+			List<FootNote> footNotes = new ArrayList<FootNote>();
 			Post.preview(content, paragraphs, footNotes);
 			renderArgs.put("preview", true);
 			render("@reply", thread, paragraph, content, paragraphs, footNotes);
@@ -295,7 +292,7 @@ public class Debate extends Controller {
 
 		if (params._contains("preview")) {
 			List<String> paragraphs = new ArrayList<String>();
-			List<IFootNote> footNotes = new ArrayList<IFootNote>();
+			List<FootNote> footNotes = new ArrayList<FootNote>();
 			Post.preview(content, paragraphs, footNotes);
 			renderArgs.put("preview", true);
 			render("@edit", thread, post, content, paragraphs, footNotes);

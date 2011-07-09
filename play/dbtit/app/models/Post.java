@@ -14,10 +14,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 
-import org.parsit.IFootNote;
-import org.parsit.Parsit;
-import org.parsit.SimpleFootNoteFactory;
-
+import etoffe.NumberGenerator;
+import etoffe.java.EtoffeResult;
+import etoffe.java.JEtoffe;
 import play.data.validation.MaxSize;
 import play.data.validation.Required;
 import play.db.jpa.Model;
@@ -59,8 +58,9 @@ public class Post extends Model
 	/**
 	 * Protected constructor since the static helper should be used for better consistency
 	 * @param author
-	 * @param content
 	 * @param parent
+     * @param thread
+     * @param date
 	 */
 	protected Post(User author, Paragraph parent, Thread thread, Date date)
 	{
@@ -106,13 +106,13 @@ public class Post extends Model
 	}
 	
 	// TODO make this method non static
-	public static void preview(String content, List<String> paragraphs, List<IFootNote> footNotes) {
-		Parsit parsit = new Parsit(new SimpleFootNoteFactory());
-		for (String p : parsit.parseParagraphs(content)) {
+	public static void preview(String content, List<String> paragraphs, List<FootNote> footNotes) {
+        final EtoffeResult result = JEtoffe.renderParagraphs(content, new NumberGenerator());
+		for (String p : result.paragraphs()) {
 			paragraphs.add(p);
 		}
-		for (IFootNote footNote : parsit.getFootNotes()) {
-			footNotes.add(footNote);
+		for (String footNote : result.footnotes()) {
+			footNotes.add(new FootNote(footNote));
 		}
 	}
 	
@@ -140,15 +140,13 @@ public class Post extends Model
 		paragraphs.clear();
 		
 		// Parse content
-		Parsit parsit = new Parsit(new FootNote.Factory());
-		String[] parsedParagraphs = parsit.parseParagraphs(content);
-		
+        final EtoffeResult result = JEtoffe.renderParagraphs(content, new NumberGenerator());
 		// Set new paragraphs
 		int number = 0;
-		for (String p : parsedParagraphs) {
+		for (String p : result.paragraphs()) {
 			Paragraph paragraph = new Paragraph(this, p, number++).save();
-			for (IFootNote footNote : parsit.getFootNotes()) {
-				paragraph.addFootNote((FootNote)footNote); // HACK But I know I gave a FootNote.Factory a few lines above
+			for (String footNote : result.footnotes()) { // FIXME Why do is this loop nested in the paragraphs loop?
+				paragraph.addFootNote(new FootNote(footNote));
 			}
 			paragraphs.add(paragraph);
 		}
