@@ -1,43 +1,43 @@
 #{extends 'main.html' /}
 #{set title: thread.title + " — Debate it!" /}
 #{set 'moreStyles'}
-	#{stylesheet 'form.sass' /}
-	#{stylesheet 'bubble.sass' /}
-	#{stylesheet 'tree.sass' /}
+#{stylesheet 'form.sass' /}
+#{stylesheet 'bubble.sass' /}
+#{stylesheet 'tree.sass' /}
 #{/set}
 
 #{if postReplied != null && postReplied == true}
-	<div class="fError">&{'postReplied'}</div>
+<div class="fError">&{'postReplied'}</div>
 #{/if}
 
 <div>
-	#{a @Debate.showThread(thread.hash)}${thread.title}#{/a} » <h1>&{'editPost'}</h1>
+    #{a @Debate.showThread(thread.hash)}${thread.title}#{/a} » <h1>&{'editPost'}</h1>
 </div>
 
 #{if preview}
-	<h2>&{'postPreview'}</h2>
-	#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
+<h2>&{'postPreview'}</h2>
+#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
 #{/if}
 
 #{include 'syntaxhint.html' /}
 
 #{form @Debate.postEdit(thread.hash, post.id)}
 
-	#{ifErrors}
-		<p class="form-error">&{'formError'}</p>
-	#{/ifErrors}
+#{ifErrors}
+<p class="form-error">&{'formError'}</p>
+#{/ifErrors}
 
-	#{field 'content'}
-	<div class="row">
-	    <textarea class="${field.errorClass}" name="${field.name}" cols="65" rows="15" placeholder="&{field.name}">${field.value}</textarea>
-	    <br />
-	    <span class="form-error">${errors.forKey('content')}</span>
-	</div>
-	#{/field}
+#{field 'content'}
+<div class="row">
+    <textarea class="${field.errorClass}" name="${field.name}" cols="65" rows="15" placeholder="&{field.name}">${field.value}</textarea>
+    <br/>
+    <span class="form-error">${errors.forKey('content')}</span>
+</div>
+#{/field}
 
-	<div class="buttons">
-		<input type="submit" value="&{'preview'}" name="preview" />	
-		<input type="submit" value="&{'edit'}" name="edit" />
-	</div>
-	
+<div class="buttons">
+    <input type="submit" value="&{'preview'}" name="preview"/>
+    <input type="submit" value="&{'edit'}" name="edit"/>
+</div>
+
 #{/form}

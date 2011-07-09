@@ -1,32 +1,35 @@
 *{ Display the tools div of a paragraph in a post }*
 *{ @param Paragraph paragraph }*
-*{ @param Collection<Paragraph> paragraphsToShow }*
-*{ @param Thread thread }*
-*{ @param User user }*
+*{ @param Collection
+<Paragraph> paragraphsToShow }*
+    *{ @param Thread thread }*
+    *{ @param User user }*
 
-<div class="tools">
-    #{if _paragraph.hasAnswers()}
-    	#{if _user}
-    		#{if _user.hasRead(_post) || _user.exploreUnreadPosts}
-    			#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
-    		#{/if}
-	    	#{else}
-	    		#{sprite name:'show-answers', action:@Debate.answers(_thread.hash, _paragraph.id), alt:messages.get('showPostAnswers') /}
-	    	#{/else}
-    	#{/if}
-    	#{else}
-    		#{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
-    	#{/else}
-	#{/if}
+    <div class="tools">
+        #{if _paragraph.hasAnswers()}
+        #{if _user}
+        #{if _user.hasRead(_post) || _user.exploreUnreadPosts}
+        #{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
+        #{/if}
+        #{else}
+        #{sprite name:'show-answers', action:@Debate.answers(_thread.hash, _paragraph.id),
+        alt:messages.get('showPostAnswers') /}
+        #{/else}
+        #{/if}
+        #{else}
+        #{sprite name:'hide-answers', action:@Debate.showThread(_thread.hash), alt:messages.get('hidePostAnswers') /}
+        #{/else}
+        #{/if}
 	<span class="other-tools hover">
     *{<a href="@{Debate.reply(_thread.hash, _paragraph.id)}" title="&{'replyToPost'}">&{'reply'}</a>}*
     #{sprite name:'replyPost', action:@Debate.reply(_thread.hash, _paragraph.id), alt:messages.get('replyToPost') /}
     #{if _post.parent != null}
-    	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}" alt="&{'goToParentPost'}" class="sprite parentPost"></a>
+    	<a href="#post_${_post.parent.post.id}" title="&{'goToParentPost'}" alt="&{'goToParentPost'}"
+           class="sprite parentPost"></a>
     #{/if}
 	#{sprite name:'root', action:@Debate.branch(_thread.hash, _paragraph.id), alt:messages.get('asRoot') /}
     *{#{if _user != null}
     	#{sprite name:'forkThread', action:@Debate.fork(_thread.hash, _paragraph.id), alt:messages.get('fork') /}
 	#{/if}}*
 	</span>
-</div>
+    </div>

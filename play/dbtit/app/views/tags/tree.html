@@ -5,46 +5,47 @@
 *{ @param List footNotes }*
 
 #{if _user}
-	<div class="box post ${_user.hasRead(_post) ? "read" : "unread" }" id="post_${_post.id}">
+<div class="box post ${_user.hasRead(_post) ? " read" : "unread" }" id="post_${_post.id}">
 #{/if}
 #{else}
-	<div class="box post" id="post_${_post.id}">
-#{/else}
+<div class="box post" id="post_${_post.id}">
+    #{/else}
     #{posttitle thread:_thread, post:_post, user:_user /}
 
-	#{list items:_post.paragraphs, as:'paragraph'}
-		%{
-			// Handle footnotes
-			paragraph.footNotes.each {
-				_footNotes << it;
-			}
-		}%
-    	<div class="paragraph" id="paragraph_${paragraph.id}">
-	    	<div class="container hoverable">
-				#{paragraphcontent paragraph:paragraph /}
-		
-				#{paragraphtools thread:_thread, post:_post, paragraph:paragraph, user:_user /}
-			</div>
-			
-			*{ Affichage des réponses }*
-			#{if paragraph.hasAnswers()}
-				#{if _user}
-					#{if _user.exploreUnreadPosts || _user.hasRead(_post)}
-						<div class="answer">
-						#{list items:paragraph.answers, as:'reply'}
-								#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
-						#{/list}
-						</div>
-					#{/if}
-				#{/if}
-				#{else}
-					<div class="answer">
-					#{list items:paragraph.answers, as:'reply'}
-							#{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
-					#{/list}
-					</div>
-				#{/else}
-			#{/if} *{ paragraph.hasAnswers() }*
-		</div> <!-- container -->
+    #{list items:_post.paragraphs, as:'paragraph'}
+    %{
+    // Handle footnotes
+    paragraph.footNotes.each {
+    _footNotes << it;
+    }
+    }%
+    <div class="paragraph" id="paragraph_${paragraph.id}">
+        <div class="container hoverable">
+            #{paragraphcontent paragraph:paragraph /}
+
+            #{paragraphtools thread:_thread, post:_post, paragraph:paragraph, user:_user /}
+        </div>
+
+        *{ Affichage des réponses }*
+        #{if paragraph.hasAnswers()}
+        #{if _user}
+        #{if _user.exploreUnreadPosts || _user.hasRead(_post)}
+        <div class="answer">
+            #{list items:paragraph.answers, as:'reply'}
+            #{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
+            #{/list}
+        </div>
+        #{/if}
+        #{/if}
+        #{else}
+        <div class="answer">
+            #{list items:paragraph.answers, as:'reply'}
+            #{tree thread:_thread, post:reply, user:_user, footNotes:_footNotes /}
+            #{/list}
+        </div>
+        #{/else}
+        #{/if} *{ paragraph.hasAnswers() }*
+    </div>
+    <!-- container -->
     #{/list} *{ paragraphs }*
 </div> <!-- post -->

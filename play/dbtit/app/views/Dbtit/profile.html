@@ -1,58 +1,60 @@
 #{extends 'main.html' /}
 #{set title: "Debate it!" /}
 #{set 'moreStyles'}
-	#{stylesheet 'form.sass' /}
-	#{stylesheet 'profile.sass' /}
+#{stylesheet 'form.sass' /}
+#{stylesheet 'profile.sass' /}
 #{/set}
 
 <div>
-	<h1>&{'profile'}</h1>
+    <h1>&{'profile'}</h1>
 </div>
 
 #{form @Dbtit.postProfile()}
 
-	#{ifErrors}
-		<p class="form-error">&{'formError'}</p>
-	#{/ifErrors}
-	
-	<div class="user-email">${user.email}</div>
-	
-	#{field 'userUpdate.name'}
-	<div class="row">
-		<label>&{field.name}
-		<input type="text" id="${field.id}" name="${field.name}" value="${field.value}" class="${field.errorClass}" /></label>
-	    <br />
-	    <span class="form-error">${field.error}</span>
-	</div>
-	#{/field}
-	
-	#{field 'userUpdate.tzId'}
-	<div class="row">
-		<label>&{field.name}
-		%{ tzIds = java.util.TimeZone.getAvailableIDs(); }%
-		<select name="${field.name}">
-			#{list items:tzIds, as:'tzId'}
-			#{if tzId == field.value}
-				<option value="${tzId}" selected="selected">${tzId}</option>
-			#{/if}
-			#{else}
-				<option value="${tzId}">${tzId}</option>
-			#{/else}
-			#{/list}
-		</select></label>
-	    <br />
-	    <span class="form-error">${field.error}</span>
-	</div>
-	#{/field}
-	
-	#{field 'userUpdate.stopOnUnreadPosts'}
-	<div class="row">
-		<input type="checkbox" id="${field.id}" value="true" name="${field.name}" ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
-	</div>
-	#{/field}
-	
-	<div class="buttons">
-		<input type="submit" value="&{'update'}" />
-	</div>
-	
+#{ifErrors}
+<p class="form-error">&{'formError'}</p>
+#{/ifErrors}
+
+<div class="user-email">${user.email}</div>
+
+#{field 'userUpdate.name'}
+<div class="row">
+    <label>&{field.name}
+        <input type="text" id="${field.id}" name="${field.name}" value="${field.value}"
+               class="${field.errorClass}"/></label>
+    <br/>
+    <span class="form-error">${field.error}</span>
+</div>
+#{/field}
+
+#{field 'userUpdate.tzId'}
+<div class="row">
+    <label>&{field.name}
+        %{ tzIds = java.util.TimeZone.getAvailableIDs(); }%
+        <select name="${field.name}">
+            #{list items:tzIds, as:'tzId'}
+            #{if tzId == field.value}
+            <option value="${tzId}" selected="selected">${tzId}</option>
+            #{/if}
+            #{else}
+            <option value="${tzId}">${tzId}</option>
+            #{/else}
+            #{/list}
+        </select></label>
+    <br/>
+    <span class="form-error">${field.error}</span>
+</div>
+#{/field}
+
+#{field 'userUpdate.stopOnUnreadPosts'}
+<div class="row">
+    <input type="checkbox" id="${field.id}" value="true" name="${field.name}"
+    ${field.value == true ? 'checked ="checked"' : ' '} /><label for="${field.id}">&{field.name}</label>
+</div>
+#{/field}
+
+<div class="buttons">
+    <input type="submit" value="&{'update'}"/>
+</div>
+
 #{/form}

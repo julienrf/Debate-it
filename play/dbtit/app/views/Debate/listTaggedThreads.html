@@ -1,29 +1,29 @@
 #{extends 'main.html' /}
 #{set 'title'}Debate it!#{/set}
 #{set 'moreStyles'}
-	#{stylesheet 'pagination.sass' /}
+#{stylesheet 'pagination.sass' /}
 #{/set}
 
 <div>
-	<h1>&{'tags'}</h1>
+    <h1>&{'tags'}</h1>
 </div>
 
 
 <div>
-	#{list items: tags, as: 'tag'}
-		<span class="tag">${tag}</span>
-	#{/list}
+    #{list items: tags, as: 'tag'}
+    <span class="tag">${tag}</span>
+    #{/list}
 </div>
 
 #{if threads.size() > 0}
-	#{table threads, as: 'thread', class: 'box list', rowClass: 'item'}
-		#{column messages.get('room')} #{a @Rooms.show(thread.room.hash), class:'item-title'} ${thread.room.name} #{/a} #{/column}
-		#{column messages.get('debate')} #{a @Debate.showThread(thread.hash)} ${thread.title} #{/a} #{/column}
-		#{column messages.get('lastPost')}
-			%{ post = thread.lastPost() }%
-			${post.author.name}, #{date date:post.date, tz: user?.tz /}
-		#{/column}
-	#{/table}
+#{table threads, as: 'thread', class: 'box list', rowClass: 'item'}
+#{column messages.get('room')} #{a @Rooms.show(thread.room.hash), class:'item-title'} ${thread.room.name} #{/a} #{/column}
+#{column messages.get('debate')} #{a @Debate.showThread(thread.hash)} ${thread.title} #{/a} #{/column}
+#{column messages.get('lastPost')}
+%{ post = thread.lastPost() }%
+${post.author.name}, #{date date:post.date, tz: user?.tz /}
+#{/column}
+#{/table}
 #{/if}
 #{else}
 &{'noThread'}

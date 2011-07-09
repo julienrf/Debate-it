@@ -2,17 +2,17 @@
 *{ @param paragraphs List of paragraphs }*
 *{ @param footNotes List of footnotes }*
 <div class="box post">
-	#{list items:_paragraphs, as:'p'}
-		<div class="paragraph">
-			<div class="content">${ p.raw() }</div>
-		</div>
-	#{/list}
+    #{list items:_paragraphs, as:'p'}
+    <div class="paragraph">
+        <div class="content">${ p.raw() }</div>
+    </div>
+    #{/list}
 </div>
 
 #{if _footNotes.size() > 0}
-	<ol class="footnotes">
-	#{list items:_footNotes, as:'f'}
-		<li>${f.getContent().raw()}</li>
-	#{/list}
-	</ol>
+<ol class="footnotes">
+    #{list items:_footNotes, as:'f'}
+    <li>${f.getContent().raw()}</li>
+    #{/list}
+</ol>
 #{/if}

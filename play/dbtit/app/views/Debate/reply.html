@@ -1,55 +1,55 @@
 #{extends 'main.html' /}
 #{set title: thread.title + " — Debate it!" /}
 #{set 'moreStyles'}
-	#{stylesheet 'form.sass' /}
-	#{stylesheet 'bubble.sass' /}
-	#{stylesheet 'tree.sass' /}
+#{stylesheet 'form.sass' /}
+#{stylesheet 'bubble.sass' /}
+#{stylesheet 'tree.sass' /}
 #{/set}
 
 <div>
-	#{a @Rooms.show(thread.hash)}${thread.title}#{/a} » <h1>&{'replyToPost'}</h1>
+    #{a @Rooms.show(thread.hash)}${thread.title}#{/a} » <h1>&{'replyToPost'}</h1>
 </div>
 
 <div class="post box">
-	#{posttitle post:paragraph.post, tz:user?.tz /}
-	
-	<div class="paragraph">
-	#{paragraphcontent paragraph:paragraph /}
-	</div>
+    #{posttitle post:paragraph.post, tz:user?.tz /}
+
+    <div class="paragraph">
+        #{paragraphcontent paragraph:paragraph /}
+    </div>
 </div>
 
 #{if paragraph.footNotes.size() > 0}
-	<ol id="footnotes">
-		#{list items:paragraph.footNotes, as:'footNote'}
-			<li>${ footNote.getContent().raw() }</li>
-		#{/list}
-	</ol>
+<ol id="footnotes">
+    #{list items:paragraph.footNotes, as:'footNote'}
+    <li>${ footNote.getContent().raw() }</li>
+    #{/list}
+</ol>
 #{/if}
 
 #{if preview}
-	<h2>&{'postPreview'}</h2>
-	#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
+<h2>&{'postPreview'}</h2>
+#{postpreview paragraphs:paragraphs, footNotes:footNotes /}
 #{/if}
 
 #{include 'syntaxhint.html' /}
 
 #{form @Debate.postReply(thread.hash, paragraph.id)}
 
-	#{ifErrors}
-		<p class="form-error">&{'formError'}</p>
-	#{/ifErrors}
-	
-	#{field 'content'}
-	<div class="row">
-	    <textarea class="${field.errorClass}" name="${field.name}" cols="65" rows="15" placeholder="&{field.name}">${field.value}</textarea>
-	    <br />
-	    <span class="form-error">${field.error}</span>
-	</div>
-	#{/field}
-	
-	<div class="buttons">
-		<input type="submit" value="&{'preview'}" name="preview" />
-		<input type="submit" value="&{'send'}" name="send" />
-	</div>
-	
+#{ifErrors}
+<p class="form-error">&{'formError'}</p>
+#{/ifErrors}
+
+#{field 'content'}
+<div class="row">
+    <textarea class="${field.errorClass}" name="${field.name}" cols="65" rows="15" placeholder="&{field.name}">${field.value}</textarea>
+    <br/>
+    <span class="form-error">${field.error}</span>
+</div>
+#{/field}
+
+<div class="buttons">
+    <input type="submit" value="&{'preview'}" name="preview"/>
+    <input type="submit" value="&{'send'}" name="send"/>
+</div>
+
 #{/form}

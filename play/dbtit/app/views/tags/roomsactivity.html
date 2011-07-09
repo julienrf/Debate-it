@@ -1,26 +1,26 @@
 #{if _rooms.size() > 0}
 
-	#{table _rooms, as: 'roomThread', class: 'box list', rowClass: 'item'}
-	
-	
-		#{column messages.get('room')}
-			%{ room = roomThread.room }%
-			#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
-		#{/column}
-			
-		#{column messages.get('debate')}
-			%{ thread = roomThread.thread }%
-			#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}
-		#{/column}
-		
-		#{column messages.get('lastPost')}
-			%{ post = roomThread.thread.lastPost() }%
-			${post.author.name}, #{date date:post.date, tz: _tz /}
-		#{/column}
-	
-	#{/table}
+#{table _rooms, as: 'roomThread', class: 'box list', rowClass: 'item'}
+
+
+#{column messages.get('room')}
+%{ room = roomThread.room }%
+#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
+#{/column}
+
+#{column messages.get('debate')}
+%{ thread = roomThread.thread }%
+#{a @Debate.showThread(thread.hash)} ${thread.title} #{/a}
+#{/column}
+
+#{column messages.get('lastPost')}
+%{ post = roomThread.thread.lastPost() }%
+${post.author.name}, #{date date:post.date, tz: _tz /}
+#{/column}
+
+#{/table}
 
 #{/if}
 #{else}
-	<div>&{'noRecentActivity'}</div>
+<div>&{'noRecentActivity'}</div>
 #{/else}

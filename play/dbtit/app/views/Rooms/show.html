@@ -1,34 +1,34 @@
 #{extends 'main.html' /}
 #{set title: room.name + " — Debate it!" /}
 #{set 'moreStyles'}
-	#{stylesheet 'form.sass' /}
-	#{stylesheet 'pagination.sass' /}
-	#{stylesheet 'sprite.sass' /}
+#{stylesheet 'form.sass' /}
+#{stylesheet 'pagination.sass' /}
+#{stylesheet 'sprite.sass' /}
 #{/set}
 
 #{if user == null}
-	#{set 'moreNav'}
-		<nav id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a}</nav>
-	#{/set}
+#{set 'moreNav'}
+<nav id="right-nav">#{a @Dbtit.login(request.url)} &{'login'} #{/a}</nav>
+#{/set}
 #{/if}
 
 <div>
-	<h1>${room.name}</h1>
+    <h1>${room.name}</h1>
 </div>
 
 <div id="side-actions">
-	#{if user != null}
-		#{if user.hasSubscribed(room)}
-			#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')} &{'unsubscribe'} #{/a}
-		#{/if}
-		#{else}
-			#{a @Rooms.subscribe(room.hash, request.url), title: messages.get('subscribeRoom')} &{'subscribe'} #{/a}
-		#{/else}
-	#{/if}
-	#{if room.isPublic}
-		#{sprite name:'permalink', action:@Rooms.show(room.hash), alt:messages.get('permanentLink') /}
-		#{sharethis /}
-	#{/if}
+    #{if user != null}
+    #{if user.hasSubscribed(room)}
+    #{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')} &{'unsubscribe'} #{/a}
+    #{/if}
+    #{else}
+    #{a @Rooms.subscribe(room.hash, request.url), title: messages.get('subscribeRoom')} &{'subscribe'} #{/a}
+    #{/else}
+    #{/if}
+    #{if room.isPublic}
+    #{sprite name:'permalink', action:@Rooms.show(room.hash), alt:messages.get('permanentLink') /}
+    #{sharethis /}
+    #{/if}
 </div>
 
 #{roomthreads room:room, threads:threads, pagination:pagination, route:@Rooms.show(room.hash), tz:user?.tz /}

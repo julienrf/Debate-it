@@ -1,32 +1,32 @@
 #{extends 'main.html' /}
 #{set 'title'}&{'followedThreads'} — Debate it!#{/set}
 #{set 'moreStyles'}
-	#{stylesheet 'pagination.sass' /}
-	#{stylesheet 'sprite.sass' /}
-	#{stylesheet 'follow.sass' /}
+#{stylesheet 'pagination.sass' /}
+#{stylesheet 'sprite.sass' /}
+#{stylesheet 'follow.sass' /}
 #{/set}
 
 <div>
-	<h1>&{'followedThreads'}</h1>
+    <h1>&{'followedThreads'}</h1>
 </div>
 
 #{if followedThreads.size() > 0}
 <div class="box">
-	#{table followedThreads, as: 'thread', class: 'list', rowClass: 'item'}
-		#{column messages.get('debate')}
-			#{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
-		#{/column}
-		#{column messages.get('lastPost')}
-			%{ lastPost = thread.lastPost(); }%
-			${lastPost.author.name}, #{date date:lastPost.date, tz:user?.tz /}
-		#{/column}
-		#{column messages.get('unreadPosts'), class: 'unread-post-count'}
-			${user.getUnreadPostCount(thread)}
-		#{/column}
-		#{column}
-			<span class="tools">#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(thread.hash, request.url), alt:messages.get('doNotFollowThread') /}</span>
-		#{/column}
-	#{/table}
-	#{pagination.list pagination:pagination, route:@Debate.followThreads() /}
-<div>
-#{/if}
+    #{table followedThreads, as: 'thread', class: 'list', rowClass: 'item'}
+    #{column messages.get('debate')}
+    #{a @Debate.showThread(thread.hash), class:'thread-title'} ${thread.title} #{/a}
+    #{/column}
+    #{column messages.get('lastPost')}
+    %{ lastPost = thread.lastPost(); }%
+    ${lastPost.author.name}, #{date date:lastPost.date, tz:user?.tz /}
+    #{/column}
+    #{column messages.get('unreadPosts'), class: 'unread-post-count'}
+    ${user.getUnreadPostCount(thread)}
+    #{/column}
+    #{column}
+    <span class="tools">#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(thread.hash, request.url), alt:messages.get('doNotFollowThread') /}</span>
+    #{/column}
+    #{/table}
+    #{pagination.list pagination:pagination, route:@Debate.followThreads() /}
+    <div>
+        #{/if}

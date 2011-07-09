@@ -1,15 +1,15 @@
 %{ footNotes = [] }%
 <div>
-	<div id="answers">
-		<div class="answer">
-		#{list items:paragraph.answers, as:'reply'}
-				#{tree thread:thread, post:reply, user:user, footNotes:footNotes /}
-		#{/list}
-		</div>
-	</div>
-	<div id="footnotes">
-		#{list items:footNotes, as:'footNote'}
-			<li>${ footNote.getContent().raw() }</li>
-		#{/list}
-	</div>
+    <div id="answers">
+        <div class="answer">
+            #{list items:paragraph.answers, as:'reply'}
+            #{tree thread:thread, post:reply, user:user, footNotes:footNotes /}
+            #{/list}
+        </div>
+    </div>
+    <div id="footnotes">
+        #{list items:footNotes, as:'footNote'}
+        <li>${ footNote.getContent().raw() }</li>
+        #{/list}
+    </div>
 </div>

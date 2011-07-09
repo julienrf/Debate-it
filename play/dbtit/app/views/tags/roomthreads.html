@@ -3,23 +3,24 @@
 *{ @param route }*
 
 #{if _threads.size() > 0}
-	<div>
-		#{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
-	</div>
-	<div class="box">
-		#{table _threads, as: 'thread', class: 'list', rowClass: 'item'}
-			#{column messages.get('debate')}#{a @Debate.showThread(thread.hash), class:'item-title'}${thread.title}#{/a}#{/column}
-			#{column messages.get('lastPost')}
-				%{ lastPost = thread.lastPost(); }%
-				${lastPost.author.name}, #{date date:lastPost.date, tz:_tz /}
-			#{/column}
-		#{/table}
-		#{pagination.list pagination:_pagination, route:_route /}
-	</div>
+<div>
+    #{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
+</div>
+<div class="box">
+    #{table _threads, as: 'thread', class: 'list', rowClass: 'item'}
+    #{column messages.get('debate')}#{a @Debate.showThread(thread.hash),
+    class:'item-title'}${thread.title}#{/a}#{/column}
+    #{column messages.get('lastPost')}
+    %{ lastPost = thread.lastPost(); }%
+    ${lastPost.author.name}, #{date date:lastPost.date, tz:_tz /}
+    #{/column}
+    #{/table}
+    #{pagination.list pagination:_pagination, route:_route /}
+</div>
 #{/if}
 #{else}
-	<p>&{'emtpyRoom'}</p>
-	<div>
-		#{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
-	</div>
+<p>&{'emtpyRoom'}</p>
+<div>
+    #{a @Debate.newThread(_room.hash)}&{'createThread'}#{/a}
+</div>
 #{/else}

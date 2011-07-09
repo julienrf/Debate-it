@@ -15,349 +15,346 @@ import utils.Pagination;
 
 /**
  * This controller defines actions related to threads and messages
- * 
+ *
  * @author julien
- * 
  */
 @With(Dbtit.class)
 public class Debate extends Controller {
 
-	/**
-	 * Display a list of threads accordingly to a set of tags
-	 */
-	public static void listTaggedThreads(String tagList) {
-		String[] tags = tagList.split("\\s+");
-		/*
-		 * TODO Pour bien gérer la pagination je voudrais pouvoir exprimer le
-		 * concept correspondant à l’ensemble des threads contenant tous les
-		 * tags donnés, et pouvoir connaître leur nombre et finalement en
-		 * fetcher seulement une partie.
-		 */
-		//Pagination pagination = new Pagination(params);
-		List<Thread> threads = Thread.findTaggedWith(tags, 0, 10);
+    /**
+     * Display a list of threads accordingly to a set of tags
+     */
+    public static void listTaggedThreads(String tagList) {
+        String[] tags = tagList.split("\\s+");
+        /*
+           * TODO Pour bien gérer la pagination je voudrais pouvoir exprimer le
+           * concept correspondant à l’ensemble des threads contenant tous les
+           * tags donnés, et pouvoir connaître leur nombre et finalement en
+           * fetcher seulement une partie.
+           */
+        //Pagination pagination = new Pagination(params);
+        List<Thread> threads = Thread.findTaggedWith(tags, 0, 10);
 
-		render(threads, tags);
-	}
+        render(threads, tags);
+    }
 
-	/**
-	 * Display a thread
-	 * 
-	 * @param hash
-	 *            Thread hash
-	 */
-	public static void showThread(String hash) {
-		Thread thread = Thread.find("byHash", hash).first();
-		notFoundIfNull(thread);
-		Post post = thread.rootPost;
+    /**
+     * Display a thread
+     *
+     * @param hash Thread hash
+     */
+    public static void showThread(String hash) {
+        Thread thread = Thread.find("byHash", hash).first();
+        notFoundIfNull(thread);
+        Post post = thread.rootPost;
 
-		render(thread, post);
-	}
+        render(thread, post);
+    }
 
-	/**
-	 * Display a thread starting from a specific post (possibly not the root
-	 * post)
-	 */
-	public static void branch(String hash, Long paragraphId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Paragraph paragraph = Paragraph.findById(paragraphId);
+    /**
+     * Display a thread starting from a specific post (possibly not the root
+     * post)
+     */
+    public static void branch(String hash, Long paragraphId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Paragraph paragraph = Paragraph.findById(paragraphId);
 
-		notFoundIfNull(thread);
-		notFoundIfNull(paragraph);
-		if (!paragraph.post.thread.id.equals(thread.id))
-			notFound();
+        notFoundIfNull(thread);
+        notFoundIfNull(paragraph);
+        if (!paragraph.post.thread.id.equals(thread.id))
+            notFound();
 
-		render(thread, paragraph);
-	}
-	
-	/**
-	 * Display a RSS Feed from a Thread
-	 */
-	public static void rssThread(String hash) {
-		List<Post> posts = Post.find("SELECT p FROM Post p, Thread t WHERE p.thread = t AND t.hash = ? ORDER BY p.date DESC", hash).fetch();
-		response.contentType = "application/rss+xml";
-		request.format = "xml"; // TODO Move in the route file
-		render(posts);
-	}
+        render(thread, paragraph);
+    }
 
-	/**
-	 * Return the answers of a given paragraph of a thread (This operation is
-	 * currently used by an AJAX call to show posts ansers)
-	 * 
-	 * @param hash
-	 *            Thread hash
-	 * @param paragraphId
-	 */
-	public static void answers(String hash, Long paragraphId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Paragraph paragraph = Paragraph.findById(paragraphId);
+    /**
+     * Display a RSS Feed from a Thread
+     */
+    public static void rssThread(String hash) {
+        List<Post> posts = Post.find("SELECT p FROM Post p, Thread t WHERE p.thread = t AND t.hash = ? ORDER BY p.date DESC", hash).fetch();
+        response.contentType = "application/rss+xml";
+        request.format = "xml"; // TODO Move in the route file
+        render(posts);
+    }
 
-		notFoundIfNull(thread);
-		notFoundIfNull(paragraph);
-		if (!paragraph.post.thread.id.equals(thread.id))
-			notFound();
+    /**
+     * Return the answers of a given paragraph of a thread (This operation is
+     * currently used by an AJAX call to show posts ansers)
+     *
+     * @param hash        Thread hash
+     * @param paragraphId
+     */
+    public static void answers(String hash, Long paragraphId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Paragraph paragraph = Paragraph.findById(paragraphId);
 
-		render(thread, paragraph);
-	}
+        notFoundIfNull(thread);
+        notFoundIfNull(paragraph);
+        if (!paragraph.post.thread.id.equals(thread.id))
+            notFound();
 
-	@LoggedIn
-	public static void readPost(String hash, Long postId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		notFoundIfNull(thread);
+        render(thread, paragraph);
+    }
 
-		Post post = Post.findById(postId);
-		notFoundIfNull(post);
+    @LoggedIn
+    public static void readPost(String hash, Long postId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        notFoundIfNull(thread);
 
-		if (!post.thread.id.equals(thread.id))
-			notFound();
+        Post post = Post.findById(postId);
+        notFoundIfNull(post);
 
-		User user = Dbtit.connectedUser();
-		user.read(post);
-		Logger.info("Post (%s) read by user (%s)", post.id, user.id);
-	}
+        if (!post.thread.id.equals(thread.id))
+            notFound();
 
-	@LoggedIn
-	public static void unreadPost(String hash, Long postId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		notFoundIfNull(thread);
+        User user = Dbtit.connectedUser();
+        user.read(post);
+        Logger.info("Post (%s) read by user (%s)", post.id, user.id);
+    }
 
-		Post post = Post.findById(postId);
-		notFoundIfNull(post);
+    @LoggedIn
+    public static void unreadPost(String hash, Long postId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        notFoundIfNull(thread);
 
-		if (!post.thread.id.equals(thread.id))
-			notFound();
+        Post post = Post.findById(postId);
+        notFoundIfNull(post);
 
-		User user = Dbtit.connectedUser();
-		user.unread(post);
-		Logger.info("Post (%s) marked as unread by user (%s)", post.id, user.id);
-	}
+        if (!post.thread.id.equals(thread.id))
+            notFound();
 
-	/**
-	 * Display a form to create a thread
-	 */
-	@LoggedIn
-	public static void newThread(String hash) {
-		Room room = Room.find("byHash", hash).first();
-		notFoundIfNull(room);
+        User user = Dbtit.connectedUser();
+        user.unread(post);
+        Logger.info("Post (%s) marked as unread by user (%s)", post.id, user.id);
+    }
 
-		render(room);
-	}
+    /**
+     * Display a form to create a thread
+     */
+    @LoggedIn
+    public static void newThread(String hash) {
+        Room room = Room.find("byHash", hash).first();
+        notFoundIfNull(room);
 
-	/**
-	 * Creates a thread and display it
-	 * 
-	 * @param hash Hash of the room in which the thread will be created
+        render(room);
+    }
+
+    /**
+     * Creates a thread and display it
+     *
+     * @param hash        Hash of the room in which the thread will be created
      * @param threadTitle Thread title
-	 * @param content Thread content
-     * @param tags Tags associated with the thread, separated by spaces
-	 */
-	@LoggedIn
-	public static void createThread(@Required String hash,
-			@Required String threadTitle, @Required String content, String tags) {
-		Room room = Room.find("byHash", hash).first();
-		notFoundIfNull(room);
+     * @param content     Thread content
+     * @param tags        Tags associated with the thread, separated by spaces
+     */
+    @LoggedIn
+    public static void createThread(@Required String hash,
+                                    @Required String threadTitle, @Required String content, String tags) {
+        Room room = Room.find("byHash", hash).first();
+        notFoundIfNull(room);
 
-		User user = Dbtit.connectedUser();
+        User user = Dbtit.connectedUser();
 
-		if (validation.hasErrors()) {
-			render("@newThread", room, threadTitle, content, tags);
-		}
+        if (validation.hasErrors()) {
+            render("@newThread", room, threadTitle, content, tags);
+        }
 
-		if (params._contains("preview")) {
-			List<String> paragraphs = new ArrayList<String>();
-			List<FootNote> footNotes = new ArrayList<FootNote>();
-			Post.preview(content, paragraphs, footNotes);
-			renderArgs.put("preview", true);
-			render("@newThread", room, threadTitle, content, paragraphs,
-					footNotes, tags);
-		}
+        if (params._contains("preview")) {
+            List<String> paragraphs = new ArrayList<String>();
+            List<FootNote> footNotes = new ArrayList<FootNote>();
+            Post.preview(content, paragraphs, footNotes);
+            renderArgs.put("preview", true);
+            render("@newThread", room, threadTitle, content, paragraphs,
+                    footNotes, tags);
+        }
 
-		String[] tagList = tags.trim().split("\\s+");
-		Thread thread = Thread.create(user, room, threadTitle, content, tagList);
-		flash.success(Messages.get("threadCreated", thread.title));
-		Logger.info("Thread (%s) created by user %s (%s)", thread.id,
-				user.name, user.id);
+        String[] tagList = tags.trim().split("\\s+");
+        Thread thread = Thread.create(user, room, threadTitle, content, tagList);
+        flash.success(Messages.get("threadCreated", thread.title));
+        Logger.info("Thread (%s) created by user %s (%s)", thread.id,
+                user.name, user.id);
 
-		showThread(thread.hash);
-	}
+        showThread(thread.hash);
+    }
 
-	/**
-	 * Diplay the reply form
-	 * 
-	 * @param hash Hash of the thread containing the paragraph
-	 * @param paragraphId Id of the paragraph to answer
-	 */
-	@LoggedIn
-	public static void reply(String hash, Long paragraphId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Paragraph paragraph = Paragraph.findById(paragraphId);
+    /**
+     * Diplay the reply form
+     *
+     * @param hash        Hash of the thread containing the paragraph
+     * @param paragraphId Id of the paragraph to answer
+     */
+    @LoggedIn
+    public static void reply(String hash, Long paragraphId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Paragraph paragraph = Paragraph.findById(paragraphId);
 
-		notFoundIfNull(thread);
-		notFoundIfNull(paragraph);
-		if (!paragraph.post.thread.id.equals(thread.id))
-			notFound();
+        notFoundIfNull(thread);
+        notFoundIfNull(paragraph);
+        if (!paragraph.post.thread.id.equals(thread.id))
+            notFound();
 
-		render(thread, paragraph);
-	}
+        render(thread, paragraph);
+    }
 
-	/**
-	 * Add a reply to a post and display the thread
-	 * 
-	 * @param hash
-	 * @param paragraphId
-	 * @param content
-	 */
-	@LoggedIn
-	public static void postReply(String hash, Long paragraphId,
-			@Required String content) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Paragraph paragraph = Paragraph.findById(paragraphId);
-		User author = Dbtit.connectedUser(); // author can't be null thx to the
-												// @LoggedIn annotation
+    /**
+     * Add a reply to a post and display the thread
+     *
+     * @param hash
+     * @param paragraphId
+     * @param content
+     */
+    @LoggedIn
+    public static void postReply(String hash, Long paragraphId,
+                                 @Required String content) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Paragraph paragraph = Paragraph.findById(paragraphId);
+        User author = Dbtit.connectedUser(); // author can't be null thx to the
+        // @LoggedIn annotation
 
-		notFoundIfNull(thread);
-		notFoundIfNull(paragraph);
-		if (!paragraph.post.thread.id.equals(thread.id))
-			notFound();
+        notFoundIfNull(thread);
+        notFoundIfNull(paragraph);
+        if (!paragraph.post.thread.id.equals(thread.id))
+            notFound();
 
-		if (validation.hasErrors()) {
-			render("@reply", thread, paragraph, content);
-		}
+        if (validation.hasErrors()) {
+            render("@reply", thread, paragraph, content);
+        }
 
-		if (params._contains("preview")) {
-			List<String> paragraphs = new ArrayList<String>();
-			List<FootNote> footNotes = new ArrayList<FootNote>();
-			Post.preview(content, paragraphs, footNotes);
-			renderArgs.put("preview", true);
-			render("@reply", thread, paragraph, content, paragraphs, footNotes);
-		}
+        if (params._contains("preview")) {
+            List<String> paragraphs = new ArrayList<String>();
+            List<FootNote> footNotes = new ArrayList<FootNote>();
+            Post.preview(content, paragraphs, footNotes);
+            renderArgs.put("preview", true);
+            render("@reply", thread, paragraph, content, paragraphs, footNotes);
+        }
 
-		Post reply = paragraph.reply(author, content);
-		flash.success(Messages.get("postAdded"));
-		Logger.info("Reply (%s) posted to paragraph (%s) by user %s (%s)",
-				reply.id, paragraph.id, author.name, author.id);
+        Post reply = paragraph.reply(author, content);
+        flash.success(Messages.get("postAdded"));
+        Logger.info("Reply (%s) posted to paragraph (%s) by user %s (%s)",
+                reply.id, paragraph.id, author.name, author.id);
 
-		showThread(thread.hash);
-	}
+        showThread(thread.hash);
+    }
 
-	/**
-	 * Display a page with a form allowing to edit a post
-	 * 
-	 * @param hash
-	 * @param postId
-	 */
-	@LoggedIn
-	public static void edit(String hash, Long postId) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Post post = Post.findById(postId);
+    /**
+     * Display a page with a form allowing to edit a post
+     *
+     * @param hash
+     * @param postId
+     */
+    @LoggedIn
+    public static void edit(String hash, Long postId) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Post post = Post.findById(postId);
 
-		notFoundIfNull(thread);
-		notFoundIfNull(post);
-		if (post.hasAnswers() || !post.thread.id.equals(thread.id))
-			notFound(); // On ne modifie pas un post qui a déjà reçu des
-						// réponses (ou qui fait partie d’un autre thread)
+        notFoundIfNull(thread);
+        notFoundIfNull(post);
+        if (post.hasAnswers() || !post.thread.id.equals(thread.id))
+            notFound(); // On ne modifie pas un post qui a déjà reçu des
+        // réponses (ou qui fait partie d’un autre thread)
 
-		String content = post.content;
+        String content = post.content;
 
-		render(thread, post, content);
-	}
+        render(thread, post, content);
+    }
 
-	/**
-	 * Handle the editing of a post
-	 * 
-	 * @param hash
-	 * @param postId
-	 * @param content
-	 */
-	@LoggedIn
-	public static void postEdit(String hash, Long postId,
-			@Required String content) {
-		Thread thread = Thread.find("byHash", hash).first();
-		Post post = Post.findById(postId);
-		User author = Dbtit.connectedUser();
+    /**
+     * Handle the editing of a post
+     *
+     * @param hash
+     * @param postId
+     * @param content
+     */
+    @LoggedIn
+    public static void postEdit(String hash, Long postId,
+                                @Required String content) {
+        Thread thread = Thread.find("byHash", hash).first();
+        Post post = Post.findById(postId);
+        User author = Dbtit.connectedUser();
 
-		notFoundIfNull(thread);
-		notFoundIfNull(post);
-		if (!post.thread.id.equals(thread.id)
-				|| !post.author.id.equals(author.id))
-			notFound();
+        notFoundIfNull(thread);
+        notFoundIfNull(post);
+        if (!post.thread.id.equals(thread.id)
+                || !post.author.id.equals(author.id))
+            notFound();
 
-		if (post.hasAnswers()) {
-			boolean postReplied = true;
-			render("@edit", thread, post, content, postReplied);
-		}
+        if (post.hasAnswers()) {
+            boolean postReplied = true;
+            render("@edit", thread, post, content, postReplied);
+        }
 
-		if (validation.hasErrors()) {
-			render("@edit", thread, post, content);
-		}
+        if (validation.hasErrors()) {
+            render("@edit", thread, post, content);
+        }
 
-		if (params._contains("preview")) {
-			List<String> paragraphs = new ArrayList<String>();
-			List<FootNote> footNotes = new ArrayList<FootNote>();
-			Post.preview(content, paragraphs, footNotes);
-			renderArgs.put("preview", true);
-			render("@edit", thread, post, content, paragraphs, footNotes);
-		}
+        if (params._contains("preview")) {
+            List<String> paragraphs = new ArrayList<String>();
+            List<FootNote> footNotes = new ArrayList<FootNote>();
+            Post.preview(content, paragraphs, footNotes);
+            renderArgs.put("preview", true);
+            render("@edit", thread, post, content, paragraphs, footNotes);
+        }
 
-		post.edit(content);
-		flash.success(Messages.get("postUpdated"));
-		Logger.info("Post (%s) edited by user %s (%s)", post.id, author.name,
-				author.id);
+        post.edit(content);
+        flash.success(Messages.get("postUpdated"));
+        Logger.info("Post (%s) edited by user %s (%s)", post.id, author.name,
+                author.id);
 
-		showThread(thread.hash);
-	}
+        showThread(thread.hash);
+    }
 
-	/**
-	 * Make a user follow a thread
-	 * 
-	 * @param hash
-	 * @param url
-	 */
-	@LoggedIn
-	public static void followThread(String hash, String url) {
-		Thread thread = Thread.find("byHash", hash).first();
-		User user = Dbtit.connectedUser();
+    /**
+     * Make a user follow a thread
+     *
+     * @param hash
+     * @param url
+     */
+    @LoggedIn
+    public static void followThread(String hash, String url) {
+        Thread thread = Thread.find("byHash", hash).first();
+        User user = Dbtit.connectedUser();
 
-		notFoundIfNull(thread);
+        notFoundIfNull(thread);
 
-		user.follow(thread);
-		Logger.info("Thread (%s) followed by user %s (%s)", thread.id,
-				user.name, user.id);
+        user.follow(thread);
+        Logger.info("Thread (%s) followed by user %s (%s)", thread.id,
+                user.name, user.id);
 
-		redirect(url);
-	}
+        redirect(url);
+    }
 
-	/**
-	 * Make a use stop following a thread
-	 * 
-	 * @param hash
-	 * @param url
-	 */
-	@LoggedIn
-	public static void doNotFollowThread(String hash, String url) {
-		Thread thread = Thread.find("byHash", hash).first();
-		User user = Dbtit.connectedUser();
+    /**
+     * Make a use stop following a thread
+     *
+     * @param hash
+     * @param url
+     */
+    @LoggedIn
+    public static void doNotFollowThread(String hash, String url) {
+        Thread thread = Thread.find("byHash", hash).first();
+        User user = Dbtit.connectedUser();
 
-		notFoundIfNull(thread);
+        notFoundIfNull(thread);
 
-		user.doNotFollow(thread);
-		Logger.info("Thread (%s) stopped being followed by user %s (%s)",
-				thread.id, user.name, user.id);
+        user.doNotFollow(thread);
+        Logger.info("Thread (%s) stopped being followed by user %s (%s)",
+                thread.id, user.name, user.id);
 
-		redirect(url);
-	}
+        redirect(url);
+    }
 
-	/**
-	 * Display the following threads page for the current user
-	 */
-	@LoggedIn
-	public static void followThreads() {
-		User user = Dbtit.connectedUser();
-		Pagination pagination = new Pagination(params,
-				user.followedThreads.size(), 12);
-		List<Thread> followedThreads = user.followedThreads.subList(
-				pagination.getFrom(),
-				Math.min(pagination.getTo(), user.followedThreads.size()));
+    /**
+     * Display the following threads page for the current user
+     */
+    @LoggedIn
+    public static void followThreads() {
+        User user = Dbtit.connectedUser();
+        Pagination pagination = new Pagination(params,
+                user.followedThreads.size(), 12);
+        List<Thread> followedThreads = user.followedThreads.subList(
+                pagination.getFrom(),
+                Math.min(pagination.getTo(), user.followedThreads.size()));
 
-		render(followedThreads, pagination);
-	}
+        render(followedThreads, pagination);
+    }
 }

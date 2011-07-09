@@ -3,12 +3,12 @@
 *{ @param thread }*
 
 #{if _user}
-	#{ifnot _user.isFollowing(_thread)}
-		#{sprite name:'follow', action:@Debate.followThread(_thread.hash, request.url), alt:messages.get('followThread') /}
-	#{/ifnot}
-	#{else}
-		#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(_thread.hash, request.url), alt:messages.get('doNotFollowThread') /}
-	#{/else}
+#{ifnot _user.isFollowing(_thread)}
+#{sprite name:'follow', action:@Debate.followThread(_thread.hash, request.url), alt:messages.get('followThread') /}
+#{/ifnot}
+#{else}
+#{sprite name:'doNotFollow', action:@Debate.doNotFollowThread(_thread.hash, request.url), alt:messages.get('doNotFollowThread') /}
+#{/else}
 #{/if}
 
 #{sprite name:'rss', action:@@Debate.rssThread(_thread.hash), alt:messages.get('rssFeed') /}

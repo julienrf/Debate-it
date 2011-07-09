@@ -1,32 +1,32 @@
 #{extends 'main.html' /}
 #{set 'title'}&{'myRooms'} — Debate it!#{/set}
 #{set 'moreStyles'}
-	#{stylesheet 'pagination.sass' /}
+#{stylesheet 'pagination.sass' /}
 #{/set}
 
 <div>
-	<h1>&{'myRooms'}</h1>
+    <h1>&{'myRooms'}</h1>
 </div>
 
 
 #{if subscriptions.size() > 0}
-	<div>#{a @Rooms.newRoom()}&{'createRoom'}#{/a}</div>
-	<div class="box">
-		#{table subscriptions, as: 'room', class: 'list', rowClass: 'item hoverable'}
-			#{column messages.get('room')}
-				#{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
-			#{/column}
-			#{column messages.get('threadCount')} ${room.threads.size()} #{/column}
-			#{column class: 'hover'}
-				#{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')}&{'unsubscribe'}#{/a}
-			#{/column}
-		#{/table}
-		#{pagination.list pagination:pagination, route:@Rooms.list() /}
-	</div>
+<div>#{a @Rooms.newRoom()}&{'createRoom'}#{/a}</div>
+<div class="box">
+    #{table subscriptions, as: 'room', class: 'list', rowClass: 'item hoverable'}
+    #{column messages.get('room')}
+    #{a @Rooms.show(room.hash), class:'item-title'} ${room.name} #{/a}
+    #{/column}
+    #{column messages.get('threadCount')} ${room.threads.size()} #{/column}
+    #{column class: 'hover'}
+    #{a @Rooms.unsubscribe(room.hash, request.url), title:messages.get('unsubscribeRoom')}&{'unsubscribe'}#{/a}
+    #{/column}
+    #{/table}
+    #{pagination.list pagination:pagination, route:@Rooms.list() /}
+</div>
 #{/if}
 #{else}
-	<div>
-		&{'noSubscribedRooms'}<br />
-		#{a @Rooms.newRoom()}&{'createRoom'}#{/a}
-	</div>
+<div>
+    &{'noSubscribedRooms'}<br/>
+    #{a @Rooms.newRoom()}&{'createRoom'}#{/a}
+</div>
 #{/else}

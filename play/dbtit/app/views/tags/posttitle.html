@@ -2,13 +2,13 @@
 *{ @param Post post }*
 
 <div class="title">
-	<a class="roll" title="&{'rollPost'}" href="#">&darr;</a>
-	#{if _user && !_user.hasRead(_post)}
-		#{sprite name:'readPost', action:@Debate.readPost(_thread.hash, _post.id), alt:messages.get('markRead') /}
-	#{/if}
-	#{if _user &&  _post.author.id.equals(_user.id) && !_post.hasAnswers()}
-		#{sprite name:'editPost', action:@Debate.edit(_thread.hash, _post.id), alt:messages.get('editPost') /}
-	#{/if}
+    <a class="roll" title="&{'rollPost'}" href="#">&darr;</a>
+    #{if _user && !_user.hasRead(_post)}
+    #{sprite name:'readPost', action:@Debate.readPost(_thread.hash, _post.id), alt:messages.get('markRead') /}
+    #{/if}
+    #{if _user && _post.author.id.equals(_user.id) && !_post.hasAnswers()}
+    #{sprite name:'editPost', action:@Debate.edit(_thread.hash, _post.id), alt:messages.get('editPost') /}
+    #{/if}
     <div class="author"><strong>${_post.author.name}</strong></div>
     <div class="date">#{date date:_post.date, tz:_user?.tz /}</div>
 </div>

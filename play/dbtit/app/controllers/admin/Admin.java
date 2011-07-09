@@ -6,7 +6,7 @@ import play.mvc.With;
 
 @With(Secure.class)
 public class Admin extends Controller {
-	public static void index() {
-		render("@CRUD.index");
-	}
+    public static void index() {
+        render("@CRUD.index");
+    }
 }
