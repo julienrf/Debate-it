@@ -1,9 +1,7 @@
 package models;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -57,6 +55,11 @@ public class Paragraph extends Model {
         this.answers = new ArrayList<Post>();
         this.footNotes = new ArrayList<FootNote>();
         this.number = number;
+    }
+
+    // Convenient constructor which should not exist at all :(
+    public Paragraph(Post post, Integer number) {
+        this(post, "", number);
     }
 
     @Override

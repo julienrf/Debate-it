@@ -157,16 +157,7 @@ public class Post extends Model {
         paragraphs.clear();
 
         // Parse content
-        final EtoffeResult result = JEtoffe.renderParagraphs(content, new NumberGenerator());
-        // Set new paragraphs
-        int number = 0;
-        for (String p : result.paragraphs()) {
-            Paragraph paragraph = new Paragraph(this, p, number++).save();
-            for (String footNote : result.footnotes()) { // FIXME Why do is this loop nested in the paragraphs loop?
-                paragraph.addFootNote(new FootNote(footNote));
-            }
-            paragraphs.add(paragraph);
-        }
+        Renderer.buildPost(this, content);
         this.save();
     }
 

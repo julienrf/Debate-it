@@ -9,7 +9,7 @@ import play.data.validation.Required;
 import play.db.jpa.Model;
 
 @Entity
-public class FootNote extends Model /*implements IFootNote*/ {
+public class FootNote extends Model {
 
     /**
      * Footnote HTML content
@@ -26,33 +26,11 @@ public class FootNote extends Model /*implements IFootNote*/ {
     @ManyToOne
     public Paragraph paragraph;
 
+    public FootNote(final Paragraph paragraph) {
+        this.paragraph = paragraph;
+    }
 
     public FootNote(final String content) {
         this.content = content;
     }
-
-    /*@Override
-     public String getIdentifier() {
-         return id.toString() + "_";
-     }
-
-     @Override
-     public String getContent() {
-         return content;
-     }
-
-     @Override
-     public void setContent(String content) {
-         this.content = content;
-     }*/
-
-
-    /*public static class Factory implements IFootNoteFactory {
-         @Override
-         public FootNote createFootNote() {
-             FootNote footNote = new FootNote();
-             footNote.save();
-             return footNote;
-         }
-     }*/
 }
