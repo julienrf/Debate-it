@@ -31,9 +31,9 @@ public class Renderer {
 
     private static void appendBlock(Block block, Paragraph paragraph, StringBuilder buffer) {
         for (Section section : ClassOf(Section.class).match(block)) {
-            buffer.append("<h2>");
+            buffer.append("<h3>");
             escapeAndAppend(section.title(), buffer);
-            buffer.append("</h2>");
+            buffer.append("</h3>");
             return;
         }
 
